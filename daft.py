@@ -29,11 +29,18 @@ class PGM(object):
         The base unit for the node size. This is a number in centimeters that
         sets the default diameter of the nodes.
 
+    :param node_ec: (optional)
+        The default edge color for the nodes.
+
+    :param directed: (optional)
+        Should the edges be directed by default?
+
     """
     def __init__(self, shape, origin=[0, 0],
             grid_unit=2, node_unit=1,
             observed_style="shaded",
-            line_width=1, node_ec="k"):
+            line_width=1, node_ec="k",
+            directed=True):
         self._nodes = {}
         self._edges = []
         self._plates = []
@@ -41,7 +48,7 @@ class PGM(object):
         self._ctx = _rendering_context(shape=shape, origin=origin,
                 grid_unit=grid_unit, node_unit=node_unit,
                 observed_style=observed_style, line_width=line_width,
-                node_ec=node_ec)
+                node_ec=node_ec, directed=directed)
 
     def add_node(self, node):
         """
@@ -54,7 +61,7 @@ class PGM(object):
         self._nodes[node.name] = node
         return node
 
-    def add_edge(self, name1, name2, directed=True, **kwargs):
+    def add_edge(self, name1, name2, directed=None, **kwargs):
         """
         Construct an :class:`Edge` between two named :class:`Node`s.
 
@@ -69,9 +76,13 @@ class PGM(object):
             Should this be a directed edge?
 
         """
+        if directed is None:
+            directed = self._ctx.directed
+
         e = Edge(self._nodes[name1], self._nodes[name2], directed=directed,
                 **kwargs)
         self._edges.append(e)
+
         return e
 
     def add_plate(self, plate):
@@ -318,7 +329,6 @@ class Edge(object):
             p["head_length"] = p.get("head_length", 0.25)
             p["head_width"] = p.get("head_width", 0.1)
 
-            # TODO: make this match the "line_width" property of the context.
             p["width"] = 0
             p["linewidth"] = p.get("lw", ctx.line_width)
 
@@ -332,7 +342,7 @@ class Edge(object):
             return ar
         else:
             p["color"] = p.get("color", "k")
-            p["lw"] = p.get("lw", ctx.line_width - 1)
+            p["lw"] = p.get("lw", ctx.line_width)
 
             # Get the right coordinates.
             x, y, dx, dy = self._get_coords(ctx)
@@ -421,6 +431,12 @@ class _rendering_context(object):
         The base unit for the node size. This is a number in centimeters that
         sets the default diameter of the nodes.
 
+    :param node_ec: (optional)
+        The default edge color for the nodes.
+
+    :param directed: (optional)
+        Should the edges be directed by default?
+
     """
     def __init__(self, **kwargs):
         # Save the style defaults.
@@ -442,6 +458,7 @@ class _rendering_context(object):
 
         self.node_unit = kwargs.get("node_unit", 1.0)
         self.node_ec = kwargs.get("node_ec", "k")
+        self.directed = kwargs.get("directed", True)
 
         # Initialize the figure to ``None`` to handle caching later.
         self._figure = None

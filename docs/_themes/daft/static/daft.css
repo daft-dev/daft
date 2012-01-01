@@ -73,6 +73,28 @@ a.headerlink:hover {
     text-transform: uppercase;
 }
 
+#examples h2 {
+    display: none;
+}
+
+#examples {
+    line-height: 0;
+    margin-top: 5px;
+}
+
+#examples img {
+    border: 1px solid #ccc;
+    margin: 5px 0 5px 0;
+}
+
+#examples a:not(:nth-of-type(3n)) img {
+    margin-right: 8px;
+}
+
+#summary h2 {
+    display: none;
+}
+
 .related {
     margin: 10px 0 0;
     padding: 10px 0 0;
@@ -122,4 +144,20 @@ input.searchfield:focus {
     text-align: center;
     font-size: 11px;
     padding: 20px 0;
+}
+
+.figure {
+    background: white;
+    text-align: center;
+    padding: 15px;
+    margin: 15px 0;
+    border: 1px solid #DDD;
+}
+
+.highlight {
+    font-size: 11px;
+    background: none;
+    border-left: 3px solid #ccc;
+    padding-left: 7px;
+    margin-left: -10px;
 }
