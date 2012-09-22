@@ -39,3 +39,4 @@ if __name__ == "__main__":
     # Render and save.
     pgm.render()
     pgm.figure.savefig("one_pgm_to_own_them_all.pdf")
+    pgm.figure.savefig("one_pgm_to_own_them_all.png")
