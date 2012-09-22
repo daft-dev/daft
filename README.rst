@@ -14,13 +14,13 @@ Usage
 -----
 
 This PGM (`PNG
-<https://raw.github.com/dfm/daft/master/examples/one_pgm_to_own_them_all.png>`_,
+<https://raw.github.com/dfm/daft/master/images/one_pgm_to_own_them_all.png>`_,
 `PDF
-<https://raw.github.com/dfm/daft/master/examples/one_pgm_to_own_them_all.pdf>`_)
+<https://raw.github.com/dfm/daft/master/images/one_pgm_to_own_them_all.pdf>`_)
 is made by **Daft** and `this example code
 <https://github.com/dfm/daft/tree/master/examples/classic.py>`_:
 
-.. image:: https://raw.github.com/dfm/daft/master/examples/one_pgm_to_own_them_all.png
+.. image:: https://raw.github.com/dfm/daft/master/images/one_pgm_to_own_them_all.png
 
 Take a look at the `examples
 <https://github.com/dfm/daft/tree/master/examples>`_.
