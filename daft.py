@@ -19,14 +19,18 @@ class PGM(object):
     :param shape:
         The number of rows and columns in the grid.
 
+    :param origin:
+        The coordinates of the bottom left corner of the plot.
+
     :param grid_size: (optional)
         The size of the grid spacing measured in centimeters.
 
     """
-    def __init__(self, shape, grid_size=2):
-        self.shape = shape
+    def __init__(self, shape, origin=[0, 0], grid_size=2):
+        self.shape = np.array(shape)
+        self.origin = np.array(origin)
         self.grid_size = grid_size
-        self._figsize = grid_size * np.array(shape) / 2.54
+        self._figsize = grid_size * self.shape / 2.54
 
         self._nodes = {}
         self._edges = []
@@ -82,19 +86,30 @@ class PGM(object):
         self.ax = self.figure.add_axes((0, 0, 1, 1), frameon=False,
                 xticks=[], yticks=[])
 
-        self.ax.set_xlim(0, self._figsize[0] * 2.54)
-        self.ax.set_ylim(0, self._figsize[1] * 2.54)
+        # Set the bounds of the plot.
+        l0 = self._convert_coords(*self.origin)
+        l1 = self._convert_coords(*(self.origin + self.shape))
+        self.ax.set_xlim(l0[0], l1[0])
+        self.ax.set_ylim(l0[1], l1[1])
 
         for plate in self._plates:
-            plate.render(self.ax, self.grid_size)
+            plate.render(self.ax, self._convert_coords)
 
         for edge in self._edges:
-            edge.render(self.ax, self.grid_size)
+            edge.render(self.ax, self._convert_coords)
 
         for name, node in self._nodes.iteritems():
-            node.render(self.ax, self.grid_size)
+            node.render(self.ax, self._convert_coords)
 
         return self.ax
+
+    def _convert_coords(self, *xy):
+        """
+        Convert from model coordinates to plot coordinates.
+
+        """
+        assert len(xy) == 2
+        return self.grid_size * (np.atleast_1d(xy) - self.origin)
 
 
 class Node(object):
@@ -135,15 +150,15 @@ class Node(object):
         self.offset = offset
         self.plot_params = plot_params
 
-    def render(self, ax, scale):
+    def render(self, ax, conv):
         """
         Render the node.
 
         :param ax:
             The :class:`matplotlib.Axes` object to plot into.
 
-        :param scale:
-            The conversion factor between model units and plotting units.
+        :param conv:
+            A callable coordinate conversion.
 
         """
         p = dict(self.plot_params)
@@ -156,7 +171,7 @@ class Node(object):
             p["alpha"] = 0.3
 
             # Draw the background ellipse.
-            bg = Ellipse(xy=[scale * self.x, scale * self.y],
+            bg = Ellipse(xy=conv(self.x, self.y),
                         width=self.diameter, height=self.diameter,
                         **p)
             ax.add_artist(bg)
@@ -166,13 +181,13 @@ class Node(object):
             p["alpha"] = 1
 
         # Draw the foreground ellipse.
-        el = Ellipse(xy=[scale * self.x, scale * self.y],
+        el = Ellipse(xy=conv(self.x, self.y),
                      width=self.diameter, height=self.diameter,
                      **p)
         ax.add_artist(el)
 
         # Annotate the node.
-        ax.annotate(self.content, [scale * self.x, scale * self.y],
+        ax.annotate(self.content, conv(self.x, self.y),
                 xycoords="data", ha="center", va="center",
                 xytext=self.offset, textcoords="offset points")
         return el
@@ -203,12 +218,12 @@ class Edge(object):
         self.directed = directed
         self.plot_params = plot_params
 
-    def _get_coords(self, scale):
+    def _get_coords(self, conv):
         """
         Get the coordinates of the line.
 
-        :param scale:
-            The grid scaling factor.
+        :param conv:
+            A callable coordinate conversion.
 
         :returns:
             * ``x0``, ``y0``: the coordinates of the start of the line.
@@ -216,8 +231,8 @@ class Edge(object):
 
         """
         # Scale the coordinates appropriately.
-        x1, y1 = scale * self.node1.x, scale * self.node1.y
-        x2, y2 = scale * self.node2.x, scale * self.node2.y
+        x1, y1 = conv(self.node1.x, self.node1.y)
+        x2, y2 = conv(self.node2.x, self.node2.y)
 
         # Compute the distances.
         dx, dy = x2 - x1, y2 - y1
@@ -236,15 +251,15 @@ class Edge(object):
 
         return x0, y0, dx0, dy0
 
-    def render(self, ax, scale):
+    def render(self, ax, conv):
         """
         Render the edge in the given axes.
 
         :param ax:
             The :class:`matplotlib.Axes` object.
 
-        :param scale:
-            The conversion scale between model units and plotting units.
+        :param conv:
+            A callable coordinate conversion.
 
         """
         p = self.plot_params
@@ -255,7 +270,7 @@ class Edge(object):
             p["head_width"] = p.get("head_width", 0.1)
 
             # Build an arrow.
-            ar = Arrow(*self._get_coords(scale),
+            ar = Arrow(*self._get_coords(conv),
                         length_includes_head=True, width=0.,
                         **self.plot_params)
 
@@ -266,7 +281,7 @@ class Edge(object):
             p["color"] = p.get("color", "k")
 
             # Get the right coordinates.
-            x, y, dx, dy = self._get_coords(scale)
+            x, y, dx, dy = self._get_coords(conv)
 
             # Plot the line.
             line = ax.plot([x, x + dx], [y, y + dy], **p)
@@ -303,26 +318,28 @@ class Plate(object):
         self.shift = shift
         self.rect_params = rect_params
 
-    def render(self, ax, scale):
+    def render(self, ax, conv):
         """
         Render the plate in the given axes.
 
         :param ax:
             The :class:`matplotlib.Axes` object.
 
-        :param scale:
-            The conversion scale between model units and plotting units.
+        :param conv:
+            A callable coordinate conversion.
 
         """
         s = np.array([0, self.shift])
-        r = scale * (np.array(self.rect) + np.concatenate([s, -s]))
+        r = np.atleast_1d(self.rect)
+        bl = conv(*(r[:2] + s))
+        tr = conv(*(r[:2] + r[2:]))
+        r = np.concatenate([bl, tr - bl])
 
         p = self.rect_params
         p["ec"] = p.get("ec", "k")
         p["fc"] = p.get("fc", "none")
 
-        rect = Rectangle(r[:2], *r[2:],
-                **self.rect_params)
+        rect = Rectangle(r[:2], *r[2:], **self.rect_params)
 
         ax.add_artist(rect)
 
