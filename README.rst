@@ -6,6 +6,7 @@ Installation
 ------------
 
 ::
+
     pip install daft
 
 
