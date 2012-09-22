@@ -34,7 +34,8 @@ if __name__ == "__main__":
     pgm.add_edge("beta", "x")
 
     # And a plate.
-    pgm.add_plate(daft.Plate([1, 0.5, 2, 1]))
+    pgm.add_plate(daft.Plate([1, 0.5, 2, 1], label=r"$n = 1, \ldots, N$",
+        shift=-0.1))
 
     # Render and save.
     pgm.render()
