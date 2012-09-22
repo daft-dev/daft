@@ -11,6 +11,11 @@ except ImportError:
 
 import os
 import sys
+
+if sys.argv[-1] == "publish":
+    os.system("python setup.py sdist upload")
+    sys.exit()
+
 sys.path.append(os.path.dirname(__file__))
 
 import daft

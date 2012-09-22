@@ -2,6 +2,20 @@
 
 Crazy awesome PGM rendering.
 
+Installation
+------------
+
+::
+    pip install daft
+
+
+Usage
+-----
+
+Take a look at the `examples
+<https://github.com/dfm/daft/tree/master/examples>`_.
+
+
 Authors
 -------
 
