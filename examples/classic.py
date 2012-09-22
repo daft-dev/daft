@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 """
 One PGM to own them all.
 
