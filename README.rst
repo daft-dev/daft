@@ -1,9 +1,12 @@
 .. image:: https://raw.github.com/dfm/daft/master/images/logo.png
 
-**Daft** renders *probabilistic graphical models* (PGMs) or
-*directed acyclic graphs* or *Bayesian networks* to PDF or PNG
-(or other formats).
-It makes use of Python and `matplotlib <http://matplotlib.org/>`_.
+**Daft** renders *probabilistic graphical models* (PGMs) to any output
+format your `matplotlib <http://matplotlib.org/>`_ backend supports. This
+includes PDF, PNG and many other formats. Both directed and undirected
+graphs are supported. You can build your model using a Python script with a
+few trivial commands and then render it beautifully for publication in a
+journal or on the internet.
+
 **Daft** is particularly well suited for rendering graphs to be
 included in LaTeX documents, even documents with non-trivial symbol
 definitions or macros.
