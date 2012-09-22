@@ -1,20 +1,20 @@
 from matplotlib import rc
 rc("font", family="serif", size=12)
 rc("text", usetex=True)
+rc("./weaklensing.tex")
 import daft
 
 if __name__ == "__main__":
     pgm = daft.PGM([4, 3.5], origin=[-0.5, 2])
-
-    pgm.add_node(daft.Node("Omega", r"$\Omega$", 5, 10))
-    pgm.add_node(daft.Node("gamma", r"$\gamma$", 3, 10))
-    pgm.add_node(daft.Node("obs", r"$\epsilon^\obs_n$", 3, 8, observed=True))
-    pgm.add_node(daft.Node("alpha", r"$\alpha$", 7, 8))
-    pgm.add_node(daft.Node("true", r"$\epsilon^\true_n$", 5, 8))
-    pgm.add_node(daft.Node("sigma", r"$\sigma_n$", 3, 6))
-    pgm.add_node(daft.Node("Sigma", r"$\Sigma$", 1, 6))
-    pgm.add_node(daft.Node("x", r"$x_n$", 5, 6, observed=True))
-    pgm.add_plate(daft.plate([2, 4.5, 4, 4.5], label=r"$n = 1, \ldots, N$"))
+    pgm.add_node(daft.Node("Omega", r"$\Omega$", 2, 5))
+    pgm.add_node(daft.Node("gamma", r"$\gamma$", 1, 5))
+    pgm.add_node(daft.Node("obs", r"$\epsilon^{\mathrm{obs}}_n$", 1, 4, observed=True))
+    pgm.add_node(daft.Node("alpha", r"$\alpha$", 3, 4))
+    pgm.add_node(daft.Node("true", r"$\epsilon^{\mathrm{true}}_n$", 2, 4))
+    pgm.add_node(daft.Node("sigma", r"$\sigma_n$", 1, 3))
+    pgm.add_node(daft.Node("Sigma", r"$\Sigma$", 0, 3))
+    pgm.add_node(daft.Node("x", r"$x_n$", 2, 3, observed=True))
+    pgm.add_plate(daft.Plate([0.5, 2.25, 2, 2.25], label=r"$n = 1, \ldots, N$"))
     pgm.add_edge("Omega", "gamma")
     pgm.add_edge("gamma", "obs")
     pgm.add_edge("alpha", "true")
