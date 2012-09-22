@@ -168,6 +168,7 @@ class Edge(object):
     def __init__(self, node1, node2, directed=True, **plot_params):
         self.node1 = node1
         self.node2 = node2
+        self.directed = directed
         self.plot_params = plot_params
 
     def _get_coords(self, scale):
