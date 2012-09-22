@@ -29,4 +29,4 @@ if __name__ == "__main__":
     pgm.add_edge("f", "t")
 
     pgm.render()
-    pgm.figure.savefig("logo.png", dpi=200)
+    pgm.figure.savefig("logo.png", dpi=200, transparent=True)
