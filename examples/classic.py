@@ -1,0 +1,40 @@
+"""
+One PGM to own them all.
+
+"""
+
+# Deal with the path for import.
+import os
+import sys
+sys.path.append(os.path.dirname(os.path.dirname(__file__)))
+
+import daft
+
+
+if __name__ == "__main__":
+    # Instantiate the PGM.
+    pgm = daft.PGM((3.5, 3))
+
+    # Hierarchical parameters.
+    pgm.add_node(daft.Node("alpha", r"$\alpha$", 1, 2, diameter=0.5,
+                    offset=[0, 10], plot_params={"fc": "k"}))
+    pgm.add_node(daft.Node("beta", r"$\beta$", 2, 2))
+
+    # Latent variable.
+    pgm.add_node(daft.Node("w", r"$w_n$", 1.5, 1))
+
+    # Data.
+    pgm.add_node(daft.Node("x", r"$x_n$", 2.5, 1, observed=True))
+
+    # Add in the edges.
+    pgm.add_edge("alpha", "beta")
+    pgm.add_edge("beta", "w")
+    pgm.add_edge("w", "x")
+    pgm.add_edge("beta", "x")
+
+    # And a plate.
+    pgm.add_plate(daft.Plate([1, 0.5, 2, 1]))
+
+    # Render and save.
+    pgm.render()
+    pgm.figure.savefig("one_pgm_to_own_them_all.pdf")

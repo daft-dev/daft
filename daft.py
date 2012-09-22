@@ -1,3 +1,6 @@
+__all__ = ["PGM", "Node", "Edge", "Plate"]
+
+
 from matplotlib import rc
 rc("font", family="serif", size=12)
 rc("text", usetex=True)
@@ -76,8 +79,8 @@ class PGM(object):
         and plot the model in this area.
 
         """
-        self.fig = plt.figure(figsize=self._figsize)
-        self.ax = self.fig.add_axes((0, 0, 1, 1), frameon=False,
+        self.figure = plt.figure(figsize=self._figsize)
+        self.ax = self.figure.add_axes((0, 0, 1, 1), frameon=False,
                 xticks=[], yticks=[])
 
         self.ax.set_xlim(0, self._figsize[0] * 2.54)
@@ -112,16 +115,26 @@ class Node(object):
         The y-coordinate of the node.
 
     :param diameter: (optional)
-        The diameter
+        The diameter of the circle measured in centimeters.
+
+    :param observed: (optional)
+        Should this be a conditioned variable?
+
+    :param plot_params: (optional)
+        A dictionary of parameters to pass to the
+        :class:`matplotlib.patches.Ellipse` constructor.
 
     """
-    def __init__(self, name, content, x, y, diameter=3, observed=False):
+    def __init__(self, name, content, x, y, diameter=3, observed=False,
+            offset=[0, 0], plot_params={}):
         self.name = name
         self.content = content
         self.x = x
         self.y = y
         self.diameter = diameter / 2.54
         self.observed = observed
+        self.offset = offset
+        self.plot_params = plot_params
 
     def render(self, ax, scale):
         """
@@ -134,19 +147,35 @@ class Node(object):
             The conversion factor between model units and plotting units.
 
         """
+        p = dict(self.plot_params)
+        p["ec"] = p.get("ec", "k")
+        p["fc"] = p.get("fc", "none")
+
+        # Set up an observed node.
         if self.observed:
+            p["fc"] = "k"
+            p["alpha"] = 0.3
+
+            # Draw the background ellipse.
             bg = Ellipse(xy=[scale * self.x, scale * self.y],
                         width=self.diameter, height=self.diameter,
-                        fc="k", ec="k", alpha=0.3)
+                        **p)
             ax.add_artist(bg)
 
+            # Reset the face color.
+            p["fc"] = "none"
+            p["alpha"] = 1
+
+        # Draw the foreground ellipse.
         el = Ellipse(xy=[scale * self.x, scale * self.y],
                      width=self.diameter, height=self.diameter,
-                     fc="none", ec="k")
+                     **p)
         ax.add_artist(el)
 
-        ax.text(scale * self.x, scale * self.y, self.content, ha="center",
-                va="center")
+        # Annotate the node.
+        ax.annotate(self.content, [scale * self.x, scale * self.y],
+                xycoords="data", ha="center", va="center",
+                xytext=self.offset, textcoords="offset points")
         return el
 
 
@@ -160,12 +189,16 @@ class Edge(object):
     :param node2:
         The second :class:`Node`. The arrow will point towards this node.
 
-    :plot_params: (optional)
+    :param directed: (optional)
+        Should the edge be directed from ``node1`` to ``node2``? In other
+        words: should it have an arrow?
+
+    :param plot_params: (optional)
         A dictionary of parameters to pass to the plotting command when
         rendering.
 
     """
-    def __init__(self, node1, node2, directed=True, **plot_params):
+    def __init__(self, node1, node2, directed=True, plot_params={}):
         self.node1 = node1
         self.node2 = node2
         self.directed = directed
@@ -206,7 +239,7 @@ class Edge(object):
 
     def render(self, ax, scale):
         """
-        Render the edge in given axes.
+        Render the edge in the given axes.
 
         :param ax:
             The :class:`matplotlib.Axes` object.
@@ -248,9 +281,23 @@ class Plate(object):
     :param rect:
         The rectangle describing the plate bounds in model coordinates.
 
+    :param label: (optional)
+        A string to annotate the plate.
+
+    :param label_offset: (optional)
+        The x and y offsets of the label text measured in points.
+
+    :param shift: (optional)
+        The vertical "shift" of the plate measured in model units. This will
+        move the bottom of the panel by ``shift`` units.
+
+    :param rect_params: (optional)
+        A dictionary of parameters to pass to the
+        :class:`matplotlib.patches.Rectangle` constructor.
+
     """
     def __init__(self, rect, label=None, label_offset=[5, 5], shift=0,
-            **rect_params):
+            rect_params={}):
         self.rect = rect
         self.label = label
         self.label_offset = label_offset
@@ -258,6 +305,16 @@ class Plate(object):
         self.rect_params = rect_params
 
     def render(self, ax, scale):
+        """
+        Render the plate in the given axes.
+
+        :param ax:
+            The :class:`matplotlib.Axes` object.
+
+        :param scale:
+            The conversion scale between model units and plotting units.
+
+        """
         s = np.array([0, self.shift])
         r = scale * (np.array(self.rect) + np.concatenate([s, -s]))
 
@@ -275,22 +332,3 @@ class Plate(object):
                     xytext=self.label_offset, textcoords="offset points")
 
         return rect
-
-if __name__ == "__main__":
-    thispgm = PGM((3, 3))
-
-    thispgm.add_node(Node("omega", r"$\omega$", 1, 1))
-    thispgm.add_node(Node("alpha", r"$\alpha$", 1, 2))
-    thispgm.add_node(Node("x", r"$x_n$", 2, 1, observed=True))
-    # thispgm.add_node(Node("sigma", r"$\sigma_n$", 2., 0.))
-    # thispgm.add_node(Node("Sigma", r"$\Sigma$", 4., 0.))
-
-    thispgm.add_edge("omega", "x", directed=False)
-    thispgm.add_edge("alpha", "x")
-    # thispgm.add_edge("sigma", "x")
-    # thispgm.add_edge("Sigma", "sigma")
-
-    thispgm.add_plate(Plate((0.5, 0.4, 2, 1.1), label=r"galaxies $n$",
-        shift=-0.1))
-
-    thispgm.render().figure.savefig("test_pgm.pdf")
