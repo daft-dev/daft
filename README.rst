@@ -13,9 +13,19 @@ Installation
 Usage
 -----
 
+This PGM:
+
+.. image:: https://raw.github.com/dfm/daft/master/examples/one_pgm_to_own_them_all.png
+
+(`PNG
+<https://raw.github.com/dfm/daft/master/examples/one_pgm_to_own_them_all.png>`_,
+`PDF
+<https://raw.github.com/dfm/daft/master/examples/one_pgm_to_own_them_all.pdf>`_)
+is made by **Daft** and `this code
+<https://github.com/dfm/daft/tree/master/examples/classic.py>`_.
+
 Take a look at the `examples
 <https://github.com/dfm/daft/tree/master/examples>`_.
-
 
 Authors
 -------
