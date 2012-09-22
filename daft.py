@@ -4,10 +4,6 @@ __all__ = ["PGM", "Node", "Edge", "Plate"]
 __version__ = "0.0.1"
 
 
-from matplotlib import rc
-rc("font", family="serif", size=12)
-rc("text", usetex=True)
-
 import matplotlib.pyplot as plt
 from matplotlib.patches import Ellipse
 from matplotlib.patches import FancyArrow as Arrow

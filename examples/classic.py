@@ -4,6 +4,10 @@ One PGM to own them all.
 
 """
 
+from matplotlib import rc
+rc("font", family="serif", size=12)
+rc("text", usetex=True)
+
 # Deal with the path for import.
 import os
 import sys
