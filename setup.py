@@ -21,7 +21,7 @@ setup(
     version=daft.__version__,
     author="David W. Hogg & Daniel Foreman-Mackey",
     author_email="danfm@nyu.edu",
-    packages=["daft"],
+    py_modules=["daft"],
     description="PGM rendering at its finest.",
     long_description=open("README.rst").read(),
     install_requires=[
