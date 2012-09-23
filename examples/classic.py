@@ -17,7 +17,7 @@ import daft
 
 if __name__ == "__main__":
     # Instantiate the PGM.
-    pgm = daft.PGM([2.2, 2.05], origin=[0.4,0.3])
+    pgm = daft.PGM([2.3, 2.05], origin=[0.3,0.3])
 
     # Hierarchical parameters.
     pgm.add_node(daft.Node("alpha", r"$\alpha$", 0.5, 2, diameter=0.5,

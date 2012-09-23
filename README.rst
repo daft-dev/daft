@@ -22,14 +22,12 @@ Installation
 Usage
 -----
 
-This model rendering (below; `PNG here
-<https://raw.github.com/dfm/daft/master/images/one_pgm_to_own_them_all.png>`_;
-`PDF here
-<https://raw.github.com/dfm/daft/master/images/one_pgm_to_own_them_all.pdf>`_)
-is made by **Daft** and `a few lines of code
-<https://github.com/dfm/daft/tree/master/examples/classic.py>`_.
+The rendered models below are made with **Daft** and a few lines of code each.
 
-.. image:: https://raw.github.com/dfm/daft/master/images/one_pgm_to_own_them_all.png
+.. image:: https://raw.github.com/davidwhogg/daft/master/images/classic.png
+(`PNG <https://raw.github.com/davidwhogg/daft/master/images/classic.png>`_;
+`PDF <https://raw.github.com/davidwhogg/daft/master/images/classic.pdf>`_;
+`source <https://github.com/davidwhogg/daft/tree/master/examples/classic.py>`)
 
 Authors
 -------
