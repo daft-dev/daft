@@ -1,4 +1,4 @@
-.. image:: https://raw.github.com/dfm/daft/master/images/logo.png
+.. image:: https://raw.github.com/davidwhogg/daft/master/images/logo.png
 
 **Daft** renders *probabilistic graphical models* (PGMs) to any output
 format your `matplotlib <http://matplotlib.org/>`_ backend supports. This
@@ -23,11 +23,27 @@ Usage
 -----
 
 The rendered models below are made with **Daft** and a few lines of code each.
-
-.. image:: https://raw.github.com/davidwhogg/daft/master/images/classic.png
+Here's a model of *anything*
 (`PNG <https://raw.github.com/davidwhogg/daft/master/images/classic.png>`_;
 `PDF <https://raw.github.com/davidwhogg/daft/master/images/classic.pdf>`_;
-`source <https://github.com/davidwhogg/daft/tree/master/examples/classic.py>`)
+`source <https://github.com/davidwhogg/daft/tree/master/examples/classic.py>`_):
+
+.. image:: https://raw.github.com/davidwhogg/daft/master/images/classic.png
+
+Here's a model with words rather than symbols
+(`PNG <https://raw.github.com/davidwhogg/daft/master/images/wordy.png>`_;
+`PDF <https://raw.github.com/davidwhogg/daft/master/images/wordy.pdf>`_;
+`source <https://github.com/davidwhogg/daft/tree/master/examples/wordy.py>`_):
+
+.. image:: https://raw.github.com/davidwhogg/daft/master/images/wordy.png
+
+Here's a model for weak gravitational lensing
+(`PNG <https://raw.github.com/davidwhogg/daft/master/images/weaklensing.png>`_;
+`PDF <https://raw.github.com/davidwhogg/daft/master/images/weaklensing.pdf>`_;
+`source <https://github.com/davidwhogg/daft/tree/master/examples/weaklensing.py>`_):
+
+.. image:: https://raw.github.com/davidwhogg/daft/master/images/weaklensing.png
+
 
 Authors
 -------
