@@ -129,7 +129,10 @@ class Node(object):
         The y-coordinate of the node.
 
     :param diameter: (optional)
-        The diameter of the circle measured in centimeters.
+        The diameter (or height) of the node measured in centimeters.
+
+    :param aspect: (optional)
+        The aspect ratio width/height for elliptical nodes; default 1.
 
     :param observed: (optional)
         Should this be a conditioned variable?
@@ -139,13 +142,14 @@ class Node(object):
         :class:`matplotlib.patches.Ellipse` constructor.
 
     """
-    def __init__(self, name, content, x, y, diameter=3, observed=False,
-            offset=[0, 0], plot_params={}):
+    def __init__(self, name, content, x, y, diameter=3, aspect=1.,
+                 observed=False, offset=[0, 0], plot_params={}):
         self.name = name
         self.content = content
         self.x = x
         self.y = y
         self.diameter = diameter / 2.54
+        self.aspect = aspect
         self.observed = observed
         self.offset = offset
         self.plot_params = plot_params
@@ -172,8 +176,8 @@ class Node(object):
 
             # Draw the background ellipse.
             bg = Ellipse(xy=conv(self.x, self.y),
-                        width=self.diameter, height=self.diameter,
-                        **p)
+                         width=self.diameter * self.aspect,
+                         height=self.diameter, **p)
             ax.add_artist(bg)
 
             # Reset the face color.
@@ -182,8 +186,8 @@ class Node(object):
 
         # Draw the foreground ellipse.
         el = Ellipse(xy=conv(self.x, self.y),
-                     width=self.diameter, height=self.diameter,
-                     **p)
+                     width=self.diameter * self.aspect,
+                     height=self.diameter, **p)
         ax.add_artist(el)
 
         # Annotate the node.
@@ -236,11 +240,12 @@ class Edge(object):
 
         # Compute the distances.
         dx, dy = x2 - x1, y2 - y1
-        dist = np.sqrt(dx * dx + dy * dy)
+        dist1 = np.sqrt(dx * dx + dy * dy / float(self.node1.aspect) ** 2)
+        dist2 = np.sqrt(dx * dx + dy * dy / float(self.node2.aspect) ** 2)
 
         # Compute the fractional effect of the radii of the nodes.
-        alpha1 = 0.5 * self.node1.diameter / dist
-        alpha2 = 0.5 * self.node2.diameter / dist
+        alpha1 = 0.5 * self.node1.diameter / dist1
+        alpha2 = 0.5 * self.node2.diameter / dist2
 
         # Get the coordinates of the starting position.
         x0, y0 = x1 + alpha1 * dx, y1 + alpha1 * dy
