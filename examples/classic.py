@@ -17,7 +17,7 @@ import daft
 
 if __name__ == "__main__":
     # Instantiate the PGM.
-    pgm = daft.PGM((3, 2.5))
+    pgm = daft.PGM([2.2, 2.05], origin=[0.4,0.3])
 
     # Hierarchical parameters.
     pgm.add_node(daft.Node("alpha", r"$\alpha$", 0.5, 2, diameter=0.5,
@@ -42,5 +42,5 @@ if __name__ == "__main__":
 
     # Render and save.
     pgm.render()
-    pgm.figure.savefig("one_pgm_to_own_them_all.pdf")
-    pgm.figure.savefig("one_pgm_to_own_them_all.png", dpi=200)
+    pgm.figure.savefig("classic.pdf")
+    pgm.figure.savefig("classic.png", dpi=150)
