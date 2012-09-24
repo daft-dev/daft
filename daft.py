@@ -137,13 +137,20 @@ class Node(object):
     :param observed: (optional)
         Should this be a conditioned variable?
 
+    :param fixed: (optional)
+        Should this be a fixed (not permitted to vary) variable?
+        If `True`, over-rides diameter, offset, facecolor, etc.
+        (Conflicts with `observed`.
+
     :param plot_params: (optional)
         A dictionary of parameters to pass to the
         :class:`matplotlib.patches.Ellipse` constructor.
 
     """
     def __init__(self, name, content, x, y, diameter=3, aspect=1.,
-                 observed=False, offset=[0, 0], plot_params={}):
+                 observed=False, fixed=False,
+                 offset=[0, 0], plot_params={}):
+        assert not (observed and fixed)
         self.name = name
         self.content = content
         self.x = x
@@ -152,7 +159,14 @@ class Node(object):
         self.aspect = aspect
         self.observed = observed
         self.offset = offset
-        self.plot_params = plot_params
+        self.plot_params = dict(plot_params)
+        self.fixed = fixed
+        self.va = "center"
+        if self.fixed:
+            self.offset = [0, 6]
+            self.diameter = 0.5 / 2.54
+            self.va = "bottom"
+            self.plot_params["fc"] = "k"
 
     def render(self, ax, conv):
         """
@@ -192,7 +206,7 @@ class Node(object):
 
         # Annotate the node.
         ax.annotate(self.content, conv(self.x, self.y),
-                xycoords="data", ha="center", va="center",
+                xycoords="data", ha="center", va=self.va,
                 xytext=self.offset, textcoords="offset points")
         return el
 

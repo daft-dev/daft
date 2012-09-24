@@ -20,8 +20,7 @@ if __name__ == "__main__":
     pgm = daft.PGM([2.3, 2.05], origin=[0.3,0.3])
 
     # Hierarchical parameters.
-    pgm.add_node(daft.Node("alpha", r"$\alpha$", 0.5, 2, diameter=0.5,
-                    offset=[0, 10], plot_params={"fc": "k"}))
+    pgm.add_node(daft.Node("alpha", r"$\alpha$", 0.5, 2, fixed=True))
     pgm.add_node(daft.Node("beta", r"$\beta$", 1.5, 2))
 
     # Latent variable.
