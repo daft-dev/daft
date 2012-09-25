@@ -137,9 +137,12 @@ class Node(object):
     :param observed: (optional)
         Should this be a conditioned variable?
 
+    :param nogray: (optional)
+        Use the double circle rather than gray to indicate conditioning.
+
     :param fixed: (optional)
         Should this be a fixed (not permitted to vary) variable?
-        If `True`, over-rides diameter, offset, facecolor, etc.
+        If `True`, modifies or over-rides diameter, offset, facecolor, etc.
         (Conflicts with `observed`.
 
     :param plot_params: (optional)
@@ -148,7 +151,7 @@ class Node(object):
 
     """
     def __init__(self, name, content, x, y, diameter=3, aspect=1.,
-                 observed=False, fixed=False,
+                 observed=False, nogray=False, fixed=False,
                  offset=[0, 0], plot_params={}):
         assert not (observed and fixed)
         self.name = name
@@ -158,13 +161,15 @@ class Node(object):
         self.diameter = diameter / 2.54
         self.aspect = aspect
         self.observed = observed
-        self.offset = offset
+        self.nogray = nogray
+        self.offset = 1 * offset # holy crap
+        print self.offset
         self.plot_params = dict(plot_params)
         self.fixed = fixed
         self.va = "center"
         if self.fixed:
-            self.offset = [0, 6]
-            self.diameter = 0.5 / 2.54
+            self.offset[1] += 6
+            self.diameter = self.diameter / 6.
             self.va = "bottom"
             self.plot_params["fc"] = "k"
 
@@ -182,21 +187,28 @@ class Node(object):
         p = dict(self.plot_params)
         p["ec"] = p.get("ec", "k")
         p["fc"] = p.get("fc", "none")
+        p["alpha"] = p.get("alpha", 1)
 
         # Set up an observed node.
         if self.observed:
-            p["fc"] = "k"
-            p["alpha"] = 0.3
+            fc = p["fc"]
+            alpha = p["alpha"]
+            if not self.nogray:
+                p["fc"] = "k"
+                p["alpha"] = 0.3 * alpha
 
             # Draw the background ellipse.
+            diameter = self.diameter
+            if self.nogray:
+                diameter = 1.1 * diameter
             bg = Ellipse(xy=conv(self.x, self.y),
-                         width=self.diameter * self.aspect,
-                         height=self.diameter, **p)
+                         width=diameter * self.aspect,
+                         height=diameter, **p)
             ax.add_artist(bg)
 
             # Reset the face color.
-            p["fc"] = "none"
-            p["alpha"] = 1
+            p["fc"] = fc
+            p["alpha"] = alpha
 
         # Draw the foreground ellipse.
         el = Ellipse(xy=conv(self.x, self.y),
