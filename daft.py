@@ -25,8 +25,12 @@ class PGM(object):
     :param grid_size: (optional)
         The size of the grid spacing measured in centimeters.
 
+    :param node_unit: (optional)
+        The base unit for the node size. This is a number in centimeters that
+        sets the default diameter of the nodes.
+
     """
-    def __init__(self, shape, origin=[0, 0], grid_size=2):
+    def __init__(self, shape, origin=[0, 0], grid_size=2, node_unit=2,):
         self.shape = np.array(shape)
         self.origin = np.array(origin)
         self.grid_size = grid_size
@@ -35,6 +39,14 @@ class PGM(object):
         self._nodes = {}
         self._edges = []
         self._plates = []
+
+        self._render_ctx = _rendering_context(
+                                    shape=self.shape,
+                                    origin=self.origin,
+                                    grid_size=grid_size,
+                                    node_unit=node_unit,
+                                    obs_style=obs_style,
+                                )
 
     def add_node(self, node):
         """
@@ -103,14 +115,6 @@ class PGM(object):
 
         return self.ax
 
-    def _convert_coords(self, *xy):
-        """
-        Convert from model coordinates to plot coordinates.
-
-        """
-        assert len(xy) == 2
-        return self.grid_size * (np.atleast_1d(xy) - self.origin)
-
 
 class Node(object):
     """
@@ -129,7 +133,8 @@ class Node(object):
         The y-coordinate of the node.
 
     :param diameter: (optional)
-        The diameter (or height) of the node measured in centimeters.
+        The diameter (or height) of the node measured in ``node_unit``s as
+        defined by the :class:`PGM` object.
 
     :param aspect: (optional)
         The aspect ratio width/height for elliptical nodes; default 1.
@@ -150,7 +155,7 @@ class Node(object):
         :class:`matplotlib.patches.Ellipse` constructor.
 
     """
-    def __init__(self, name, content, x, y, diameter=3, aspect=1.,
+    def __init__(self, name, content, x, y, diameter=1, aspect=1.,
                  observed=False, nogray=False, fixed=False,
                  offset=[0, 0], plot_params={}):
         assert not (observed and fixed)
@@ -379,3 +384,26 @@ class Plate(object):
                     xytext=self.label_offset, textcoords="offset points")
 
         return rect
+
+
+class _rendering_context(object):
+    """
+    Evil.
+
+    """
+    def __init__(self, **args):
+        self._args = args
+
+    def __getattr__(self, k):
+        try:
+            return self._args[k]
+        except KeyError:
+            raise AttributeError
+
+    def _convert_coords(self, *xy):
+        """
+        Convert from model coordinates to plot coordinates.
+
+        """
+        assert len(xy) == 2
+        return self.grid_size * (np.atleast_1d(xy) - self.origin)
