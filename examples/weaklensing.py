@@ -5,9 +5,9 @@ rc("./weaklensing.tex")
 import daft
 
 if __name__ == "__main__":
-    pgm = daft.PGM([4, 3.5], origin=[-0.5, 2])
-    pgm.add_node(daft.Node("Omega", r"$\Omega$", 2, 5))
-    pgm.add_node(daft.Node("gamma", r"$\gamma$", 1, 5))
+    pgm = daft.PGM([4.7, 2.35], origin=[-1.35, 2.2])
+    pgm.add_node(daft.Node("Omega", r"$\Omega$", -1, 4))
+    pgm.add_node(daft.Node("gamma", r"$\gamma$", 0, 4))
     pgm.add_node(daft.Node("obs", r"$\epsilon^{\mathrm{obs}}_n$", 1, 4, observed=True))
     pgm.add_node(daft.Node("alpha", r"$\alpha$", 3, 4))
     pgm.add_node(daft.Node("true", r"$\epsilon^{\mathrm{true}}_n$", 2, 4))
@@ -24,4 +24,4 @@ if __name__ == "__main__":
     pgm.add_edge("sigma", "obs")
     pgm.render()
     pgm.figure.savefig("weaklensing.pdf")
-    pgm.figure.savefig("weaklensing.png", dpi=200)
+    pgm.figure.savefig("weaklensing.png", dpi=150)

@@ -17,7 +17,7 @@ import daft
 
 if __name__ == "__main__":
     # Instantiate the PGM.
-    pgm = daft.PGM((4, 1))
+    pgm = daft.PGM((3.7, 0.7), origin=(0.15, 0.15))
 
     pgm.add_node(daft.Node("d", r"$D$", 0.5, 0.5))
     pgm.add_node(daft.Node("a", r"$a$", 1.5, 0.5, observed=True))
@@ -29,4 +29,5 @@ if __name__ == "__main__":
     pgm.add_edge("f", "t")
 
     pgm.render()
+    pgm.figure.savefig("logo.pdf")
     pgm.figure.savefig("logo.png", dpi=200, transparent=True)

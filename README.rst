@@ -1,4 +1,4 @@
-.. image:: https://raw.github.com/dfm/daft/master/images/logo.png
+.. image:: https://raw.github.com/davidwhogg/daft/master/images/logo.png
 
 **Daft** renders *probabilistic graphical models* (PGMs) to any output
 format your `matplotlib <http://matplotlib.org/>`_ backend supports. This
@@ -22,14 +22,43 @@ Installation
 Usage
 -----
 
-This model rendering (below; `PNG here
-<https://raw.github.com/dfm/daft/master/images/one_pgm_to_own_them_all.png>`_;
-`PDF here
-<https://raw.github.com/dfm/daft/master/images/one_pgm_to_own_them_all.pdf>`_)
-is made by **Daft** and `a few lines of code
-<https://github.com/dfm/daft/tree/master/examples/classic.py>`_.
+The rendered models below are made with **Daft** and a few lines of code each.
 
-.. image:: https://raw.github.com/dfm/daft/master/images/one_pgm_to_own_them_all.png
+* Here's a model of *anything*
+  (`PNG <https://raw.github.com/davidwhogg/daft/master/images/classic.png>`_;
+  `PDF <https://raw.github.com/davidwhogg/daft/master/images/classic.pdf>`_;
+  `source <https://github.com/davidwhogg/daft/tree/master/examples/classic.py>`_):
+
+  .. image:: https://raw.github.com/davidwhogg/daft/master/images/classic.png
+
+* Here's the same, but with a different rendering of the conditioned nodes
+  (`PNG <https://raw.github.com/davidwhogg/daft/master/images/nogray.png>`_;
+  `PDF <https://raw.github.com/davidwhogg/daft/master/images/nogray.pdf>`_;
+  `source <https://github.com/davidwhogg/daft/tree/master/examples/nogray.py>`_):
+
+  .. image:: https://raw.github.com/davidwhogg/daft/master/images/nogray.png
+
+* Here's a model with words rather than symbols
+  (`PNG <https://raw.github.com/davidwhogg/daft/master/images/wordy.png>`_;
+  `PDF <https://raw.github.com/davidwhogg/daft/master/images/wordy.pdf>`_;
+  `source <https://github.com/davidwhogg/daft/tree/master/examples/wordy.py>`_):
+
+  .. image:: https://raw.github.com/davidwhogg/daft/master/images/wordy.png
+
+* Here's the same, but with no containers for the words
+  (`PNG <https://raw.github.com/davidwhogg/daft/master/images/nocircles.png>`_;
+  `PDF <https://raw.github.com/davidwhogg/daft/master/images/nocircles.pdf>`_;
+  `source <https://github.com/davidwhogg/daft/tree/master/examples/nocircles.py>`_):
+
+  .. image:: https://raw.github.com/davidwhogg/daft/master/images/nocircles.png
+
+* Here's a model for weak gravitational lensing
+  (`PNG <https://raw.github.com/davidwhogg/daft/master/images/weaklensing.png>`_;
+  `PDF <https://raw.github.com/davidwhogg/daft/master/images/weaklensing.pdf>`_;
+  `source <https://github.com/davidwhogg/daft/tree/master/examples/weaklensing.py>`_):
+
+  .. image:: https://raw.github.com/davidwhogg/daft/master/images/weaklensing.png
+
 
 Authors
 -------

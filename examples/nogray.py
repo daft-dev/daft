@@ -27,7 +27,7 @@ if __name__ == "__main__":
     pgm.add_node(daft.Node("w", r"$w_n$", 1, 1))
 
     # Data.
-    pgm.add_node(daft.Node("x", r"$x_n$", 2, 1, observed=True))
+    pgm.add_node(daft.Node("x", r"$x_n$", 2, 1, observed=True, nogray=True))
 
     # Add in the edges.
     pgm.add_edge("alpha", "beta")
@@ -41,5 +41,5 @@ if __name__ == "__main__":
 
     # Render and save.
     pgm.render()
-    pgm.figure.savefig("classic.pdf")
-    pgm.figure.savefig("classic.png", dpi=150)
+    pgm.figure.savefig("nogray.pdf")
+    pgm.figure.savefig("nogray.png", dpi=150)
