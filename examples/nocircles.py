@@ -4,7 +4,7 @@ rc("text", usetex=True)
 import daft
 
 if __name__ == "__main__":
-    pgm = daft.PGM([3.6, 2.7], origin = [1.15, 0.65])
+    pgm = daft.PGM([2.9, 2.4], origin = [1.7, 0.8])
     pps = {"ec": "none"}
     pgm.add_node(daft.Node("cloudy", r"cloudy", 3, 3, plot_params=pps))
     pgm.add_node(daft.Node("rain", r"rain", 2, 2, plot_params=pps))
