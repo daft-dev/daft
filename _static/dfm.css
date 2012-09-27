@@ -1,0 +1,49 @@
+@import url("normalize.css");
+@import url(http://fonts.googleapis.com/css?family=Lato:100,300,700,300italic);
+
+body {
+    font-family: Lato, "Helvetica Neue", Helvetica, sans-serif;
+    font-weight: 300;
+    line-height: 1.55;
+    font-size: 16px;
+    color: #333;
+
+    background: #dbe0df;
+    background: -moz-linear-gradient(left, #dbe0df 0%, #ffffff 50%, #dbe0df 100%);
+    background: -webkit-gradient(linear, left top, right top, color-stop(0%,#dbe0df), color-stop(50%,#ffffff), color-stop(100%,#dbe0df));
+    background: -webkit-linear-gradient(left, #dbe0df 0%,#ffffff 50%,#dbe0df 100%);
+    background: -o-linear-gradient(left, #dbe0df 0%,#ffffff 50%,#dbe0df 100%);
+    background: -ms-linear-gradient(left, #dbe0df 0%,#ffffff 50%,#dbe0df 100%);
+    background: linear-gradient(to right, #dbe0df 0%,#ffffff 50%,#dbe0df 100%);
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#dbe0df', endColorstr='#dbe0df',GradientType=1 );
+}
+
+.document {
+    width: 600px;
+    margin: 0 auto;
+}
+
+.body:first-child h1 {
+    display: none;
+}
+
+.main-logo {
+    padding: 30px 0 10px;
+    border-bottom: 1px dashed #e1e1e1;
+    text-align: center;
+}
+
+.main-logo h1 {
+    font-size: 48px;
+    font-weight: 300;
+    line-height: 0;
+    text-transform: uppercase;
+}
+
+.main-logo h2 {
+    color: #888;
+    font-size: 16px;
+    font-weight: 300;
+    line-height: 1;
+    text-transform: uppercase;
+}
