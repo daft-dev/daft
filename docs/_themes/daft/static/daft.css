@@ -73,6 +73,24 @@ a.headerlink:hover {
     text-transform: uppercase;
 }
 
+#examples h2 {
+    display: none;
+}
+
+#examples {
+    line-height: 0;
+    margin-top: 5px;
+}
+
+#examples img {
+    border: 1px solid #ccc;
+    margin: 5px 10px 5px 0;
+}
+
+#summary h2 {
+    display: none;
+}
+
 .related {
     margin: 10px 0 0;
     padding: 10px 0 0;

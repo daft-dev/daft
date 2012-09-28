@@ -153,7 +153,7 @@ doctest:
 	      "results in $(BUILDDIR)/doctest/output.txt."
 
 GEN_EXAMPLE = python gen_example.py $(1); \
-			  convert -crop 150x150+$(2)+$(3) _static/examples/$(1).png _static/examples/$(1)-thumb.png
+			  convert -crop 175x175+$(2)+$(3) _static/examples/$(1).png _static/examples/$(1)-thumb.png
 
 classic:
 	$(call GEN_EXAMPLE,classic,50,18)
@@ -162,9 +162,12 @@ nogray:
 	$(call GEN_EXAMPLE,nogray,50,18)
 
 nocircles:
-	$(call GEN_EXAMPLE,nocircles,230,115)
+	$(call GEN_EXAMPLE,nocircles,230,100)
 
 wordy:
-	$(call GEN_EXAMPLE,wordy,230,115)
+	$(call GEN_EXAMPLE,wordy,230,105)
 
-examples: classic nogray nocircles wordy
+weaklensing:
+	$(call GEN_EXAMPLE,weaklensing,200,100)
+
+examples: classic nogray nocircles wordy weaklensing
