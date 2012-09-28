@@ -27,6 +27,17 @@ a:hover {
     color: #5a5;
 }
 
+a.headerlink {
+    padding-left: 5px;
+    font-size: 80%;
+    text-decoration: none;
+    color: #bbb;
+}
+
+a.headerlink:hover {
+    color: #aaa;
+}
+
 .document, .footer, .related {
     width: 600px;
     margin: 0 auto;
