@@ -1,4 +1,12 @@
-#!/usr/bin/env python
+"""
+An undirected graph
+===================
+
+This makes the simple point that you don't have to have directions on
+your edges; you can have *undirected* graphs.  (Also, the nodes don't
+need to have labels!)
+
+"""
 
 import itertools
 import numpy as np
