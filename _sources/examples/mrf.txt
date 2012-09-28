@@ -1,13 +1,23 @@
 .. _mrf:
 
-Mrf
-========
+
+An undirected graph
+===================
 
 .. figure:: /_static/examples/mrf.png
 
+
+An undirected graph
+===================
+
+This makes the simple point that you don't have to have directions on
+your edges; you can have *undirected* graphs.  (Also, the nodes don't
+need to have labels!)
+
+
+
 ::
 
-    #!/usr/bin/env python
     
     import itertools
     import numpy as np

@@ -7,7 +7,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Mrf &mdash; Daft 0.0.1 documentation</title>
+    <title>An undirected graph &mdash; Daft 0.0.2 documentation</title>
     
     <link rel="stylesheet" href="../../_static/daft.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
@@ -15,7 +15,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
-        VERSION:     '0.0.1',
+        VERSION:     '0.0.2',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '',
         HAS_SOURCE:  true
@@ -25,7 +25,7 @@
     <script type="text/javascript" src="../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../_static/doctools.js"></script>
     <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-    <link rel="top" title="Daft 0.0.1 documentation" href="../../" />
+    <link rel="top" title="Daft 0.0.2 documentation" href="../../" />
      
 
     <link rel="shortcut icon" href="../../_static/favicon.png">
@@ -47,14 +47,18 @@
         <div class="bodywrapper">
           <div class="body">
             
-  <div class="section" id="mrf">
-<span id="id1"></span><h1>Mrf<a class="headerlink" href="#mrf" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="an-undirected-graph">
+<span id="mrf"></span><h1>An undirected graph<a class="headerlink" href="#an-undirected-graph" title="Permalink to this headline">¶</a></h1>
 <div class="figure">
 <img alt="../../_images/mrf.png" src="../../_images/mrf.png" />
 </div>
-<div class="highlight-python"><div class="highlight"><pre><span class="c">#!/usr/bin/env python</span>
-
-<span class="kn">import</span> <span class="nn">itertools</span>
+</div>
+<div class="section" id="id1">
+<h1>An undirected graph<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h1>
+<p>This makes the simple point that you don&#8217;t have to have directions on
+your edges; you can have <em>undirected</em> graphs.  (Also, the nodes don&#8217;t
+need to have labels!)</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">itertools</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
 <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="mi">42</span><span class="p">)</span>
 
