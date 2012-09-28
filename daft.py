@@ -33,14 +33,15 @@ class PGM(object):
     def __init__(self, shape, origin=[0, 0],
             grid_unit=2, node_unit=1,
             observed_style="shaded",
-            line_width=1):
+            line_width=1, node_ec="k"):
         self._nodes = {}
         self._edges = []
         self._plates = []
 
         self._ctx = _rendering_context(shape=shape, origin=origin,
                 grid_unit=grid_unit, node_unit=node_unit,
-                observed_style=observed_style, line_width=line_width)
+                observed_style=observed_style, line_width=line_width,
+                node_ec=node_ec)
 
     def add_node(self, node):
         """
@@ -189,7 +190,9 @@ class Node(object):
 
         p = dict(self.plot_params)
         p["lw"] = p.get("lw", ctx.line_width)
-        p["ec"] = p.get("ec", "k")
+        # ec / edgecolor hack to fix some weird bug
+        p["ec"] = p.get("ec", ctx.node_ec)
+        p["edgecolor"] = p.get("ec", ctx.node_ec)
         p["fc"] = p.get("fc", "none")
         p["alpha"] = p.get("alpha", 1)
 
@@ -312,8 +315,8 @@ class Edge(object):
             p["head_width"] = p.get("head_width", 0.1)
 
             # TODO: make this match the "line_width" property of the context.
-            p["width"] = p.get("width", 0.1)
-            # p["width"] = p.get("width", (ctx.line_width - 1) / ctx.grid_unit)
+            p["width"] = 0
+            p["linewidth"] = p.get("lw", ctx.line_width)
 
             # Build an arrow.
             ar = FancyArrow(*self._get_coords(ctx),
@@ -434,6 +437,7 @@ class _rendering_context(object):
         self.figsize = self.grid_unit * self.shape / 2.54
 
         self.node_unit = kwargs.get("node_unit", 1.0)
+        self.node_ec = kwargs.get("node_ec", "k")
 
         # Initialize the figure to ``None`` to handle caching later.
         self._figure = None
