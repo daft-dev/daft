@@ -27,9 +27,10 @@ except os.error:
 example_template = """.. _{example}:
 
 {title}
-========
 
 .. figure:: /_static/examples/{example}.png
+
+{doc}
 
 ::
 
@@ -45,20 +46,30 @@ if __name__ == "__main__":
 
     fn = sys.argv[1]
 
-    # Filenames.
+    # Run the code.
     src = open(os.path.join(example_dir, fn + ".py")).read()
-    fmt_src = "\n".join(["    " + l for l in src.split("\n")])
-    img_path = os.path.join(img_out_dir, fn + ".png")
+    exec src
 
     # Generate the RST source file.
-    rst = example_template.format(title=fn.title(), example=fn, src=fmt_src,
-            img_path=img_path)
+    src = src.split("\n")
+    if __doc__ is None:
+        title = fn.title() + "\n" + "=" * len(fn)
+        doc = ""
+    else:
+        doc = __doc__.split("\n")
+        title = "\n".join(doc[:3])
+        doc = "\n".join(doc)
+        src = src[len(__doc__.split("\n")):]
 
+    fmt_src = "\n".join(["    " + l for l in src])
+    img_path = os.path.join(img_out_dir, fn + ".png")
+
+    rst = example_template.format(title=title, doc=doc, example=fn,
+            src=fmt_src, img_path=img_path)
+
+    # Write the RST file.
     with open(os.path.join(out_dir, fn + ".rst"), "w") as f:
         f.write(rst)
-
-    # Run the code.
-    exec src
 
     # Remove the generated plots.
     try:

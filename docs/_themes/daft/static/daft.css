@@ -154,10 +154,3 @@ input.searchfield:focus {
     border: 1px solid #DDD;
 }
 
-.highlight {
-    font-size: 11px;
-    background: none;
-    border-left: 3px solid #ccc;
-    padding-left: 7px;
-    margin-left: -10px;
-}

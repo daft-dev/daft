@@ -24,11 +24,14 @@ import daft
 setup(
     name="daft",
     version=daft.__version__,
-    author="David W. Hogg & Daniel Foreman-Mackey",
-    author_email="danfm@nyu.edu",
-    py_modules=["daft"],
     description="PGM rendering at its finest.",
     long_description=open("README.rst").read(),
+    author="David W. Hogg & Daniel Foreman-Mackey",
+    author_email="danfm@nyu.edu",
+    url="http://daft-pgm.org",
+    py_modules=["daft"],
+    package_data={"": ["LICENSE.rst"]},
+    include_package_data=True,
     install_requires=[
                         "numpy",
                         "matplotlib"

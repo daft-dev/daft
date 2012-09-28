@@ -63,7 +63,7 @@ class PGM(object):
 
     def add_edge(self, name1, name2, directed=None, **kwargs):
         """
-        Construct an :class:`Edge` between two named :class:`Node`s.
+        Construct an :class:`Edge` between two named :class:`Node` objects.
 
         :param name1:
             The name identifying the first node.
@@ -95,7 +95,7 @@ class PGM(object):
 
     def render(self):
         """
-        Render the :class:`Plate`s, :class:`Edge`s and :class:`Node`s in
+        Render the :class:`Plate`, :class:`Edge` and :class:`Node` objects in
         the model. This will create a new figure with the correct dimensions
         and plot the model in this area.
 
@@ -132,8 +132,8 @@ class Node(object):
         The y-coordinate of the node.
 
     :param diameter: (optional)
-        The diameter (or height) of the node measured in ``node_unit``s as
-        defined by the :class:`PGM` object.
+        The diameter (or height) of the node measured in multiples of
+        ``node_unit`` as defined by the :class:`PGM` object.
 
     :param aspect: (optional)
         The aspect ratio width/height for elliptical nodes; default 1.
@@ -251,7 +251,7 @@ class Node(object):
 
 class Edge(object):
     """
-    An edge between two :class:`Node`s.
+    An edge between two :class:`Node` objects.
 
     :param node1:
         The first :class:`Node`.

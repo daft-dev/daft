@@ -1,4 +1,15 @@
-#!/usr/bin/env python
+"""
+Alternative Observed Node Styles
+================================
+
+.. module:: daft
+
+This model is the same as `the classic </examples/classic>`_ model but the
+"observed" :class:`Node` is indicated by a double outline instead of shading.
+This particular example uses the ``inner`` style but ``outer`` is also an
+option for a different look.
+
+"""
 
 from matplotlib import rc
 rc("font", family="serif", size=12)
@@ -6,7 +17,7 @@ rc("text", usetex=True)
 
 import daft
 
-pgm = daft.PGM([2.3, 2.05], origin=[0.3,0.3], observed_style="inner")
+pgm = daft.PGM([2.3, 2.05], origin=[0.3, 0.3], observed_style="inner")
 
 # Hierarchical parameters.
 pgm.add_node(daft.Node("alpha", r"$\alpha$", 0.5, 2, fixed=True))

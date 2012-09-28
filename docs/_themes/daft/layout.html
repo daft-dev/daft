@@ -5,9 +5,10 @@
 {% endif %}
 
 {%- block extrahead %}
-
     {{ super() }}
+
     <link rel="shortcut icon" href="{{ pathto('_static/favicon.png', 1) }}">
+    <link rel="stylesheet" href="{{ pathto('_static/code.css', 1) }}" type="text/css" />
 
 {% endblock %}
 

@@ -1,4 +1,12 @@
-#!/usr/bin/env python
+"""
+The Quintessential PGM
+======================
+
+This is a demonstration of a very common structure found in graphical models.
+It has been rendered using Daft's default settings for all the parameters
+and it shows off how much beauty is baked in by default.
+
+"""
 
 from matplotlib import rc
 rc("font", family="serif", size=12)

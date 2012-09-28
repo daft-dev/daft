@@ -1,13 +1,23 @@
 .. _classic:
 
-Classic
-========
+
+The quintessential PGM
+======================
 
 .. figure:: /_static/examples/classic.png
 
+
+The quintessential PGM
+======================
+
+This is a demonstration of a very common structure found in graphical models.
+It has been rendered using Daft's default settings for all the parameters
+and it shows off how much beauty is baked in by default.
+
+
+
 ::
 
-    #!/usr/bin/env python
     
     from matplotlib import rc
     rc("font", family="serif", size=12)

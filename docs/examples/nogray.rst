@@ -1,16 +1,26 @@
 .. _nogray:
 
-Nogray
-========
+
+Alternative Observed Node Styles
+================================
 
 .. figure:: /_static/examples/nogray.png
 
+
+Alternative Observed Node Styles
+================================
+
+.. module:: daft
+
+This model is the same as `the classic </examples/classic>`_ model but the
+"observed" :class:`Node` is indicated by a double outline instead of shading.
+This particular example uses the ``inner`` style but ``outer`` is also an
+option for a different look.
+
+
+
 ::
 
-    #!/usr/bin/env python
-    """
-    One PGM to own them all.
-    """
     
     from matplotlib import rc
     rc("font", family="serif", size=12)
@@ -18,7 +28,6 @@ Nogray
     
     import daft
     
-    # Instantiate the PGM.
     pgm = daft.PGM([2.3, 2.05], origin=[0.3, 0.3], observed_style="inner")
     
     # Hierarchical parameters.
