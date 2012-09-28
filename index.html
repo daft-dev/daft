@@ -26,7 +26,7 @@
     <script type="text/javascript" src="_static/doctools.js"></script>
     <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="top" title="Daft 0.0.1 documentation" href="#" />
-    <link rel="next" title="Installation" href="installation/" />
+    <link rel="next" title="API" href="api/" />
      
 
     <link rel="shortcut icon" href="_static/favicon.png">
@@ -61,30 +61,53 @@
 </div>
 <div class="section" id="summary">
 <h2>Summary<a class="headerlink" href="#summary" title="Permalink to this headline">¶</a></h2>
-<p><strong>Daft</strong> renders probabilistic graphical models (PGMs) to any output format
-your <a class="reference external" href="http://matplotlib.org/">matplotlib</a> backend supports. This includes
-PDF, PNG and many other formats. Both directed and undirected graphs are
-supported. You can build your model using a Python script with a few trivial
-commands and then render it beautifully for publication in a journal or on
-the internet.</p>
-<p><strong>Daft</strong> is particularly well suited for rendering graphs to be included in
-LaTeX documents, even documents with non-trivial symbol definitions or
-macros.</p>
+<p><strong>Daft</strong> is a Python package that uses <a class="reference external" href="http://matplotlib.org/">matplotlib</a>
+to render pixel-perfect <em>probabilistic graphical models</em> for publication
+in a journal or on the internet. With a short Python script and an intuitive
+model-building syntax you can design directed and undirected graphs and save
+them in any formats that matplotlib supports.</p>
 </div>
-<div class="section" id="user-guide">
-<h2>User Guide<a class="headerlink" href="#user-guide" title="Permalink to this headline">¶</a></h2>
-<div class="toctree-wrapper compound">
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="installation/">Installation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="quickstart/">Quckstart</a></li>
-</ul>
+<div class="section" id="installation">
+<h2>Installation<a class="headerlink" href="#installation" title="Permalink to this headline">¶</a></h2>
+<p>Installing the most recent stable version of Daft should be pretty easy
+if you use <a class="reference external" href="http://www.pip-installer.org">pip</a>:</p>
+<div class="highlight-python"><pre>pip install daft</pre>
 </div>
+<p>Otherwise, you can download the source (<a class="reference external" href="https://github.com/dfm/daft/tarball/master">tar</a>, <a class="reference external" href="https://github.com/dfm/daft/zipball/master">zip</a>) and run:</p>
+<div class="highlight-python"><pre>python setup.py install</pre>
+</div>
+<p>in the root directory.</p>
+<p>Daft only depends on <a class="reference external" href="http://matplotlib.org/">matplotlib</a> and
+<a class="reference external" href="http://numpy.scipy.org">numpy</a>. These are standard components of the
+scientific Python stack but if you don&#8217;t already have them installed <tt class="docutils literal"><span class="pre">pip</span></tt>
+will try to install them for you but sometimes it&#8217;s easier to do that part
+yourself.</p>
+</div>
+<div class="section" id="contributing">
+<h2>Contributing<a class="headerlink" href="#contributing" title="Permalink to this headline">¶</a></h2>
+<p>For the hackers in the house, development happens on <a class="reference external" href="https://github.com/dfm/daft">Github</a> and we welcome pull requests. In particular,
+we&#8217;d love to see examples of how you&#8217;re using Daft in your work.</p>
+</div>
+<div class="section" id="license">
+<h2>License<a class="headerlink" href="#license" title="Permalink to this headline">¶</a></h2>
+<p><em>Copyright 2012 Daniel Foreman-Mackey, David W. Hogg and contributors.</em></p>
+<p><strong>Daft</strong> is free software made available under the <em>MIT License</em>. For details
+see <a class="reference external" href="https://raw.github.com/dfm/daft/master/LICENSE.rst">the LICENSE file</a>.</p>
+<p>If you use Daft in academic projects, acknowledgements are greatly
+appreciated.</p>
 </div>
 <div class="section" id="api">
 <h2>API<a class="headerlink" href="#api" title="Permalink to this headline">¶</a></h2>
 <div class="toctree-wrapper compound">
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="api/">API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api/">API</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="api/#the-pgm-object">The PGM Object</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/#nodes">Nodes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/#edges">Edges</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/#plates">Plates</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/#the-rendering-context">The Rendering Context</a></li>
+</ul>
+</li>
 </ul>
 </div>
 </div>
@@ -99,7 +122,7 @@ macros.</p>
       <div class="sphinxsidebar">
         <div class="sphinxsidebarwrapper"><div class="related">
     <div class="next">
-        <a href="installation/" title="next chapter">Installation &raquo;</a>
+        <a href="api/" title="next chapter">API &raquo;</a>
     </div>
 </div><div id="searchbox" style="display: none">
     <form class="search" action="search/" method="get">

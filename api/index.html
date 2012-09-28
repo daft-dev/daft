@@ -26,7 +26,7 @@
     <script type="text/javascript" src="../_static/doctools.js"></script>
     <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="top" title="Daft 0.0.1 documentation" href="../" />
-    <link rel="prev" title="Quckstart" href="../quickstart/" />
+    <link rel="prev" title="Daft" href="../" />
      
 
     <link rel="shortcut icon" href="../_static/favicon.png">
@@ -50,7 +50,13 @@
             
   <div class="section" id="api">
 <span id="id1"></span><h1>API<a class="headerlink" href="#api" title="Permalink to this headline">¶</a></h1>
-<span class="target" id="module-daft"></span><dl class="class">
+<span class="target" id="module-daft"></span><div class="section" id="the-pgm-object">
+<h2>The PGM Object<a class="headerlink" href="#the-pgm-object" title="Permalink to this headline">¶</a></h2>
+<p>All daft scripts will start with the creation of a <a class="reference internal" href="#daft.PGM" title="daft.PGM"><tt class="xref py py-class docutils literal"><span class="pre">PGM</span></tt></a> object. This
+object contains a list of <a class="reference internal" href="#daft.Node" title="daft.Node"><tt class="xref py py-class docutils literal"><span class="pre">Node</span></tt></a> objects and <a class="reference internal" href="#daft.Edge" title="daft.Edge"><tt class="xref py py-class docutils literal"><span class="pre">Edge</span></tt></a> objects
+connecting them. You can also specify rendering parameters and other default
+parameters when you initialize your <a class="reference internal" href="#daft.PGM" title="daft.PGM"><tt class="xref py py-class docutils literal"><span class="pre">PGM</span></tt></a>.</p>
+<dl class="class">
 <dt id="daft.PGM">
 <em class="property">class </em><tt class="descclassname">daft.</tt><tt class="descname">PGM</tt><big>(</big><em>shape, origin=[0, 0], grid_unit=2, node_unit=1, observed_style='shaded', line_width=1, node_ec='k', directed=True</em><big>)</big><a class="headerlink" href="#daft.PGM" title="Permalink to this definition">¶</a></dt>
 <dd><p>The base object for building a graphical model representation.</p>
@@ -78,7 +84,7 @@ Should the edges be directed by default?</li>
 <dl class="method">
 <dt id="daft.PGM.add_edge">
 <tt class="descname">add_edge</tt><big>(</big><em>name1</em>, <em>name2</em>, <em>directed=None</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#daft.PGM.add_edge" title="Permalink to this definition">¶</a></dt>
-<dd><p>Construct an <a class="reference internal" href="#daft.Edge" title="daft.Edge"><tt class="xref py py-class docutils literal"><span class="pre">Edge</span></tt></a> between two named :class:<a href="#id2"><span class="problematic" id="id3">`</span></a>Node`s.</p>
+<dd><p>Construct an <a class="reference internal" href="#daft.Edge" title="daft.Edge"><tt class="xref py py-class docutils literal"><span class="pre">Edge</span></tt></a> between two named <a class="reference internal" href="#daft.Node" title="daft.Node"><tt class="xref py py-class docutils literal"><span class="pre">Node</span></tt></a> objects.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -119,13 +125,16 @@ Should this be a directed edge?</li>
 <dl class="method">
 <dt id="daft.PGM.render">
 <tt class="descname">render</tt><big>(</big><big>)</big><a class="headerlink" href="#daft.PGM.render" title="Permalink to this definition">¶</a></dt>
-<dd><p>Render the :class:<a href="#id4"><span class="problematic" id="id5">`</span></a>Plate`s, :class:<a href="#id6"><span class="problematic" id="id7">`</span></a>Edge`s and :class:<a href="#id8"><span class="problematic" id="id9">`</span></a>Node`s in
+<dd><p>Render the <a class="reference internal" href="#daft.Plate" title="daft.Plate"><tt class="xref py py-class docutils literal"><span class="pre">Plate</span></tt></a>, <a class="reference internal" href="#daft.Edge" title="daft.Edge"><tt class="xref py py-class docutils literal"><span class="pre">Edge</span></tt></a> and <a class="reference internal" href="#daft.Node" title="daft.Node"><tt class="xref py py-class docutils literal"><span class="pre">Node</span></tt></a> objects in
 the model. This will create a new figure with the correct dimensions
 and plot the model in this area.</p>
 </dd></dl>
 
 </dd></dl>
 
+</div>
+<div class="section" id="nodes">
+<h2>Nodes<a class="headerlink" href="#nodes" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="daft.Node">
 <em class="property">class </em><tt class="descclassname">daft.</tt><tt class="descname">Node</tt><big>(</big><em>name, content, x, y, scale=1, aspect=1.0, observed=False, fixed=False, offset=[0, 0], plot_params={}</em><big>)</big><a class="headerlink" href="#daft.Node" title="Permalink to this definition">¶</a></dt>
@@ -140,8 +149,8 @@ and plot the model in this area.</p>
 <li><strong>x</strong> &#8211; The x-coordinate of the node in <em>model units</em>.</li>
 <li><strong>y</strong> &#8211; The y-coordinate of the node.</li>
 <li><strong>diameter</strong> &#8211; (optional)
-The diameter (or height) of the node measured in <a href="#id10"><span class="problematic" id="id11">``</span></a>node_unit``s as
-defined by the <a class="reference internal" href="#daft.PGM" title="daft.PGM"><tt class="xref py py-class docutils literal"><span class="pre">PGM</span></tt></a> object.</li>
+The diameter (or height) of the node measured in multiples of
+<tt class="docutils literal"><span class="pre">node_unit</span></tt> as defined by the <a class="reference internal" href="#daft.PGM" title="daft.PGM"><tt class="xref py py-class docutils literal"><span class="pre">PGM</span></tt></a> object.</li>
 <li><strong>aspect</strong> &#8211; (optional)
 The aspect ratio width/height for elliptical nodes; default 1.</li>
 <li><strong>observed</strong> &#8211; (optional)
@@ -168,7 +177,7 @@ A dictionary of parameters to pass to the
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>ctx</strong> &#8211; The <tt class="xref py py-class docutils literal"><span class="pre">_rendering_context</span></tt> object.</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>ctx</strong> &#8211; The <a class="reference internal" href="#daft._rendering_context" title="daft._rendering_context"><tt class="xref py py-class docutils literal"><span class="pre">_rendering_context</span></tt></a> object.</td>
 </tr>
 </tbody>
 </table>
@@ -176,10 +185,13 @@ A dictionary of parameters to pass to the
 
 </dd></dl>
 
+</div>
+<div class="section" id="edges">
+<h2>Edges<a class="headerlink" href="#edges" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="daft.Edge">
 <em class="property">class </em><tt class="descclassname">daft.</tt><tt class="descname">Edge</tt><big>(</big><em>node1</em>, <em>node2</em>, <em>directed=True</em>, <em>plot_params={}</em><big>)</big><a class="headerlink" href="#daft.Edge" title="Permalink to this definition">¶</a></dt>
-<dd><p>An edge between two :class:<a href="#id12"><span class="problematic" id="id13">`</span></a>Node`s.</p>
+<dd><p>An edge between two <a class="reference internal" href="#daft.Node" title="daft.Node"><tt class="xref py py-class docutils literal"><span class="pre">Node</span></tt></a> objects.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -218,6 +230,9 @@ rendering.</li>
 
 </dd></dl>
 
+</div>
+<div class="section" id="plates">
+<h2>Plates<a class="headerlink" href="#plates" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="daft.Plate">
 <em class="property">class </em><tt class="descclassname">daft.</tt><tt class="descname">Plate</tt><big>(</big><em>rect, label=None, label_offset=[5, 5], shift=0, rect_params={}</em><big>)</big><a class="headerlink" href="#daft.Plate" title="Permalink to this definition">¶</a></dt>
@@ -264,6 +279,40 @@ A dictionary of parameters to pass to the
 </dd></dl>
 
 </div>
+<div class="section" id="the-rendering-context">
+<h2>The Rendering Context<a class="headerlink" href="#the-rendering-context" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="daft._rendering_context">
+<em class="property">class </em><tt class="descclassname">daft.</tt><tt class="descname">_rendering_context</tt><big>(</big><em>**kwargs</em><big>)</big><a class="headerlink" href="#daft._rendering_context" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>shape</strong> &#8211; The number of rows and columns in the grid.</li>
+<li><strong>origin</strong> &#8211; The coordinates of the bottom left corner of the plot.</li>
+<li><strong>grid_unit</strong> &#8211; The size of the grid spacing measured in centimeters.</li>
+<li><strong>node_unit</strong> &#8211; The base unit for the node size. This is a number in centimeters that
+sets the default diameter of the nodes.</li>
+<li><strong>node_ec</strong> &#8211; (optional)
+The default edge color for the nodes.</li>
+<li><strong>directed</strong> &#8211; (optional)
+Should the edges be directed by default?</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="method">
+<dt id="daft._rendering_context.convert">
+<tt class="descname">convert</tt><big>(</big><em>*xy</em><big>)</big><a class="headerlink" href="#daft._rendering_context.convert" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert from model coordinates to plot coordinates.</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+</div>
 
 
           </div>
@@ -274,7 +323,7 @@ A dictionary of parameters to pass to the
       <div class="sphinxsidebar">
         <div class="sphinxsidebarwrapper"><div class="related">
     <div class="previous">
-        <a href="../quickstart/" title="previous chapter">&laquo; Quckstart</a>
+        <a href="../" title="previous chapter">&laquo; Daft</a>
     </div>
 </div><div id="searchbox" style="display: none">
     <form class="search" action="../search/" method="get">
