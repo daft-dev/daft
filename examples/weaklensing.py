@@ -1,3 +1,16 @@
+"""
+A model for weak lensing
+========================
+
+This is (**Daft** co-author) Hogg's model for the obsevational
+cosmology method known as *weak gravitational lensing*, if that method
+were properly probabilistic (which it usually isn't).  Hogg put the
+model here for one very important reason: *Because he can*.  Oh, and
+it demonstrates that you can represent non-trivial scientific projects
+with **Daft**.
+
+"""
+
 from matplotlib import rc
 rc("font", family="serif", size=12)
 rc("text", usetex=True)
