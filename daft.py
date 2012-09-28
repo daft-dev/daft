@@ -194,22 +194,22 @@ class Node(object):
         p["ec"] = p.get("ec", ctx.node_ec)
         p["edgecolor"] = p.get("ec", ctx.node_ec)
         p["fc"] = p.get("fc", "none")
+        fc = p["fc"]
         p["alpha"] = p.get("alpha", 1)
 
         # Set up an observed node.
+        # Note fc INSANITY.
         if self.observed:
             # Update the plotting parameters depending on the style of
             # observed node.
-            fc = p["fc"]
-            alpha = p["alpha"]
             d = float(diameter)
             if ctx.observed_style == "shaded":
-                p["fc"] = "k"
-                p["alpha"] = 0.3 * alpha
+                p["fc"] = "0.7"
             elif ctx.observed_style == "outer":
                 d = 1.1 * diameter
-            elif ctx.observed_style == "innter":
+            elif ctx.observed_style == "inner":
                 d = 0.9 * diameter
+                p["fc"] = fc
 
             # Draw the background ellipse.
             bg = Ellipse(xy=ctx.convert(self.x, self.y),
@@ -219,12 +219,16 @@ class Node(object):
 
             # Reset the face color.
             p["fc"] = fc
-            p["alpha"] = alpha
 
         # Draw the foreground ellipse.
+        if ctx.observed_style == "inner" and not self.fixed:
+            p["fc"] = "none"
         el = Ellipse(xy=ctx.convert(self.x, self.y),
                      width=diameter * self.aspect, height=diameter, **p)
         ax.add_artist(el)
+
+        # Reset the face color.
+        p["fc"] = fc
 
         # Annotate the node.
         ax.annotate(self.content, ctx.convert(self.x, self.y),
