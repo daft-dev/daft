@@ -151,3 +151,20 @@ doctest:
 	$(SPHINXBUILD) -b doctest $(ALLSPHINXOPTS) $(BUILDDIR)/doctest
 	@echo "Testing of doctests in the sources finished, look at the " \
 	      "results in $(BUILDDIR)/doctest/output.txt."
+
+GEN_EXAMPLE = python gen_example.py $(1); \
+			  convert -crop 150x150+$(2)+$(3) _static/examples/$(1).png _static/examples/$(1)-thumb.png
+
+classic:
+	$(call GEN_EXAMPLE,classic,50,18)
+
+nogray:
+	$(call GEN_EXAMPLE,nogray,50,18)
+
+nocircles:
+	$(call GEN_EXAMPLE,nocircles,230,115)
+
+wordy:
+	$(call GEN_EXAMPLE,wordy,230,115)
+
+examples: classic nogray nocircles wordy
