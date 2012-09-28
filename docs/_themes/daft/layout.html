@@ -8,12 +8,13 @@
 {% endblock %}
 
 {%- block relbar1 %}{% endblock %}
+{%- block relbar2 %}{% endblock %}
 
 {%- block document %}
 
 <div class="main-logo">
-    <h1>Daft</h1>
-    <h2>Beautifully rendered probabilistic graphical models.</h2>
+    <h1><a href="{{ pathto(master_doc) }}">{{ project }}</a></h1>
+    <h2>{{ theme_tagline }}</h2>
 </div>
 
 {{ super() }}

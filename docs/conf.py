@@ -59,12 +59,14 @@ pygments_style = "sphinx"
 
 # The theme to use for HTML and HTML Help pages.  See the documentation for
 # a list of builtin themes.
-html_theme = "dfm"
+html_theme = "daft"
 
 # Theme options are theme-specific and customize the look and feel of a theme
 # further.  For a list of options available for each theme, see the
 # documentation.
-#html_theme_options = {}
+html_theme_options = {
+        "tagline": "Beautifully rendered probabilistic graphical models.",
+    }
 
 # Add any paths that contain custom themes here, relative to this directory.
 html_theme_path = ["_themes"]
@@ -99,7 +101,9 @@ html_static_path = ["_static"]
 #html_use_smartypants = True
 
 # Custom sidebar templates, maps document names to template names.
-#html_sidebars = {}
+html_sidebars = {
+            "**": ["relations.html", "searchbox.html"]
+        }
 
 # Additional templates that should be rendered to pages, maps page names to
 # template names.
@@ -115,7 +119,7 @@ html_static_path = ["_static"]
 #html_split_index = False
 
 # If true, links to the reST sources are added to the pages.
-#html_show_sourcelink = True
+html_show_sourcelink = False
 
 # If true, "Created using Sphinx" is shown in the HTML footer. Default is True.
 #html_show_sphinx = True

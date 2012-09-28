@@ -11,3 +11,22 @@ the internet.
 **Daft** is particularly well suited for rendering graphs to be included in
 LaTeX documents, even documents with non-trivial symbol definitions or
 macros.
+
+
+User Guide
+----------
+
+.. toctree::
+   :maxdepth: 2
+
+   installation
+   quickstart
+
+
+API
+---
+
+.. toctree::
+   :maxdepth: 2
+
+   api
