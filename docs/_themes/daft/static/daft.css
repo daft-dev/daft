@@ -84,7 +84,11 @@ a.headerlink:hover {
 
 #examples img {
     border: 1px solid #ccc;
-    margin: 5px 10px 5px 0;
+    margin: 5px 0 5px 0;
+}
+
+#examples a:not(:nth-of-type(3n)) img {
+    margin-right: 9px;
 }
 
 #summary h2 {

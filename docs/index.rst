@@ -7,6 +7,9 @@ Examples
 .. image:: _static/examples/classic-thumb.png
    :target: examples/classic
 
+.. image:: _static/examples/mrf-thumb.png
+   :target: examples/mrf
+
 .. image:: _static/examples/wordy-thumb.png
    :target: examples/wordy
 
