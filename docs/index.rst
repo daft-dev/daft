@@ -13,6 +13,9 @@ LaTeX documents, even documents with non-trivial symbol definitions or
 macros.
 
 
+`examples/classic`_
+
+
 User Guide
 ----------
 

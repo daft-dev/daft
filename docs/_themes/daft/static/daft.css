@@ -123,3 +123,19 @@ input.searchfield:focus {
     font-size: 11px;
     padding: 20px 0;
 }
+
+.figure {
+    background: white;
+    text-align: center;
+    padding: 15px;
+    margin: 15px 0;
+    border: 1px solid #DDD;
+}
+
+.highlight {
+    font-size: 11px;
+    background: none;
+    border-left: 3px solid #ccc;
+    padding-left: 7px;
+    margin-left: -10px;
+}
