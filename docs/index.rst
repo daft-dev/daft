@@ -1,3 +1,6 @@
+Daft
+====
+
 **Daft** renders probabilistic graphical models (PGMs) to any output format
 your `matplotlib <http://matplotlib.org/>`_ backend supports. This includes
 PDF, PNG and many other formats. Both directed and undirected graphs are
