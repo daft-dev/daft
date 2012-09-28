@@ -6,7 +6,7 @@ __version__ = "0.0.1"
 
 import matplotlib.pyplot as plt
 from matplotlib.patches import Ellipse
-from matplotlib.patches import FancyArrow as Arrow
+from matplotlib.patches import FancyArrow
 from matplotlib.patches import Rectangle as Rectangle
 
 import numpy as np
@@ -25,16 +25,22 @@ class PGM(object):
     :param grid_size: (optional)
         The size of the grid spacing measured in centimeters.
 
-    """
-    def __init__(self, shape, origin=[0, 0], grid_size=2):
-        self.shape = np.array(shape)
-        self.origin = np.array(origin)
-        self.grid_size = grid_size
-        self._figsize = grid_size * self.shape / 2.54
+    :param node_unit: (optional)
+        The base unit for the node size. This is a number in centimeters that
+        sets the default diameter of the nodes.
 
+    """
+    def __init__(self, shape, origin=[0, 0],
+            grid_unit=2, node_unit=1,
+            observed_style="shaded",
+            line_width=1):
         self._nodes = {}
         self._edges = []
         self._plates = []
+
+        self._ctx = _rendering_context(shape=shape, origin=origin,
+                grid_unit=grid_unit, node_unit=node_unit,
+                observed_style=observed_style, line_width=line_width)
 
     def add_node(self, node):
         """
@@ -82,34 +88,19 @@ class PGM(object):
         and plot the model in this area.
 
         """
-        self.figure = plt.figure(figsize=self._figsize)
-        self.ax = self.figure.add_axes((0, 0, 1, 1), frameon=False,
-                xticks=[], yticks=[])
-
-        # Set the bounds of the plot.
-        l0 = self._convert_coords(*self.origin)
-        l1 = self._convert_coords(*(self.origin + self.shape))
-        self.ax.set_xlim(l0[0], l1[0])
-        self.ax.set_ylim(l0[1], l1[1])
+        self.figure = self._ctx.figure()
+        self.ax = self._ctx.ax()
 
         for plate in self._plates:
-            plate.render(self.ax, self._convert_coords)
+            plate.render(self._ctx)
 
         for edge in self._edges:
-            edge.render(self.ax, self._convert_coords)
+            edge.render(self._ctx)
 
         for name, node in self._nodes.iteritems():
-            node.render(self.ax, self._convert_coords)
+            node.render(self._ctx)
 
         return self.ax
-
-    def _convert_coords(self, *xy):
-        """
-        Convert from model coordinates to plot coordinates.
-
-        """
-        assert len(xy) == 2
-        return self.grid_size * (np.atleast_1d(xy) - self.origin)
 
 
 class Node(object):
@@ -129,7 +120,8 @@ class Node(object):
         The y-coordinate of the node.
 
     :param diameter: (optional)
-        The diameter (or height) of the node measured in centimeters.
+        The diameter (or height) of the node measured in ``node_unit``s as
+        defined by the :class:`PGM` object.
 
     :param aspect: (optional)
         The aspect ratio width/height for elliptical nodes; default 1.
@@ -150,60 +142,76 @@ class Node(object):
         :class:`matplotlib.patches.Ellipse` constructor.
 
     """
-    def __init__(self, name, content, x, y, diameter=3, aspect=1.,
-                 observed=False, nogray=False, fixed=False,
+    def __init__(self, name, content, x, y, scale=1, aspect=1.,
+                 observed=False, fixed=False,
                  offset=[0, 0], plot_params={}):
-        assert not (observed and fixed)
+        # Node style.
+        assert not (observed and fixed), \
+                "A node cannot be both 'observed' and 'fixed'."
+        self.observed = observed
+        self.fixed = fixed
+
+        # Metadata.
         self.name = name
         self.content = content
-        self.x = x
-        self.y = y
-        self.diameter = diameter / 2.54
+
+        # Coordinates and dimensions.
+        self.x, self.y = x, y
+        self.scale = scale
         self.aspect = aspect
-        self.observed = observed
-        self.nogray = nogray
-        self.offset = 1 * offset # holy crap
-        print self.offset
+
+        # Display parameters.
         self.plot_params = dict(plot_params)
-        self.fixed = fixed
+
+        # Text parameters.
+        self.offset = list(offset)
         self.va = "center"
+
+        # TODO: Make this depend on the node/grid units.
         if self.fixed:
             self.offset[1] += 6
-            self.diameter = self.diameter / 6.
+            self.scale /= 6.
             self.va = "bottom"
             self.plot_params["fc"] = "k"
 
-    def render(self, ax, conv):
+    def render(self, ctx):
         """
         Render the node.
 
-        :param ax:
-            The :class:`matplotlib.Axes` object to plot into.
-
-        :param conv:
-            A callable coordinate conversion.
+        :param ctx:
+            The :class:`_rendering_context` object.
 
         """
+        # Get the axes and default plotting parameters from the rendering
+        # context.
+        ax = ctx.ax()
+        diameter = ctx.node_unit * self.scale
+
         p = dict(self.plot_params)
+        p["lw"] = p.get("lw", ctx.line_width)
         p["ec"] = p.get("ec", "k")
         p["fc"] = p.get("fc", "none")
         p["alpha"] = p.get("alpha", 1)
 
         # Set up an observed node.
         if self.observed:
+            # Update the plotting parameters depending on the style of
+            # observed node.
             fc = p["fc"]
             alpha = p["alpha"]
-            if not self.nogray:
+            d = float(diameter)
+            if ctx.observed_style == "shaded":
                 p["fc"] = "k"
                 p["alpha"] = 0.3 * alpha
+            elif ctx.observed_style == "outer":
+                d = 1.1 * diameter
+            elif ctx.observed_style == "innter":
+                d = 0.9 * diameter
 
             # Draw the background ellipse.
-            diameter = self.diameter
-            if self.nogray:
-                diameter = 1.1 * diameter
-            bg = Ellipse(xy=conv(self.x, self.y),
-                         width=diameter * self.aspect,
-                         height=diameter, **p)
+            bg = Ellipse(xy=ctx.convert(self.x, self.y),
+                         width=d * self.aspect, height=d,
+                         **p)
             ax.add_artist(bg)
 
             # Reset the face color.
@@ -211,15 +219,15 @@ class Node(object):
             p["alpha"] = alpha
 
         # Draw the foreground ellipse.
-        el = Ellipse(xy=conv(self.x, self.y),
-                     width=self.diameter * self.aspect,
-                     height=self.diameter, **p)
+        el = Ellipse(xy=ctx.convert(self.x, self.y),
+                     width=diameter * self.aspect, height=diameter, **p)
         ax.add_artist(el)
 
         # Annotate the node.
-        ax.annotate(self.content, conv(self.x, self.y),
+        ax.annotate(self.content, ctx.convert(self.x, self.y),
                 xycoords="data", ha="center", va=self.va,
                 xytext=self.offset, textcoords="offset points")
+
         return el
 
 
@@ -248,7 +256,7 @@ class Edge(object):
         self.directed = directed
         self.plot_params = plot_params
 
-    def _get_coords(self, conv):
+    def _get_coords(self, ctx):
         """
         Get the coordinates of the line.
 
@@ -261,8 +269,8 @@ class Edge(object):
 
         """
         # Scale the coordinates appropriately.
-        x1, y1 = conv(self.node1.x, self.node1.y)
-        x2, y2 = conv(self.node2.x, self.node2.y)
+        x1, y1 = ctx.convert(self.node1.x, self.node1.y)
+        x2, y2 = ctx.convert(self.node2.x, self.node2.y)
 
         # Compute the distances.
         dx, dy = x2 - x1, y2 - y1
@@ -270,8 +278,8 @@ class Edge(object):
         dist2 = np.sqrt(dx * dx + dy * dy / float(self.node2.aspect) ** 2)
 
         # Compute the fractional effect of the radii of the nodes.
-        alpha1 = 0.5 * self.node1.diameter / dist1
-        alpha2 = 0.5 * self.node2.diameter / dist2
+        alpha1 = 0.5 * ctx.node_unit * self.node1.scale / dist1
+        alpha2 = 0.5 * ctx.node_unit * self.node2.scale / dist2
 
         # Get the coordinates of the starting position.
         x0, y0 = x1 + alpha1 * dx, y1 + alpha1 * dy
@@ -282,7 +290,7 @@ class Edge(object):
 
         return x0, y0, dx0, dy0
 
-    def render(self, ax, conv):
+    def render(self, ctx):
         """
         Render the edge in the given axes.
 
@@ -293,16 +301,23 @@ class Edge(object):
             A callable coordinate conversion.
 
         """
+        ax = ctx.ax()
+
         p = self.plot_params
+
         if self.directed:
             p["ec"] = p.get("ec", "k")
             p["fc"] = p.get("fc", "k")
             p["head_length"] = p.get("head_length", 0.25)
             p["head_width"] = p.get("head_width", 0.1)
 
+            # TODO: make this match the "line_width" property of the context.
+            p["width"] = p.get("width", 0.1)
+            # p["width"] = p.get("width", (ctx.line_width - 1) / ctx.grid_unit)
+
             # Build an arrow.
-            ar = Arrow(*self._get_coords(conv),
-                        length_includes_head=True, width=0.,
+            ar = FancyArrow(*self._get_coords(ctx),
+                        length_includes_head=True,
                         **self.plot_params)
 
             # Add the arrow to the axes.
@@ -310,9 +325,10 @@ class Edge(object):
             return ar
         else:
             p["color"] = p.get("color", "k")
+            p["lw"] = p.get("lw", ctx.line_width - 1)
 
             # Get the right coordinates.
-            x, y, dx, dy = self._get_coords(conv)
+            x, y, dx, dy = self._get_coords(ctx)
 
             # Plot the line.
             line = ax.plot([x, x + dx], [y, y + dy], **p)
@@ -349,7 +365,7 @@ class Plate(object):
         self.shift = shift
         self.rect_params = rect_params
 
-    def render(self, ax, conv):
+    def render(self, ctx):
         """
         Render the plate in the given axes.
 
@@ -360,18 +376,20 @@ class Plate(object):
             A callable coordinate conversion.
 
         """
+        ax = ctx.ax()
+
         s = np.array([0, self.shift])
         r = np.atleast_1d(self.rect)
-        bl = conv(*(r[:2] + s))
-        tr = conv(*(r[:2] + r[2:]))
+        bl = ctx.convert(*(r[:2] + s))
+        tr = ctx.convert(*(r[:2] + r[2:]))
         r = np.concatenate([bl, tr - bl])
 
         p = self.rect_params
         p["ec"] = p.get("ec", "k")
         p["fc"] = p.get("fc", "none")
+        p["lw"] = p.get("lw", ctx.line_width)
 
         rect = Rectangle(r[:2], *r[2:], **self.rect_params)
-
         ax.add_artist(rect)
 
         if self.label is not None:
@@ -379,3 +397,74 @@ class Plate(object):
                     xytext=self.label_offset, textcoords="offset points")
 
         return rect
+
+
+class _rendering_context(object):
+    """
+    :param shape:
+        The number of rows and columns in the grid.
+
+    :param origin:
+        The coordinates of the bottom left corner of the plot.
+
+    :param grid_unit:
+        The size of the grid spacing measured in centimeters.
+
+    :param node_unit:
+        The base unit for the node size. This is a number in centimeters that
+        sets the default diameter of the nodes.
+
+    """
+    def __init__(self, **kwargs):
+        # Save the style defaults.
+        self.line_width = kwargs.get("line_width", 1.0)
+
+        # Make sure that the observed node style is one that we recognize.
+        self.observed_style = kwargs.get("observed_style", "shaded").lower()
+        styles = ["shaded", "inner", "outer"]
+        assert self.observed_style in styles, \
+                "Unrecognized observed node style: {0}\n".format(
+                        self.observed_style) \
+                + "\tOptions are: {0}".format(", ".join(styles))
+
+        # Set up the figure and grid dimensions.
+        self.shape = np.array(kwargs.get("shape", [1, 1]))
+        self.origin = np.array(kwargs.get("origin", [0, 0]))
+        self.grid_unit = kwargs.get("grid_unit", 2.0)
+        self.figsize = self.grid_unit * self.shape / 2.54
+
+        self.node_unit = kwargs.get("node_unit", 1.0)
+
+        # Initialize the figure to ``None`` to handle caching later.
+        self._figure = None
+        self._ax = None
+
+    def figure(self):
+        if self._figure is not None:
+            return self._figure
+        self._figure = plt.figure(figsize=self.figsize)
+        return self._figure
+
+    def ax(self):
+        if self._ax is not None:
+            return self._ax
+
+        # Add a new axis object if it doesn't exist.
+        self._ax = self.figure().add_axes((0, 0, 1, 1), frameon=False,
+                xticks=[], yticks=[])
+
+        # Set the bounds.
+        l0 = self.convert(*self.origin)
+        l1 = self.convert(*(self.origin + self.shape))
+        self._ax.set_xlim(l0[0], l1[0])
+        self._ax.set_ylim(l0[1], l1[1])
+
+        return self._ax
+
+    def convert(self, *xy):
+        """
+        Convert from model coordinates to plot coordinates.
+
+        """
+        assert len(xy) == 2
+        return self.grid_unit * (np.atleast_1d(xy) - self.origin)
