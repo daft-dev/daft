@@ -1,7 +1,7 @@
 __all__ = ["PGM", "Node", "Edge", "Plate"]
 
 
-__version__ = "0.0.1"
+__version__ = "0.0.2"
 
 
 import matplotlib.pyplot as plt
