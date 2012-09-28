@@ -7,7 +7,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Nogray &mdash; Daft 0.0.1 documentation</title>
+    <title>Alternative Observed Node Styles &mdash; Daft 0.0.1 documentation</title>
     
     <link rel="stylesheet" href="../../_static/daft.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
@@ -26,9 +26,10 @@
     <script type="text/javascript" src="../../_static/doctools.js"></script>
     <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="top" title="Daft 0.0.1 documentation" href="../../" />
-
      
+
     <link rel="shortcut icon" href="../../_static/favicon.png">
+    <link rel="stylesheet" href="../../_static/code.css" type="text/css" />
 
 
   </head>
@@ -46,23 +47,24 @@
         <div class="bodywrapper">
           <div class="body">
             
-  <div class="section" id="nogray">
-<span id="id1"></span><h1>Nogray<a class="headerlink" href="#nogray" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="alternative-observed-node-styles">
+<span id="nogray"></span><h1>Alternative Observed Node Styles<a class="headerlink" href="#alternative-observed-node-styles" title="Permalink to this headline">¶</a></h1>
 <div class="figure">
 <img alt="../../_images/nogray.png" src="../../_images/nogray.png" />
 </div>
-<div class="highlight-python"><div class="highlight"><pre><span class="c">#!/usr/bin/env python</span>
-<span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">One PGM to own them all.</span>
-<span class="sd">&quot;&quot;&quot;</span>
-
-<span class="kn">from</span> <span class="nn">matplotlib</span> <span class="kn">import</span> <span class="n">rc</span>
+</div>
+<div class="section" id="id1">
+<h1>Alternative Observed Node Styles<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h1>
+<span class="target" id="module-daft"></span><p>This model is the same as <a class="reference external" href="/examples/classic">the classic</a> model but the
+&#8220;observed&#8221; <a class="reference internal" href="../../api/#daft.Node" title="daft.Node"><tt class="xref py py-class docutils literal"><span class="pre">Node</span></tt></a> is indicated by a double outline instead of shading.
+This particular example uses the <tt class="docutils literal"><span class="pre">inner</span></tt> style but <tt class="docutils literal"><span class="pre">outer</span></tt> is also an
+option for a different look.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">matplotlib</span> <span class="kn">import</span> <span class="n">rc</span>
 <span class="n">rc</span><span class="p">(</span><span class="s">&quot;font&quot;</span><span class="p">,</span> <span class="n">family</span><span class="o">=</span><span class="s">&quot;serif&quot;</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="mi">12</span><span class="p">)</span>
 <span class="n">rc</span><span class="p">(</span><span class="s">&quot;text&quot;</span><span class="p">,</span> <span class="n">usetex</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
 
 <span class="kn">import</span> <span class="nn">daft</span>
 
-<span class="c"># Instantiate the PGM.</span>
 <span class="n">pgm</span> <span class="o">=</span> <span class="n">daft</span><span class="o">.</span><span class="n">PGM</span><span class="p">([</span><span class="mf">2.3</span><span class="p">,</span> <span class="mf">2.05</span><span class="p">],</span> <span class="n">origin</span><span class="o">=</span><span class="p">[</span><span class="mf">0.3</span><span class="p">,</span> <span class="mf">0.3</span><span class="p">],</span> <span class="n">observed_style</span><span class="o">=</span><span class="s">&quot;inner&quot;</span><span class="p">)</span>
 
 <span class="c"># Hierarchical parameters.</span>
