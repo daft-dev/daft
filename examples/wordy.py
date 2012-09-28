@@ -2,8 +2,8 @@
 Nodes can contain words
 =======================
 
-We here at **Daft** headquarters tend to put symbols&mdash;variable
-names&mdash;in our graph nodes.  But you don't have to if you don't
+We here at **Daft** headquarters tend to put symbols—variable
+names—in our graph nodes.  But you don't have to if you don't
 want to.
 
 """

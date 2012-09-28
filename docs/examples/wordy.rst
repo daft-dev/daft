@@ -1,12 +1,24 @@
 .. _wordy:
 
-Wordy
-========
+
+Nodes can contain words
+=======================
 
 .. figure:: /_static/examples/wordy.png
 
+
+Nodes can contain words
+=======================
+
+We here at **Daft** headquarters tend to put symbols&mdash;variable
+names&mdash;in our graph nodes.  But you don't have to if you don't
+want to.
+
+
+
 ::
 
+    
     from matplotlib import rc
     rc("font", family="serif", size=12)
     rc("text", usetex=True)

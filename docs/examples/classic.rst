@@ -1,13 +1,13 @@
 .. _classic:
 
 
-The quintessential PGM
+The Quintessential PGM
 ======================
 
 .. figure:: /_static/examples/classic.png
 
 
-The quintessential PGM
+The Quintessential PGM
 ======================
 
 This is a demonstration of a very common structure found in graphical models.

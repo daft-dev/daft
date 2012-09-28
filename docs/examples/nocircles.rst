@@ -1,12 +1,23 @@
 .. _nocircles:
 
-Nocircles
-========
+
+Nodes can go free
+=================
 
 .. figure:: /_static/examples/nocircles.png
 
+
+Nodes can go free
+=================
+
+You don't need to put ellipses or circles around your node contents,
+if you don't want to.
+
+
+
 ::
 
+    
     from matplotlib import rc
     rc("font", family="serif", size=12)
     rc("text", usetex=True)
