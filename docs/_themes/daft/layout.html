@@ -1,5 +1,9 @@
 {%- extends "basic/layout.html" %}
 
+{% if not title %}
+{% set title = project %}
+{% endif %}
+
 {%- block extrahead %}
 
     {{ super() }}
