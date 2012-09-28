@@ -312,8 +312,8 @@ class Edge(object):
             p["head_width"] = p.get("head_width", 0.1)
 
             # TODO: make this match the "line_width" property of the context.
-            p["width"] = p.get("width", 0.1)
-            # p["width"] = p.get("width", (ctx.line_width - 1) / ctx.grid_unit)
+            p["width"] = 0
+            p["linewidth"] = p.get("lw", ctx.line_width)
 
             # Build an arrow.
             ar = FancyArrow(*self._get_coords(ctx),
