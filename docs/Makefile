@@ -159,7 +159,7 @@ classic:
 	$(call GEN_EXAMPLE,classic,50,10)
 
 nogray:
-	$(call GEN_EXAMPLE,nogray,50,18)
+	$(call GEN_EXAMPLE,nogray,50,10)
 
 nocircles:
 	$(call GEN_EXAMPLE,nocircles,230,85)
