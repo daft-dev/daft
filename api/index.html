@@ -51,7 +51,7 @@
 <span id="id1"></span><h1>API<a class="headerlink" href="#api" title="Permalink to this headline">¶</a></h1>
 <span class="target" id="module-daft"></span><dl class="class">
 <dt id="daft.PGM">
-<em class="property">class </em><tt class="descclassname">daft.</tt><tt class="descname">PGM</tt><big>(</big><em>shape, origin=[0, 0], grid_size=2</em><big>)</big><a class="headerlink" href="#daft.PGM" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><tt class="descclassname">daft.</tt><tt class="descname">PGM</tt><big>(</big><em>shape, origin=[0, 0], grid_unit=2, node_unit=1, observed_style='shaded', line_width=1, node_ec='k', directed=True</em><big>)</big><a class="headerlink" href="#daft.PGM" title="Permalink to this definition">¶</a></dt>
 <dd><p>The base object for building a graphical model representation.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -62,6 +62,13 @@
 <li><strong>origin</strong> &#8211; The coordinates of the bottom left corner of the plot.</li>
 <li><strong>grid_size</strong> &#8211; (optional)
 The size of the grid spacing measured in centimeters.</li>
+<li><strong>node_unit</strong> &#8211; (optional)
+The base unit for the node size. This is a number in centimeters that
+sets the default diameter of the nodes.</li>
+<li><strong>node_ec</strong> &#8211; (optional)
+The default edge color for the nodes.</li>
+<li><strong>directed</strong> &#8211; (optional)
+Should the edges be directed by default?</li>
 </ul>
 </td>
 </tr>
@@ -69,7 +76,7 @@ The size of the grid spacing measured in centimeters.</li>
 </table>
 <dl class="method">
 <dt id="daft.PGM.add_edge">
-<tt class="descname">add_edge</tt><big>(</big><em>name1</em>, <em>name2</em>, <em>directed=True</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#daft.PGM.add_edge" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">add_edge</tt><big>(</big><em>name1</em>, <em>name2</em>, <em>directed=None</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#daft.PGM.add_edge" title="Permalink to this definition">¶</a></dt>
 <dd><p>Construct an <a class="reference internal" href="#daft.Edge" title="daft.Edge"><tt class="xref py py-class docutils literal"><span class="pre">Edge</span></tt></a> between two named :class:<a href="#id2"><span class="problematic" id="id3">`</span></a>Node`s.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -120,7 +127,7 @@ and plot the model in this area.</p>
 
 <dl class="class">
 <dt id="daft.Node">
-<em class="property">class </em><tt class="descclassname">daft.</tt><tt class="descname">Node</tt><big>(</big><em>name, content, x, y, diameter=3, aspect=1.0, observed=False, nogray=False, fixed=False, offset=[0, 0], plot_params={}</em><big>)</big><a class="headerlink" href="#daft.Node" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><tt class="descclassname">daft.</tt><tt class="descname">Node</tt><big>(</big><em>name, content, x, y, scale=1, aspect=1.0, observed=False, fixed=False, offset=[0, 0], plot_params={}</em><big>)</big><a class="headerlink" href="#daft.Node" title="Permalink to this definition">¶</a></dt>
 <dd><p>The representation of a random variable in a <a class="reference internal" href="#daft.PGM" title="daft.PGM"><tt class="xref py py-class docutils literal"><span class="pre">PGM</span></tt></a>.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -132,7 +139,8 @@ and plot the model in this area.</p>
 <li><strong>x</strong> &#8211; The x-coordinate of the node in <em>model units</em>.</li>
 <li><strong>y</strong> &#8211; The y-coordinate of the node.</li>
 <li><strong>diameter</strong> &#8211; (optional)
-The diameter (or height) of the node measured in centimeters.</li>
+The diameter (or height) of the node measured in <a href="#id10"><span class="problematic" id="id11">``</span></a>node_unit``s as
+defined by the <a class="reference internal" href="#daft.PGM" title="daft.PGM"><tt class="xref py py-class docutils literal"><span class="pre">PGM</span></tt></a> object.</li>
 <li><strong>aspect</strong> &#8211; (optional)
 The aspect ratio width/height for elliptical nodes; default 1.</li>
 <li><strong>observed</strong> &#8211; (optional)
@@ -153,17 +161,13 @@ A dictionary of parameters to pass to the
 </table>
 <dl class="method">
 <dt id="daft.Node.render">
-<tt class="descname">render</tt><big>(</big><em>ax</em>, <em>conv</em><big>)</big><a class="headerlink" href="#daft.Node.render" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">render</tt><big>(</big><em>ctx</em><big>)</big><a class="headerlink" href="#daft.Node.render" title="Permalink to this definition">¶</a></dt>
 <dd><p>Render the node.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>ax</strong> &#8211; The <tt class="xref py py-class docutils literal"><span class="pre">matplotlib.Axes</span></tt> object to plot into.</li>
-<li><strong>conv</strong> &#8211; A callable coordinate conversion.</li>
-</ul>
-</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>ctx</strong> &#8211; The <tt class="xref py py-class docutils literal"><span class="pre">_rendering_context</span></tt> object.</td>
 </tr>
 </tbody>
 </table>
@@ -174,7 +178,7 @@ A dictionary of parameters to pass to the
 <dl class="class">
 <dt id="daft.Edge">
 <em class="property">class </em><tt class="descclassname">daft.</tt><tt class="descname">Edge</tt><big>(</big><em>node1</em>, <em>node2</em>, <em>directed=True</em>, <em>plot_params={}</em><big>)</big><a class="headerlink" href="#daft.Edge" title="Permalink to this definition">¶</a></dt>
-<dd><p>An edge between two :class:<a href="#id10"><span class="problematic" id="id11">`</span></a>Node`s.</p>
+<dd><p>An edge between two :class:<a href="#id12"><span class="problematic" id="id13">`</span></a>Node`s.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -195,7 +199,7 @@ rendering.</li>
 </table>
 <dl class="method">
 <dt id="daft.Edge.render">
-<tt class="descname">render</tt><big>(</big><em>ax</em>, <em>conv</em><big>)</big><a class="headerlink" href="#daft.Edge.render" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">render</tt><big>(</big><em>ctx</em><big>)</big><a class="headerlink" href="#daft.Edge.render" title="Permalink to this definition">¶</a></dt>
 <dd><p>Render the edge in the given axes.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -240,7 +244,7 @@ A dictionary of parameters to pass to the
 </table>
 <dl class="method">
 <dt id="daft.Plate.render">
-<tt class="descname">render</tt><big>(</big><em>ax</em>, <em>conv</em><big>)</big><a class="headerlink" href="#daft.Plate.render" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">render</tt><big>(</big><em>ctx</em><big>)</big><a class="headerlink" href="#daft.Plate.render" title="Permalink to this definition">¶</a></dt>
 <dd><p>Render the plate in the given axes.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
