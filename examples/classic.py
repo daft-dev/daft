@@ -43,3 +43,9 @@ if __name__ == "__main__":
     pgm.render()
     pgm.figure.savefig("classic.pdf")
     pgm.figure.savefig("classic.png", dpi=150)
+
+    xthumb, ythumb = 0.3, 0.3
+    pgm.ax.set_xlim(xthumb, xthumb + 2.54) # 1-inch
+    pgm.ax.set_ylim(ythumb, ythumb + 2.54)
+    pgm.figure.savefig("classic-thumb.png", dpi=150)
+
