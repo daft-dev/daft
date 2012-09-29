@@ -426,17 +426,23 @@ class _rendering_context(object):
     :param origin:
         The coordinates of the bottom left corner of the plot.
 
-    :param grid_unit:
+    :param grid_size:
         The size of the grid spacing measured in centimeters.
 
     :param node_unit:
         The base unit for the node size. This is a number in centimeters that
         sets the default diameter of the nodes.
 
-    :param node_ec: (optional)
+    :param observed_style:
+        How should the "observed" nodes be indicated? This must be one of:
+        ``"shaded"``, ``"inner"`` or ``"outer"`` where ``inner`` and
+        ``outer`` nodes are shown as double circles with the second circle
+        plotted inside or outside of the standard one, respectively.
+
+    :param node_ec:
         The default edge color for the nodes.
 
-    :param directed: (optional)
+    :param directed:
         Should the edges be directed by default?
 
     """
