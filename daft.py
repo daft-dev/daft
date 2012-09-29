@@ -29,6 +29,12 @@ class PGM(object):
         The base unit for the node size. This is a number in centimeters that
         sets the default diameter of the nodes.
 
+    :param observed_style: (optional)
+        How should the "observed" nodes be indicated? This must be one of:
+        ``"shaded"``, ``"inner"`` or ``"outer"`` where ``inner`` and
+        ``outer`` nodes are shown as double circles with the second circle
+        plotted inside or outside of the standard one, respectively.
+
     :param node_ec: (optional)
         The default edge color for the nodes.
 
