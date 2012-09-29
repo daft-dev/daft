@@ -1,7 +1,7 @@
 __all__ = ["PGM", "Node", "Edge", "Plate"]
 
 
-__version__ = "0.0.1"
+__version__ = "0.0.2"
 
 
 import matplotlib.pyplot as plt
@@ -28,6 +28,12 @@ class PGM(object):
     :param node_unit: (optional)
         The base unit for the node size. This is a number in centimeters that
         sets the default diameter of the nodes.
+
+    :param observed_style: (optional)
+        How should the "observed" nodes be indicated? This must be one of:
+        ``"shaded"``, ``"inner"`` or ``"outer"`` where ``inner`` and
+        ``outer`` nodes are shown as double circles with the second circle
+        plotted inside or outside of the standard one, respectively.
 
     :param node_ec: (optional)
         The default edge color for the nodes.
@@ -131,7 +137,7 @@ class Node(object):
     :param y:
         The y-coordinate of the node.
 
-    :param diameter: (optional)
+    :param scale: (optional)
         The diameter (or height) of the node measured in multiples of
         ``node_unit`` as defined by the :class:`PGM` object.
 
@@ -141,13 +147,15 @@ class Node(object):
     :param observed: (optional)
         Should this be a conditioned variable?
 
-    :param nogray: (optional)
-        Use the double circle rather than gray to indicate conditioning.
-
     :param fixed: (optional)
         Should this be a fixed (not permitted to vary) variable?
-        If `True`, modifies or over-rides diameter, offset, facecolor, etc.
-        (Conflicts with `observed`.
+        If `True`, modifies or over-rides ``diameter``, ``offset``,
+        ``facecolor``, and a few other ``plot_params`` settings.
+        This setting conflicts with ``observed``.
+
+    :param offset: (optional)
+        The ``(dx, dy)`` offset of the label (in points) from the default
+        centered position.
 
     :param plot_params: (optional)
         A dictionary of parameters to pass to the
@@ -312,11 +320,8 @@ class Edge(object):
         """
         Render the edge in the given axes.
 
-        :param ax:
-            The :class:`matplotlib.Axes` object.
-
-        :param conv:
-            A callable coordinate conversion.
+        :param ctx:
+            The :class:`_rendering_context` object.
 
         """
         ax = ctx.ax()
@@ -386,11 +391,8 @@ class Plate(object):
         """
         Render the plate in the given axes.
 
-        :param ax:
-            The :class:`matplotlib.Axes` object.
-
-        :param conv:
-            A callable coordinate conversion.
+        :param ctx:
+            The :class:`_rendering_context` object.
 
         """
         ax = ctx.ax()
@@ -424,17 +426,23 @@ class _rendering_context(object):
     :param origin:
         The coordinates of the bottom left corner of the plot.
 
-    :param grid_unit:
+    :param grid_size:
         The size of the grid spacing measured in centimeters.
 
     :param node_unit:
         The base unit for the node size. This is a number in centimeters that
         sets the default diameter of the nodes.
 
-    :param node_ec: (optional)
+    :param observed_style:
+        How should the "observed" nodes be indicated? This must be one of:
+        ``"shaded"``, ``"inner"`` or ``"outer"`` where ``inner`` and
+        ``outer`` nodes are shown as double circles with the second circle
+        plotted inside or outside of the standard one, respectively.
+
+    :param node_ec:
         The default edge color for the nodes.
 
-    :param directed: (optional)
+    :param directed:
         Should the edges be directed by default?
 
     """
