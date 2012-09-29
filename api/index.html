@@ -72,6 +72,11 @@ The size of the grid spacing measured in centimeters.</li>
 <li><strong>node_unit</strong> &#8211; (optional)
 The base unit for the node size. This is a number in centimeters that
 sets the default diameter of the nodes.</li>
+<li><strong>observed_style</strong> &#8211; (optional)
+How should the &#8220;observed&#8221; nodes be indicated? This must be one of:
+<tt class="docutils literal"><span class="pre">&quot;shaded&quot;</span></tt>, <tt class="docutils literal"><span class="pre">&quot;inner&quot;</span></tt> or <tt class="docutils literal"><span class="pre">&quot;outer&quot;</span></tt> where <tt class="docutils literal"><span class="pre">inner</span></tt> and
+<tt class="docutils literal"><span class="pre">outer</span></tt> nodes are shown as double circles with the second circle
+plotted inside or outside of the standard one, respectively.</li>
 <li><strong>node_ec</strong> &#8211; (optional)
 The default edge color for the nodes.</li>
 <li><strong>directed</strong> &#8211; (optional)
@@ -148,19 +153,21 @@ and plot the model in this area.</p>
 <li><strong>content</strong> &#8211; The display form of the variable.</li>
 <li><strong>x</strong> &#8211; The x-coordinate of the node in <em>model units</em>.</li>
 <li><strong>y</strong> &#8211; The y-coordinate of the node.</li>
-<li><strong>diameter</strong> &#8211; (optional)
+<li><strong>scale</strong> &#8211; (optional)
 The diameter (or height) of the node measured in multiples of
 <tt class="docutils literal"><span class="pre">node_unit</span></tt> as defined by the <a class="reference internal" href="#daft.PGM" title="daft.PGM"><tt class="xref py py-class docutils literal"><span class="pre">PGM</span></tt></a> object.</li>
 <li><strong>aspect</strong> &#8211; (optional)
 The aspect ratio width/height for elliptical nodes; default 1.</li>
 <li><strong>observed</strong> &#8211; (optional)
 Should this be a conditioned variable?</li>
-<li><strong>nogray</strong> &#8211; (optional)
-Use the double circle rather than gray to indicate conditioning.</li>
 <li><strong>fixed</strong> &#8211; (optional)
 Should this be a fixed (not permitted to vary) variable?
-If <cite>True</cite>, modifies or over-rides diameter, offset, facecolor, etc.
-(Conflicts with <cite>observed</cite>.</li>
+If <cite>True</cite>, modifies or over-rides <tt class="docutils literal"><span class="pre">diameter</span></tt>, <tt class="docutils literal"><span class="pre">offset</span></tt>,
+<tt class="docutils literal"><span class="pre">facecolor</span></tt>, and a few other <tt class="docutils literal"><span class="pre">plot_params</span></tt> settings.
+This setting conflicts with <tt class="docutils literal"><span class="pre">observed</span></tt>.</li>
+<li><strong>offset</strong> &#8211; (optional)
+The <tt class="docutils literal"><span class="pre">(dx,</span> <span class="pre">dy)</span></tt> offset of the label (in points) from the default
+centered position.</li>
 <li><strong>plot_params</strong> &#8211; (optional)
 A dictionary of parameters to pass to the
 <tt class="xref py py-class docutils literal"><span class="pre">matplotlib.patches.Ellipse</span></tt> constructor.</li>
@@ -218,11 +225,7 @@ rendering.</li>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>ax</strong> &#8211; The <tt class="xref py py-class docutils literal"><span class="pre">matplotlib.Axes</span></tt> object.</li>
-<li><strong>conv</strong> &#8211; A callable coordinate conversion.</li>
-</ul>
-</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>ctx</strong> &#8211; The <a class="reference internal" href="#daft._rendering_context" title="daft._rendering_context"><tt class="xref py py-class docutils literal"><span class="pre">_rendering_context</span></tt></a> object.</td>
 </tr>
 </tbody>
 </table>
@@ -266,11 +269,7 @@ A dictionary of parameters to pass to the
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>ax</strong> &#8211; The <tt class="xref py py-class docutils literal"><span class="pre">matplotlib.Axes</span></tt> object.</li>
-<li><strong>conv</strong> &#8211; A callable coordinate conversion.</li>
-</ul>
-</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>ctx</strong> &#8211; The <a class="reference internal" href="#daft._rendering_context" title="daft._rendering_context"><tt class="xref py py-class docutils literal"><span class="pre">_rendering_context</span></tt></a> object.</td>
 </tr>
 </tbody>
 </table>
@@ -291,13 +290,15 @@ A dictionary of parameters to pass to the
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
 <li><strong>shape</strong> &#8211; The number of rows and columns in the grid.</li>
 <li><strong>origin</strong> &#8211; The coordinates of the bottom left corner of the plot.</li>
-<li><strong>grid_unit</strong> &#8211; The size of the grid spacing measured in centimeters.</li>
+<li><strong>grid_size</strong> &#8211; The size of the grid spacing measured in centimeters.</li>
 <li><strong>node_unit</strong> &#8211; The base unit for the node size. This is a number in centimeters that
 sets the default diameter of the nodes.</li>
-<li><strong>node_ec</strong> &#8211; (optional)
-The default edge color for the nodes.</li>
-<li><strong>directed</strong> &#8211; (optional)
-Should the edges be directed by default?</li>
+<li><strong>observed_style</strong> &#8211; How should the &#8220;observed&#8221; nodes be indicated? This must be one of:
+<tt class="docutils literal"><span class="pre">&quot;shaded&quot;</span></tt>, <tt class="docutils literal"><span class="pre">&quot;inner&quot;</span></tt> or <tt class="docutils literal"><span class="pre">&quot;outer&quot;</span></tt> where <tt class="docutils literal"><span class="pre">inner</span></tt> and
+<tt class="docutils literal"><span class="pre">outer</span></tt> nodes are shown as double circles with the second circle
+plotted inside or outside of the standard one, respectively.</li>
+<li><strong>node_ec</strong> &#8211; The default edge color for the nodes.</li>
+<li><strong>directed</strong> &#8211; Should the edges be directed by default?</li>
 </ul>
 </td>
 </tr>

@@ -41,8 +41,18 @@ will try to install them for you but sometimes it's easier to do that part
 yourself.
 
 
-Contributing
-------------
+Issues
+------
+
+If you have any problems or questions, `open an "issue" on Github
+<https://github.com/dfm/daft/issues>`_.
+
+
+Authors & Contributions
+-----------------------
+
+**Daft** is being developed and supported by `Dan Foreman-Mackey
+<http://danfm.ca>`_ and `David W. Hogg <http://cosmo.nyu.edu/hogg>`_.
 
 For the hackers in the house, development happens on `Github
 <https://github.com/dfm/daft>`_ and we welcome pull requests. In particular,
@@ -52,7 +62,7 @@ we'd love to see examples of how you're using Daft in your work.
 License
 -------
 
-*Copyright 2012 Daniel Foreman-Mackey, David W. Hogg and contributors.*
+*Copyright 2012 Dan Foreman-Mackey, David W. Hogg, and contributors.*
 
 **Daft** is free software made available under the *MIT License*. For details
 see `the LICENSE file <https://raw.github.com/dfm/daft/master/LICENSE.rst>`_.
