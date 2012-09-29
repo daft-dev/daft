@@ -131,7 +131,7 @@ class Node(object):
     :param y:
         The y-coordinate of the node.
 
-    :param diameter: (optional)
+    :param scale: (optional)
         The diameter (or height) of the node measured in multiples of
         ``node_unit`` as defined by the :class:`PGM` object.
 
@@ -141,13 +141,15 @@ class Node(object):
     :param observed: (optional)
         Should this be a conditioned variable?
 
-    :param nogray: (optional)
-        Use the double circle rather than gray to indicate conditioning.
-
     :param fixed: (optional)
         Should this be a fixed (not permitted to vary) variable?
-        If `True`, modifies or over-rides diameter, offset, facecolor, etc.
-        (Conflicts with `observed`.
+        If `True`, modifies or over-rides ``diameter``, ``offset``,
+        ``facecolor``, and a few other ``plot_params`` settings.
+        This setting conflicts with ``observed``.
+
+    :param offset: (optional)
+        The ``(dx, dy)`` offset of the label (in points) from the default
+        centered position.
 
     :param plot_params: (optional)
         A dictionary of parameters to pass to the
@@ -312,11 +314,8 @@ class Edge(object):
         """
         Render the edge in the given axes.
 
-        :param ax:
-            The :class:`matplotlib.Axes` object.
-
-        :param conv:
-            A callable coordinate conversion.
+        :param ctx:
+            The :class:`_rendering_context` object.
 
         """
         ax = ctx.ax()
@@ -386,11 +385,8 @@ class Plate(object):
         """
         Render the plate in the given axes.
 
-        :param ax:
-            The :class:`matplotlib.Axes` object.
-
-        :param conv:
-            A callable coordinate conversion.
+        :param ctx:
+            The :class:`_rendering_context` object.
 
         """
         ax = ctx.ax()

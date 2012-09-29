@@ -1,5 +1,6 @@
 @import url("normalize.css");
 @import url(http://fonts.googleapis.com/css?family=Lato:100,300,700,300italic);
+@import url(http://fonts.googleapis.com/css?family=Source+Code+Pro:300,400,600);
 
 body {
     font-family: Lato, "Helvetica Neue", Helvetica, sans-serif;
@@ -28,7 +29,7 @@ a:hover {
 }
 
 a.headerlink {
-    padding-left: 5px;
+    padding-left: 10px;
     font-size: 80%;
     text-decoration: none;
     color: #bbb;
@@ -36,6 +37,12 @@ a.headerlink {
 
 a.headerlink:hover {
     color: #aaa;
+}
+
+.pre, pre {
+    font-size: 14px;
+    font-weight: 400;
+    font-family: "Source Code Pro", Courier, monospace;
 }
 
 .document, .footer, .related {
@@ -154,3 +161,21 @@ input.searchfield:focus {
     border: 1px solid #DDD;
 }
 
+/* API */
+
+.field-body {
+    margin: 0;
+    padding: 0;
+    padding-left: 10px;
+}
+
+.field-body ul {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.field-body ul li {
+    margin: 0;
+    padding: 0;
+}

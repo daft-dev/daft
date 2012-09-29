@@ -1,5 +1,4 @@
 .highlight-python {
-    font-size: 12px;
     border-left: 2px solid #ccc;
     padding-left: 10px;
     margin-left: -10px;
@@ -7,4 +6,8 @@
 
 .highlight {
     background: none;
+}
+
+.highlight pre {
+    font-size: 12px;
 }
