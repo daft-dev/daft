@@ -8,7 +8,8 @@ this example as any kind of implied recommendaton!
 """
 
 from matplotlib import rc
-rc("font", family="comic sans ms", size=12)
+ff = "comic sans ms"
+rc("font", family=ff, size=12)
 
 import daft
 
