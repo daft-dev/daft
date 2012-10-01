@@ -300,8 +300,8 @@ class Edge(object):
 
         # Compute the distances.
         dx, dy = x2 - x1, y2 - y1
-        dist1 = np.sqrt(dx * dx + dy * dy / float(self.node1.aspect) ** 2)
-        dist2 = np.sqrt(dx * dx + dy * dy / float(self.node2.aspect) ** 2)
+        dist1 = np.sqrt(dy * dy + dx * dx / float(self.node1.aspect ** 2))
+        dist2 = np.sqrt(dy * dy + dx * dx / float(self.node2.aspect ** 2))
 
         # Compute the fractional effect of the radii of the nodes.
         alpha1 = 0.5 * ctx.node_unit * self.node1.scale / dist1
@@ -314,6 +314,8 @@ class Edge(object):
         dx0 = dx * (1. - alpha1 - alpha2)
         dy0 = dy * (1. - alpha1 - alpha2)
 
+        print dx, dy, dx0, dy0, dist1, dist2, self.node1.aspect, self.node2.aspect, ctx.node_unit, self.node1.scale
+        #     4.0 0.0 3.0  0.0    4.0    4.0       1.2                   2.1               1            1
         return x0, y0, dx0, dy0
 
     def render(self, ctx):
