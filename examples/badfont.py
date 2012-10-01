@@ -16,7 +16,7 @@ pgm = daft.PGM([3.6, 1.8], origin=[2.2, 1.6])
 asp = 2.1
 pgm.add_node(daft.Node("confused", r"confused", 3.0, 3.0, aspect=asp))
 pgm.add_node(daft.Node("ugly", r"ugly font", 3.0, 2.0, aspect=asp))
-pgm.add_node(daft.Node("bad", r"bad talk", 3.5, 2.5, aspect=asp))
+pgm.add_node(daft.Node("bad", r"bad talk", 5.0, 2.0, aspect=asp))
 pgm.add_edge("confused", "ugly")
 pgm.add_edge("ugly", "bad")
 pgm.add_edge("confused", "bad")

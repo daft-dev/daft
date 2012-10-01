@@ -314,8 +314,6 @@ class Edge(object):
         dx0 = dx * (1. - alpha1 - alpha2)
         dy0 = dy * (1. - alpha1 - alpha2)
 
-        print dx, dy, dx0, dy0, dist1, dist2, self.node1.aspect, self.node2.aspect, ctx.node_unit, self.node1.scale
-        #     4.0 0.0 3.0  0.0    4.0    4.0       1.2                   2.1               1            1
         return x0, y0, dx0, dy0
 
     def render(self, ctx):
