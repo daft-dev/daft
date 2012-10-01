@@ -10,7 +10,6 @@ need to have labels!)
 
 import itertools
 import numpy as np
-np.random.seed(42)
 
 import daft
 
