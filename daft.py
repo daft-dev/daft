@@ -22,7 +22,7 @@ class PGM(object):
     :param origin:
         The coordinates of the bottom left corner of the plot.
 
-    :param grid_size: (optional)
+    :param grid_unit: (optional)
         The size of the grid spacing measured in centimeters.
 
     :param node_unit: (optional)
