@@ -13,7 +13,6 @@ rc("text", usetex=True)
 
 import daft
 
-
 # Colors.
 p_color = {"ec": "#46a546"}
 s_color = {"ec": "#f89406"}
