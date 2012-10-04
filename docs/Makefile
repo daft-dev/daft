@@ -152,4 +152,5 @@ doctest:
 	@echo "Testing of doctests in the sources finished, look at the " \
 	      "results in $(BUILDDIR)/doctest/output.txt."
 
-examples: classic nogray nocircles wordy weaklensing mrf
+examples: ../examples/*.py _static/examples.json
+	python gen_example.py
