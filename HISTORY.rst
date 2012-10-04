@@ -1,10 +1,11 @@
 .. :changelog:
 
-0.0.3 (forthcoming)
-+++++++++++++++++++
+0.0.3 (2012-10-04)
+++++++++++++++++++
 
 - Fixed rendering bug when ``aspect`` was used with angles other than 45
   degrees between nodes.
+- Added global ``aspect`` property to the rendering context.
 - Fixed the treatment of redundant keyword arguments that matplotlib
   allows.
 
