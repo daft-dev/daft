@@ -41,12 +41,15 @@ class PGM(object):
     :param directed: (optional)
         Should the edges be directed by default?
 
+    :param aspect: (optional)
+        The default aspect ratio for the nodes.
+
     """
     def __init__(self, shape, origin=[0, 0],
             grid_unit=2, node_unit=1,
             observed_style="shaded",
             line_width=1, node_ec="k",
-            directed=True):
+            directed=True, aspect=1.0):
         self._nodes = {}
         self._edges = []
         self._plates = []
@@ -54,7 +57,7 @@ class PGM(object):
         self._ctx = _rendering_context(shape=shape, origin=origin,
                 grid_unit=grid_unit, node_unit=node_unit,
                 observed_style=observed_style, line_width=line_width,
-                node_ec=node_ec, directed=directed)
+                node_ec=node_ec, directed=directed, aspect=aspect)
 
     def add_node(self, node):
         """
@@ -162,7 +165,7 @@ class Node(object):
         :class:`matplotlib.patches.Ellipse` constructor.
 
     """
-    def __init__(self, name, content, x, y, scale=1, aspect=1.,
+    def __init__(self, name, content, x, y, scale=1, aspect=None,
                  observed=False, fixed=False,
                  offset=[0, 0], plot_params={}):
         # Node style.
@@ -206,6 +209,10 @@ class Node(object):
         # context.
         ax = ctx.ax()
         diameter = ctx.node_unit * self.scale
+        if self.aspect is not None:
+            aspect = self.aspect
+        else:
+            aspect = ctx.aspect
 
         p = dict(self.plot_params)
         p["lw"] = _pop_multiple(p, ctx.line_width, "lw", "linewidth")
@@ -233,7 +240,7 @@ class Node(object):
 
             # Draw the background ellipse.
             bg = Ellipse(xy=ctx.convert(self.x, self.y),
-                         width=d * self.aspect, height=d,
+                         width=d * aspect, height=d,
                          **p)
             ax.add_artist(bg)
 
@@ -244,7 +251,7 @@ class Node(object):
         if ctx.observed_style == "inner" and not self.fixed:
             p["fc"] = "none"
         el = Ellipse(xy=ctx.convert(self.x, self.y),
-                     width=diameter * self.aspect, height=diameter, **p)
+                     width=diameter * aspect, height=diameter, **p)
         ax.add_artist(el)
 
         # Reset the face color.
@@ -281,7 +288,7 @@ class Edge(object):
         self.node1 = node1
         self.node2 = node2
         self.directed = directed
-        self.plot_params = plot_params
+        self.plot_params = dict(plot_params)
 
     def _get_coords(self, ctx):
         """
@@ -299,10 +306,17 @@ class Edge(object):
         x1, y1 = ctx.convert(self.node1.x, self.node1.y)
         x2, y2 = ctx.convert(self.node2.x, self.node2.y)
 
+        # Aspect ratios.
+        a1, a2 = self.node1.aspect, self.node2.aspect
+        if a1 is None:
+            a1 = ctx.aspect
+        if a2 is None:
+            a2 = ctx.aspect
+
         # Compute the distances.
         dx, dy = x2 - x1, y2 - y1
-        dist1 = np.sqrt(dy * dy + dx * dx / float(self.node1.aspect ** 2))
-        dist2 = np.sqrt(dy * dy + dx * dx / float(self.node2.aspect ** 2))
+        dist1 = np.sqrt(dy * dy + dx * dx / float(a1 ** 2))
+        dist2 = np.sqrt(dy * dy + dx * dx / float(a2 ** 2))
 
         # Compute the fractional effect of the radii of the nodes.
         alpha1 = 0.5 * ctx.node_unit * self.node1.scale / dist1
@@ -384,7 +398,7 @@ class Plate(object):
         self.label = label
         self.label_offset = label_offset
         self.shift = shift
-        self.rect_params = rect_params
+        self.rect_params = dict(rect_params)
 
     def render(self, ctx):
         """
@@ -407,7 +421,7 @@ class Plate(object):
         p["fc"] = _pop_multiple(p, "none", "fc", "facecolor")
         p["lw"] = _pop_multiple(p, ctx.line_width, "lw", "linewidth")
 
-        rect = Rectangle(r[:2], *r[2:], **self.rect_params)
+        rect = Rectangle(r[:2], *r[2:], **p)
         ax.add_artist(rect)
 
         if self.label is not None:
@@ -444,6 +458,9 @@ class _rendering_context(object):
     :param directed:
         Should the edges be directed by default?
 
+    :param aspect:
+        The default aspect ratio for the nodes.
+
     """
     def __init__(self, **kwargs):
         # Save the style defaults.
@@ -466,6 +483,7 @@ class _rendering_context(object):
         self.node_unit = kwargs.get("node_unit", 1.0)
         self.node_ec = kwargs.get("node_ec", "k")
         self.directed = kwargs.get("directed", True)
+        self.aspect = kwargs.get("aspect", 1.0)
 
         # Initialize the figure to ``None`` to handle caching later.
         self._figure = None

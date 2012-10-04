@@ -4,6 +4,7 @@ from __future__ import print_function
 
 import os
 import sys
+from subprocess import check_call
 
 
 this_path = os.path.dirname(os.path.abspath(__file__))
@@ -39,15 +40,21 @@ example_template = """.. _{example}:
 """
 
 
-if __name__ == "__main__":
-    if len(sys.argv) != 2:
-        print("You need to provide an example name")
-        sys.exit(1)
+def main(fn):
+    # Get the thumbnail info from './examples.info'.
+    thumb_info = None
+    with open(os.path.join(this_path, "examples.info")) as f:
+        for line in f:
+            if line[:len(fn)] == fn:
+                thumb_info = [int(t) for t in line.split()[1:]]
+                break
 
-    fn = sys.argv[1]
+    assert thumb_info is not None, "Add {0} to ./examples.info".format(fn)
 
     # Run the code.
-    src = open(os.path.join(example_dir, fn + ".py")).read()
+    pyfn = os.path.join(example_dir, fn + ".py")
+    src = open(pyfn).read()
+    print("Executing: " + pyfn)
     exec src
 
     # Generate the RST source file.
@@ -63,12 +70,15 @@ if __name__ == "__main__":
 
     fmt_src = "\n".join(["    " + l for l in src])
     img_path = os.path.join(img_out_dir, fn + ".png")
+    thumb_path = os.path.join(img_out_dir, fn + "-thumb.png")
 
     rst = example_template.format(title=title, doc=doc, example=fn,
             src=fmt_src, img_path=img_path)
 
     # Write the RST file.
-    with open(os.path.join(out_dir, fn + ".rst"), "w") as f:
+    rstfn = os.path.join(out_dir, fn + ".rst")
+    print("Writing: " + rstfn)
+    with open(rstfn, "w") as f:
         f.write(rst)
 
     # Remove the generated plots.
@@ -82,4 +92,24 @@ if __name__ == "__main__":
         pass
 
     # Save the new figure.
+    print("Saving: " + img_path)
     pgm.figure.savefig(img_path, dpi=150)
+
+    # Crop the thumbnail.
+    cmd = " ".join(["convert",
+                    "-crop 190x190+{0[0]:d}+{0[1]:d}".format(thumb_info),
+                    img_path, thumb_path])
+    print(cmd)
+    check_call(cmd, shell=True)
+
+
+if __name__ == "__main__":
+    if len(sys.argv) == 1:
+        # Build all the examples.
+        argv = [l.split()[0] for l in
+                            open(os.path.join(this_path, "examples.info"))]
+    else:
+        argv = sys.argv[1:]
+
+    for fn in argv:
+        main(fn)
