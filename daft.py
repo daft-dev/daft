@@ -1,7 +1,7 @@
 __all__ = ["PGM", "Node", "Edge", "Plate"]
 
 
-__version__ = "0.0.2"
+__version__ = "0.0.3-dev"
 
 
 import matplotlib.pyplot as plt
@@ -208,16 +208,17 @@ class Node(object):
         diameter = ctx.node_unit * self.scale
 
         p = dict(self.plot_params)
-        p["lw"] = p.get("lw", ctx.line_width)
-        # ec / edgecolor hack to fix some weird bug
-        p["ec"] = p.get("ec", ctx.node_ec)
-        p["edgecolor"] = p.get("ec", ctx.node_ec)
-        p["fc"] = p.get("fc", "none")
+        p["lw"] = _pop_multiple(p, ctx.line_width, "lw", "linewidth")
+
+        p["ec"] = p["edgecolor"] = _pop_multiple(p, ctx.node_ec,
+                                                 "ec", "edgecolor")
+
+        p["fc"] = _pop_multiple(p, "none", "fc", "facecolor")
         fc = p["fc"]
+
         p["alpha"] = p.get("alpha", 1)
 
-        # Set up an observed node.
-        # Note fc INSANITY.
+        # Set up an observed node. Note the fc INSANITY.
         if self.observed:
             # Update the plotting parameters depending on the style of
             # observed node.
@@ -327,18 +328,17 @@ class Edge(object):
         ax = ctx.ax()
 
         p = self.plot_params
+        p["linewidth"] = _pop_multiple(p, ctx.line_width,
+                                        "lw", "linewidth")
 
         if self.directed:
-            p["ec"] = p.get("ec", "k")
-            p["fc"] = p.get("fc", "k")
+            p["ec"] = _pop_multiple(p, "k", "ec", "edgecolor")
+            p["fc"] = _pop_multiple(p, "k", "fc", "facecolor")
             p["head_length"] = p.get("head_length", 0.25)
             p["head_width"] = p.get("head_width", 0.1)
 
-            p["width"] = 0
-            p["linewidth"] = p.get("lw", ctx.line_width)
-
             # Build an arrow.
-            ar = FancyArrow(*self._get_coords(ctx),
+            ar = FancyArrow(*self._get_coords(ctx), width=0,
                         length_includes_head=True,
                         **self.plot_params)
 
@@ -347,7 +347,6 @@ class Edge(object):
             return ar
         else:
             p["color"] = p.get("color", "k")
-            p["lw"] = p.get("lw", ctx.line_width)
 
             # Get the right coordinates.
             x, y, dx, dy = self._get_coords(ctx)
@@ -404,9 +403,9 @@ class Plate(object):
         r = np.concatenate([bl, tr - bl])
 
         p = self.rect_params
-        p["ec"] = p.get("ec", "k")
-        p["fc"] = p.get("fc", "none")
-        p["lw"] = p.get("lw", ctx.line_width)
+        p["ec"] = _pop_multiple(p, "k", "ec", "edgecolor")
+        p["fc"] = _pop_multiple(p, "none", "fc", "facecolor")
+        p["lw"] = _pop_multiple(p, ctx.line_width, "lw", "linewidth")
 
         rect = Rectangle(r[:2], *r[2:], **self.rect_params)
         ax.add_artist(rect)
@@ -426,7 +425,7 @@ class _rendering_context(object):
     :param origin:
         The coordinates of the bottom left corner of the plot.
 
-    :param grid_size:
+    :param grid_unit:
         The size of the grid spacing measured in centimeters.
 
     :param node_unit:
@@ -501,3 +500,43 @@ class _rendering_context(object):
         """
         assert len(xy) == 2
         return self.grid_unit * (np.atleast_1d(xy) - self.origin)
+
+
+def _pop_multiple(d, default, *args):
+    """
+    A helper function for dealing with the way that matplotlib annoyingly
+    allows multiple keyword arguments. For example, ``edgecolor`` and ``ec``
+    are generally equivalent but no exception is thrown if they are both
+    used.
+
+    *Note: This function does throw a :class:`ValueError` if more than one
+    of the equivalent arguments are provided.*
+
+    :param d:
+        A :class:`dict`-like object to "pop" from.
+
+    :param default:
+        The default value to return if none of the arguments are provided.
+
+    :param *args:
+        The arguments to try to retrieve.
+
+    """
+    assert len(args) > 0, "You must provide at least one argument to 'pop'."
+
+    results = []
+    for k in args:
+        try:
+            results.append((k, d.pop(k)))
+        except KeyError:
+            pass
+
+    if len(results) > 1:
+        raise TypeError("The arguments ({0}) are equivalent, you can only "
+                .format(", ".join([k for k, v in results]))
+                + "provide one of them.")
+
+    if len(results) == 0:
+        return default
+
+    return results[0]
