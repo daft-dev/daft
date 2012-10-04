@@ -1,0 +1,132 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>You can use arbitrarily shitty fonts &mdash; Daft 0.0.3-dev documentation</title>
+    
+    <link rel="stylesheet" href="../../_static/daft.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '0.0.3-dev',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="top" title="Daft 0.0.3-dev documentation" href="../../" />
+     
+
+    <link rel="shortcut icon" href="../../_static/favicon.png">
+    <link rel="stylesheet" href="../../_static/code.css" type="text/css" />
+
+
+  </head>
+  <body>  
+
+    <div class="document">
+
+<div class="main-logo">
+    <h1><a href="../../">Daft</a></h1>
+    <h2>Beautifully rendered probabilistic graphical models.</h2>
+</div>
+
+
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="you-can-use-arbitrarily-shitty-fonts">
+<span id="badfont"></span><h1>You can use arbitrarily shitty fonts<a class="headerlink" href="#you-can-use-arbitrarily-shitty-fonts" title="Permalink to this headline">¶</a></h1>
+<div class="figure">
+<img alt="../../_images/badfont.png" src="../../_images/badfont.png" />
+</div>
+</div>
+<div class="section" id="id1">
+<h1>You can use arbitrarily shitty fonts<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h1>
+<p>Any fonts that LaTeX or matplotlib supports can be used. Do not take
+this example as any kind of implied recommendation unless you plan on
+announcing a <em>huge</em> discovery!</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">matplotlib</span> <span class="kn">import</span> <span class="n">rc</span>
+
+<span class="n">ff</span> <span class="o">=</span> <span class="s">&quot;comic sans ms&quot;</span>
+<span class="c"># ff = &quot;impact&quot;</span>
+<span class="c"># ff = &quot;times new roman&quot;</span>
+
+<span class="n">rc</span><span class="p">(</span><span class="s">&quot;font&quot;</span><span class="p">,</span> <span class="n">family</span><span class="o">=</span><span class="n">ff</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="mi">12</span><span class="p">)</span>
+<span class="n">rc</span><span class="p">(</span><span class="s">&quot;text&quot;</span><span class="p">,</span> <span class="n">usetex</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+
+<span class="kn">import</span> <span class="nn">daft</span>
+
+<span class="n">pgm</span> <span class="o">=</span> <span class="n">daft</span><span class="o">.</span><span class="n">PGM</span><span class="p">([</span><span class="mf">3.6</span><span class="p">,</span> <span class="mf">1.8</span><span class="p">],</span> <span class="n">origin</span><span class="o">=</span><span class="p">[</span><span class="mf">2.2</span><span class="p">,</span> <span class="mf">1.6</span><span class="p">],</span> <span class="n">aspect</span><span class="o">=</span><span class="mf">2.1</span><span class="p">)</span>
+<span class="n">pgm</span><span class="o">.</span><span class="n">add_node</span><span class="p">(</span><span class="n">daft</span><span class="o">.</span><span class="n">Node</span><span class="p">(</span><span class="s">&quot;confused&quot;</span><span class="p">,</span> <span class="s">r&quot;confused&quot;</span><span class="p">,</span> <span class="mf">3.0</span><span class="p">,</span> <span class="mf">3.0</span><span class="p">))</span>
+<span class="n">pgm</span><span class="o">.</span><span class="n">add_node</span><span class="p">(</span><span class="n">daft</span><span class="o">.</span><span class="n">Node</span><span class="p">(</span><span class="s">&quot;ugly&quot;</span><span class="p">,</span> <span class="s">r&quot;ugly font&quot;</span><span class="p">,</span> <span class="mf">3.0</span><span class="p">,</span> <span class="mf">2.0</span><span class="p">,</span> <span class="n">observed</span><span class="o">=</span><span class="bp">True</span><span class="p">))</span>
+<span class="n">pgm</span><span class="o">.</span><span class="n">add_node</span><span class="p">(</span><span class="n">daft</span><span class="o">.</span><span class="n">Node</span><span class="p">(</span><span class="s">&quot;bad&quot;</span><span class="p">,</span> <span class="s">r&quot;bad talk&quot;</span><span class="p">,</span> <span class="mf">5.0</span><span class="p">,</span> <span class="mf">2.0</span><span class="p">,</span> <span class="n">observed</span><span class="o">=</span><span class="bp">True</span><span class="p">))</span>
+<span class="n">pgm</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="s">&quot;confused&quot;</span><span class="p">,</span> <span class="s">&quot;ugly&quot;</span><span class="p">)</span>
+<span class="n">pgm</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="s">&quot;ugly&quot;</span><span class="p">,</span> <span class="s">&quot;bad&quot;</span><span class="p">)</span>
+<span class="n">pgm</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="s">&quot;confused&quot;</span><span class="p">,</span> <span class="s">&quot;bad&quot;</span><span class="p">)</span>
+<span class="n">pgm</span><span class="o">.</span><span class="n">render</span><span class="p">()</span>
+<span class="n">pgm</span><span class="o">.</span><span class="n">figure</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="s">&quot;badfont.pdf&quot;</span><span class="p">)</span>
+<span class="n">pgm</span><span class="o">.</span><span class="n">figure</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="s">&quot;badfont.png&quot;</span><span class="p">,</span> <span class="n">dpi</span><span class="o">=</span><span class="mi">150</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+
+
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper"><div class="related">
+</div><div id="searchbox" style="display: none">
+    <form class="search" action="../../search/" method="get">
+        <input type="text" name="q" class="searchfield" placeholder="Search..." />
+        <input type="hidden" name="check_keywords" value="yes" />
+        <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+
+    <div class="footer">
+        Copyright 2012, Dan Foreman-Mackey & David W. Hogg. Released under
+            <a href="https://raw.github.com/dfm/daft/master/LICENSE.rst">MIT License</a>.
+    </div>
+
+    <a href="https://github.com/dfm/daft" class="github">
+        <img style="position: absolute; top: 0; right: 0; border: 0;"
+            src="https://s3.amazonaws.com/github/ribbons/forkme_right_green_007200.png"
+            alt="Fork me on GitHub" class="github"/>
+    </a>
+
+    <script type="text/javascript">
+
+        var _gaq = _gaq || [];
+        _gaq.push(['_setAccount', 'UA-35127040-1']);
+        _gaq.push(['_trackPageview']);
+
+        (function() {
+            var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+            ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+            var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+        })();
+
+    </script>
+  </body>
+</html>

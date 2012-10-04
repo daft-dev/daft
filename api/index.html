@@ -7,7 +7,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>API &mdash; Daft 0.0.2 documentation</title>
+    <title>API &mdash; Daft 0.0.3-dev documentation</title>
     
     <link rel="stylesheet" href="../_static/daft.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
@@ -15,7 +15,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '0.0.2',
+        VERSION:     '0.0.3-dev',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '',
         HAS_SOURCE:  true
@@ -25,7 +25,7 @@
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
     <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-    <link rel="top" title="Daft 0.0.2 documentation" href="../" />
+    <link rel="top" title="Daft 0.0.3-dev documentation" href="../" />
     <link rel="prev" title="Daft" href="../" />
      
 
@@ -58,7 +58,7 @@ connecting them. You can also specify rendering parameters and other default
 parameters when you initialize your <a class="reference internal" href="#daft.PGM" title="daft.PGM"><tt class="xref py py-class docutils literal"><span class="pre">PGM</span></tt></a>.</p>
 <dl class="class">
 <dt id="daft.PGM">
-<em class="property">class </em><tt class="descclassname">daft.</tt><tt class="descname">PGM</tt><big>(</big><em>shape, origin=[0, 0], grid_unit=2, node_unit=1, observed_style='shaded', line_width=1, node_ec='k', directed=True</em><big>)</big><a class="headerlink" href="#daft.PGM" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><tt class="descclassname">daft.</tt><tt class="descname">PGM</tt><big>(</big><em>shape, origin=[0, 0], grid_unit=2, node_unit=1, observed_style='shaded', line_width=1, node_ec='k', directed=True, aspect=1.0</em><big>)</big><a class="headerlink" href="#daft.PGM" title="Permalink to this definition">¶</a></dt>
 <dd><p>The base object for building a graphical model representation.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -67,7 +67,7 @@ parameters when you initialize your <a class="reference internal" href="#daft.PG
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
 <li><strong>shape</strong> &#8211; The number of rows and columns in the grid.</li>
 <li><strong>origin</strong> &#8211; The coordinates of the bottom left corner of the plot.</li>
-<li><strong>grid_size</strong> &#8211; (optional)
+<li><strong>grid_unit</strong> &#8211; (optional)
 The size of the grid spacing measured in centimeters.</li>
 <li><strong>node_unit</strong> &#8211; (optional)
 The base unit for the node size. This is a number in centimeters that
@@ -81,6 +81,8 @@ plotted inside or outside of the standard one, respectively.</li>
 The default edge color for the nodes.</li>
 <li><strong>directed</strong> &#8211; (optional)
 Should the edges be directed by default?</li>
+<li><strong>aspect</strong> &#8211; (optional)
+The default aspect ratio for the nodes.</li>
 </ul>
 </td>
 </tr>
@@ -142,7 +144,7 @@ and plot the model in this area.</p>
 <h2>Nodes<a class="headerlink" href="#nodes" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="daft.Node">
-<em class="property">class </em><tt class="descclassname">daft.</tt><tt class="descname">Node</tt><big>(</big><em>name, content, x, y, scale=1, aspect=1.0, observed=False, fixed=False, offset=[0, 0], plot_params={}</em><big>)</big><a class="headerlink" href="#daft.Node" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><tt class="descclassname">daft.</tt><tt class="descname">Node</tt><big>(</big><em>name, content, x, y, scale=1, aspect=None, observed=False, fixed=False, offset=[0, 0], plot_params={}</em><big>)</big><a class="headerlink" href="#daft.Node" title="Permalink to this definition">¶</a></dt>
 <dd><p>The representation of a random variable in a <a class="reference internal" href="#daft.PGM" title="daft.PGM"><tt class="xref py py-class docutils literal"><span class="pre">PGM</span></tt></a>.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -290,7 +292,7 @@ A dictionary of parameters to pass to the
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
 <li><strong>shape</strong> &#8211; The number of rows and columns in the grid.</li>
 <li><strong>origin</strong> &#8211; The coordinates of the bottom left corner of the plot.</li>
-<li><strong>grid_size</strong> &#8211; The size of the grid spacing measured in centimeters.</li>
+<li><strong>grid_unit</strong> &#8211; The size of the grid spacing measured in centimeters.</li>
 <li><strong>node_unit</strong> &#8211; The base unit for the node size. This is a number in centimeters that
 sets the default diameter of the nodes.</li>
 <li><strong>observed_style</strong> &#8211; How should the &#8220;observed&#8221; nodes be indicated? This must be one of:
@@ -299,6 +301,7 @@ sets the default diameter of the nodes.</li>
 plotted inside or outside of the standard one, respectively.</li>
 <li><strong>node_ec</strong> &#8211; The default edge color for the nodes.</li>
 <li><strong>directed</strong> &#8211; Should the edges be directed by default?</li>
+<li><strong>aspect</strong> &#8211; The default aspect ratio for the nodes.</li>
 </ul>
 </td>
 </tr>

@@ -1,0 +1,154 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>The Fergus model of exoplanet detection &mdash; Daft 0.0.3-dev documentation</title>
+    
+    <link rel="stylesheet" href="../../_static/daft.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '0.0.3-dev',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="top" title="Daft 0.0.3-dev documentation" href="../../" />
+     
+
+    <link rel="shortcut icon" href="../../_static/favicon.png">
+    <link rel="stylesheet" href="../../_static/code.css" type="text/css" />
+
+
+  </head>
+  <body>  
+
+    <div class="document">
+
+<div class="main-logo">
+    <h1><a href="../../">Daft</a></h1>
+    <h2>Beautifully rendered probabilistic graphical models.</h2>
+</div>
+
+
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="the-fergus-model-of-exoplanet-detection">
+<span id="exoplanets"></span><h1>The Fergus model of exoplanet detection<a class="headerlink" href="#the-fergus-model-of-exoplanet-detection" title="Permalink to this headline">¶</a></h1>
+<div class="figure">
+<img alt="../../_images/exoplanets.png" src="../../_images/exoplanets.png" />
+</div>
+</div>
+<div class="section" id="id1">
+<h1>The Fergus model of exoplanet detection<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h1>
+<p>Besides being generally awesome, this example also demonstrates how you can
+color the nodes and add arbitrary labels to the figure.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">matplotlib</span> <span class="kn">import</span> <span class="n">rc</span>
+<span class="n">rc</span><span class="p">(</span><span class="s">&quot;font&quot;</span><span class="p">,</span> <span class="n">family</span><span class="o">=</span><span class="s">&quot;serif&quot;</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="mi">12</span><span class="p">)</span>
+<span class="n">rc</span><span class="p">(</span><span class="s">&quot;text&quot;</span><span class="p">,</span> <span class="n">usetex</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+
+<span class="kn">import</span> <span class="nn">daft</span>
+
+
+<span class="c"># Colors.</span>
+<span class="n">p_color</span> <span class="o">=</span> <span class="p">{</span><span class="s">&quot;ec&quot;</span><span class="p">:</span> <span class="s">&quot;#46a546&quot;</span><span class="p">}</span>
+<span class="n">s_color</span> <span class="o">=</span> <span class="p">{</span><span class="s">&quot;ec&quot;</span><span class="p">:</span> <span class="s">&quot;#f89406&quot;</span><span class="p">}</span>
+
+<span class="n">pgm</span> <span class="o">=</span> <span class="n">daft</span><span class="o">.</span><span class="n">PGM</span><span class="p">([</span><span class="mf">3.6</span><span class="p">,</span> <span class="mf">3.5</span><span class="p">],</span> <span class="n">origin</span><span class="o">=</span><span class="p">[</span><span class="mf">0.7</span><span class="p">,</span> <span class="mi">0</span><span class="p">])</span>
+
+<span class="n">pgm</span><span class="o">.</span><span class="n">add_node</span><span class="p">(</span><span class="n">daft</span><span class="o">.</span><span class="n">Node</span><span class="p">(</span><span class="s">&quot;phi&quot;</span><span class="p">,</span> <span class="s">r&quot;$\phi$&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="n">plot_params</span><span class="o">=</span><span class="n">s_color</span><span class="p">))</span>
+<span class="n">pgm</span><span class="o">.</span><span class="n">add_node</span><span class="p">(</span><span class="n">daft</span><span class="o">.</span><span class="n">Node</span><span class="p">(</span><span class="s">&quot;speckle_coeff&quot;</span><span class="p">,</span> <span class="s">r&quot;$z_i$&quot;</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="n">plot_params</span><span class="o">=</span><span class="n">s_color</span><span class="p">))</span>
+<span class="n">pgm</span><span class="o">.</span><span class="n">add_node</span><span class="p">(</span><span class="n">daft</span><span class="o">.</span><span class="n">Node</span><span class="p">(</span><span class="s">&quot;speckle_img&quot;</span><span class="p">,</span> <span class="s">r&quot;$x_i$&quot;</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">plot_params</span><span class="o">=</span><span class="n">s_color</span><span class="p">))</span>
+
+<span class="n">pgm</span><span class="o">.</span><span class="n">add_node</span><span class="p">(</span><span class="n">daft</span><span class="o">.</span><span class="n">Node</span><span class="p">(</span><span class="s">&quot;spec&quot;</span><span class="p">,</span> <span class="s">r&quot;$s$&quot;</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="n">plot_params</span><span class="o">=</span><span class="n">p_color</span><span class="p">))</span>
+<span class="n">pgm</span><span class="o">.</span><span class="n">add_node</span><span class="p">(</span><span class="n">daft</span><span class="o">.</span><span class="n">Node</span><span class="p">(</span><span class="s">&quot;shape&quot;</span><span class="p">,</span> <span class="s">r&quot;$g$&quot;</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">plot_params</span><span class="o">=</span><span class="n">p_color</span><span class="p">))</span>
+<span class="n">pgm</span><span class="o">.</span><span class="n">add_node</span><span class="p">(</span><span class="n">daft</span><span class="o">.</span><span class="n">Node</span><span class="p">(</span><span class="s">&quot;planet_pos&quot;</span><span class="p">,</span> <span class="s">r&quot;$\mu_i$&quot;</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="n">plot_params</span><span class="o">=</span><span class="n">p_color</span><span class="p">))</span>
+<span class="n">pgm</span><span class="o">.</span><span class="n">add_node</span><span class="p">(</span><span class="n">daft</span><span class="o">.</span><span class="n">Node</span><span class="p">(</span><span class="s">&quot;planet_img&quot;</span><span class="p">,</span> <span class="s">r&quot;$p_i$&quot;</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">plot_params</span><span class="o">=</span><span class="n">p_color</span><span class="p">))</span>
+
+<span class="n">pgm</span><span class="o">.</span><span class="n">add_node</span><span class="p">(</span><span class="n">daft</span><span class="o">.</span><span class="n">Node</span><span class="p">(</span><span class="s">&quot;pixels&quot;</span><span class="p">,</span> <span class="s">r&quot;$y_i ^j$&quot;</span><span class="p">,</span> <span class="mf">2.5</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">observed</span><span class="o">=</span><span class="bp">True</span><span class="p">))</span>
+
+<span class="c"># Edges.</span>
+<span class="n">pgm</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="s">&quot;phi&quot;</span><span class="p">,</span> <span class="s">&quot;speckle_coeff&quot;</span><span class="p">)</span>
+<span class="n">pgm</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="s">&quot;speckle_coeff&quot;</span><span class="p">,</span> <span class="s">&quot;speckle_img&quot;</span><span class="p">)</span>
+<span class="n">pgm</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="s">&quot;speckle_img&quot;</span><span class="p">,</span> <span class="s">&quot;pixels&quot;</span><span class="p">)</span>
+
+<span class="n">pgm</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="s">&quot;spec&quot;</span><span class="p">,</span> <span class="s">&quot;planet_img&quot;</span><span class="p">)</span>
+<span class="n">pgm</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="s">&quot;shape&quot;</span><span class="p">,</span> <span class="s">&quot;planet_img&quot;</span><span class="p">)</span>
+<span class="n">pgm</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="s">&quot;planet_pos&quot;</span><span class="p">,</span> <span class="s">&quot;planet_img&quot;</span><span class="p">)</span>
+<span class="n">pgm</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="s">&quot;planet_img&quot;</span><span class="p">,</span> <span class="s">&quot;pixels&quot;</span><span class="p">)</span>
+
+<span class="c"># And a plate.</span>
+<span class="n">pgm</span><span class="o">.</span><span class="n">add_plate</span><span class="p">(</span><span class="n">daft</span><span class="o">.</span><span class="n">Plate</span><span class="p">([</span><span class="mf">1.5</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mf">3.2</span><span class="p">],</span> <span class="n">label</span><span class="o">=</span><span class="s">r&quot;exposure $i$&quot;</span><span class="p">,</span>
+    <span class="n">shift</span><span class="o">=-</span><span class="mf">0.1</span><span class="p">))</span>
+<span class="n">pgm</span><span class="o">.</span><span class="n">add_plate</span><span class="p">(</span><span class="n">daft</span><span class="o">.</span><span class="n">Plate</span><span class="p">([</span><span class="mi">2</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="n">label</span><span class="o">=</span><span class="s">r&quot;pixel $j$&quot;</span><span class="p">,</span>
+    <span class="n">shift</span><span class="o">=-</span><span class="mf">0.1</span><span class="p">))</span>
+
+<span class="c"># Render and save.</span>
+<span class="n">pgm</span><span class="o">.</span><span class="n">render</span><span class="p">()</span>
+<span class="n">pgm</span><span class="o">.</span><span class="n">figure</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="s">&quot;exoplanets.pdf&quot;</span><span class="p">)</span>
+<span class="n">pgm</span><span class="o">.</span><span class="n">figure</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="s">&quot;exoplanets.png&quot;</span><span class="p">,</span> <span class="n">dpi</span><span class="o">=</span><span class="mi">150</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+
+
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper"><div class="related">
+</div><div id="searchbox" style="display: none">
+    <form class="search" action="../../search/" method="get">
+        <input type="text" name="q" class="searchfield" placeholder="Search..." />
+        <input type="hidden" name="check_keywords" value="yes" />
+        <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+
+    <div class="footer">
+        Copyright 2012, Dan Foreman-Mackey & David W. Hogg. Released under
+            <a href="https://raw.github.com/dfm/daft/master/LICENSE.rst">MIT License</a>.
+    </div>
+
+    <a href="https://github.com/dfm/daft" class="github">
+        <img style="position: absolute; top: 0; right: 0; border: 0;"
+            src="https://s3.amazonaws.com/github/ribbons/forkme_right_green_007200.png"
+            alt="Fork me on GitHub" class="github"/>
+    </a>
+
+    <script type="text/javascript">
+
+        var _gaq = _gaq || [];
+        _gaq.push(['_setAccount', 'UA-35127040-1']);
+        _gaq.push(['_trackPageview']);
+
+        (function() {
+            var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+            ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+            var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+        })();
+
+    </script>
+  </body>
+</html>
