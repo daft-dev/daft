@@ -340,7 +340,7 @@ class Edge(object):
             # Build an arrow.
             ar = FancyArrow(*self._get_coords(ctx), width=0,
                         length_includes_head=True,
-                        **self.plot_params)
+                        **p)
 
             # Add the arrow to the axes.
             ax.add_artist(ar)
@@ -539,4 +539,4 @@ def _pop_multiple(d, default, *args):
     if len(results) == 0:
         return default
 
-    return results[0]
+    return results[0][1]
