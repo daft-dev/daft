@@ -4,6 +4,7 @@ from __future__ import print_function
 
 import os
 import sys
+import json
 from subprocess import check_call
 
 
@@ -40,17 +41,7 @@ example_template = """.. _{example}:
 """
 
 
-def main(fn):
-    # Get the thumbnail info from './examples.info'.
-    thumb_info = None
-    with open(os.path.join(this_path, "examples.info")) as f:
-        for line in f:
-            if line[:len(fn)] == fn:
-                thumb_info = [int(t) for t in line.split()[1:]]
-                break
-
-    assert thumb_info is not None, "Add {0} to ./examples.info".format(fn)
-
+def main(fn, thumb_info):
     # Run the code.
     pyfn = os.path.join(example_dir, fn + ".py")
     src = open(pyfn).read()
@@ -104,12 +95,13 @@ def main(fn):
 
 
 if __name__ == "__main__":
+    m = json.load(open(os.path.join(this_path, "_static", "examples.json")))
     if len(sys.argv) == 1:
         # Build all the examples.
-        argv = [l.split()[0] for l in
-                            open(os.path.join(this_path, "examples.info"))]
+        argv = m.keys()
     else:
         argv = sys.argv[1:]
 
-    for fn in argv:
-        main(fn)
+    for k in argv:
+        assert k in m, "Add {0} to _static/examples.json".format(k)
+        main(k, m[k])
