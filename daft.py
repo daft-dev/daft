@@ -242,8 +242,7 @@ class Node(object):
 
             # Draw the background ellipse.
             bg = Ellipse(xy=ctx.convert(self.x, self.y),
-                         width=d * aspect, height=d,
-                         **p)
+                         width=w, height=h, **p)
             ax.add_artist(bg)
 
             # Reset the face color.
