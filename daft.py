@@ -229,7 +229,8 @@ class Node(object):
         if self.observed:
             # Update the plotting parameters depending on the style of
             # observed node.
-            d = float(diameter)
+            h = float(diameter)
+            w = aspect * float(diameter)
             if ctx.observed_style == "shaded":
                 p["fc"] = "0.7"
             elif ctx.observed_style == "outer":
