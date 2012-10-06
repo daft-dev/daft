@@ -225,9 +225,11 @@ class Node(object):
             if ctx.observed_style == "shaded":
                 p["fc"] = "0.7"
             elif ctx.observed_style == "outer":
-                d = 1.1 * diameter
+                h = diameter + 0.1 * diameter
+                w = aspect * diameter + 0.1 * diameter
             elif ctx.observed_style == "inner":
-                d = 0.9 * diameter
+                h = diameter - 0.1 * diameter
+                w = aspect * diameter - 0.1 * diameter
                 p["fc"] = fc
 
             # Draw the background ellipse.
