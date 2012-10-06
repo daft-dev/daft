@@ -4,6 +4,8 @@ from __future__ import print_function
 
 import os
 import sys
+import json
+from subprocess import check_call
 
 
 this_path = os.path.dirname(os.path.abspath(__file__))
@@ -39,15 +41,11 @@ example_template = """.. _{example}:
 """
 
 
-if __name__ == "__main__":
-    if len(sys.argv) != 2:
-        print("You need to provide an example name")
-        sys.exit(1)
-
-    fn = sys.argv[1]
-
+def main(fn, thumb_info):
     # Run the code.
-    src = open(os.path.join(example_dir, fn + ".py")).read()
+    pyfn = os.path.join(example_dir, fn + ".py")
+    src = open(pyfn).read()
+    print("Executing: " + pyfn)
     exec src
 
     # Generate the RST source file.
@@ -63,12 +61,15 @@ if __name__ == "__main__":
 
     fmt_src = "\n".join(["    " + l for l in src])
     img_path = os.path.join(img_out_dir, fn + ".png")
+    thumb_path = os.path.join(img_out_dir, fn + "-thumb.png")
 
     rst = example_template.format(title=title, doc=doc, example=fn,
             src=fmt_src, img_path=img_path)
 
     # Write the RST file.
-    with open(os.path.join(out_dir, fn + ".rst"), "w") as f:
+    rstfn = os.path.join(out_dir, fn + ".rst")
+    print("Writing: " + rstfn)
+    with open(rstfn, "w") as f:
         f.write(rst)
 
     # Remove the generated plots.
@@ -82,4 +83,25 @@ if __name__ == "__main__":
         pass
 
     # Save the new figure.
+    print("Saving: " + img_path)
     pgm.figure.savefig(img_path, dpi=150)
+
+    # Crop the thumbnail.
+    cmd = " ".join(["convert",
+                    "-crop 190x190+{0[0]:d}+{0[1]:d}".format(thumb_info),
+                    img_path, thumb_path])
+    print(cmd)
+    check_call(cmd, shell=True)
+
+
+if __name__ == "__main__":
+    m = json.load(open(os.path.join(this_path, "_static", "examples.json")))
+    if len(sys.argv) == 1:
+        # Build all the examples.
+        argv = m.keys()
+    else:
+        argv = sys.argv[1:]
+
+    for k in argv:
+        assert k in m, "Add {0} to _static/examples.json".format(k)
+        main(k, m[k])

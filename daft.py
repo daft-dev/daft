@@ -1,7 +1,7 @@
 __all__ = ["PGM", "Node", "Edge", "Plate"]
 
 
-__version__ = "0.0.2"
+__version__ = "0.0.3"
 
 
 import matplotlib.pyplot as plt
@@ -41,12 +41,15 @@ class PGM(object):
     :param directed: (optional)
         Should the edges be directed by default?
 
+    :param aspect: (optional)
+        The default aspect ratio for the nodes.
+
     """
     def __init__(self, shape, origin=[0, 0],
             grid_unit=2, node_unit=1,
             observed_style="shaded",
             line_width=1, node_ec="k",
-            directed=True):
+            directed=True, aspect=1.0):
         self._nodes = {}
         self._edges = []
         self._plates = []
@@ -54,7 +57,7 @@ class PGM(object):
         self._ctx = _rendering_context(shape=shape, origin=origin,
                 grid_unit=grid_unit, node_unit=node_unit,
                 observed_style=observed_style, line_width=line_width,
-                node_ec=node_ec, directed=directed)
+                node_ec=node_ec, directed=directed, aspect=aspect)
 
     def add_node(self, node):
         """
@@ -162,7 +165,7 @@ class Node(object):
         :class:`matplotlib.patches.Ellipse` constructor.
 
     """
-    def __init__(self, name, content, x, y, scale=1, aspect=1.,
+    def __init__(self, name, content, x, y, scale=1, aspect=None,
                  observed=False, fixed=False,
                  offset=[0, 0], plot_params={}):
         # Node style.
@@ -206,18 +209,23 @@ class Node(object):
         # context.
         ax = ctx.ax()
         diameter = ctx.node_unit * self.scale
+        if self.aspect is not None:
+            aspect = self.aspect
+        else:
+            aspect = ctx.aspect
 
         p = dict(self.plot_params)
-        p["lw"] = p.get("lw", ctx.line_width)
-        # ec / edgecolor hack to fix some weird bug
-        p["ec"] = p.get("ec", ctx.node_ec)
-        p["edgecolor"] = p.get("ec", ctx.node_ec)
-        p["fc"] = p.get("fc", "none")
+        p["lw"] = _pop_multiple(p, ctx.line_width, "lw", "linewidth")
+
+        p["ec"] = p["edgecolor"] = _pop_multiple(p, ctx.node_ec,
+                                                 "ec", "edgecolor")
+
+        p["fc"] = _pop_multiple(p, "none", "fc", "facecolor")
         fc = p["fc"]
+
         p["alpha"] = p.get("alpha", 1)
 
-        # Set up an observed node.
-        # Note fc INSANITY.
+        # Set up an observed node. Note the fc INSANITY.
         if self.observed:
             # Update the plotting parameters depending on the style of
             # observed node.
@@ -234,7 +242,7 @@ class Node(object):
 
             # Draw the background ellipse.
             bg = Ellipse(xy=ctx.convert(self.x, self.y),
-                         width=d * self.aspect, height=d,
+                         width=d * aspect, height=d,
                          **p)
             ax.add_artist(bg)
 
@@ -245,7 +253,7 @@ class Node(object):
         if ctx.observed_style == "inner" and not self.fixed:
             p["fc"] = "none"
         el = Ellipse(xy=ctx.convert(self.x, self.y),
-                     width=diameter * self.aspect, height=diameter, **p)
+                     width=diameter * aspect, height=diameter, **p)
         ax.add_artist(el)
 
         # Reset the face color.
@@ -282,7 +290,7 @@ class Edge(object):
         self.node1 = node1
         self.node2 = node2
         self.directed = directed
-        self.plot_params = plot_params
+        self.plot_params = dict(plot_params)
 
     def _get_coords(self, ctx):
         """
@@ -300,10 +308,17 @@ class Edge(object):
         x1, y1 = ctx.convert(self.node1.x, self.node1.y)
         x2, y2 = ctx.convert(self.node2.x, self.node2.y)
 
+        # Aspect ratios.
+        a1, a2 = self.node1.aspect, self.node2.aspect
+        if a1 is None:
+            a1 = ctx.aspect
+        if a2 is None:
+            a2 = ctx.aspect
+
         # Compute the distances.
         dx, dy = x2 - x1, y2 - y1
-        dist1 = np.sqrt(dy * dy + dx * dx / float(self.node1.aspect ** 2))
-        dist2 = np.sqrt(dy * dy + dx * dx / float(self.node2.aspect ** 2))
+        dist1 = np.sqrt(dy * dy + dx * dx / float(a1 ** 2))
+        dist2 = np.sqrt(dy * dy + dx * dx / float(a2 ** 2))
 
         # Compute the fractional effect of the radii of the nodes.
         alpha1 = 0.5 * ctx.node_unit * self.node1.scale / dist1
@@ -329,27 +344,25 @@ class Edge(object):
         ax = ctx.ax()
 
         p = self.plot_params
+        p["linewidth"] = _pop_multiple(p, ctx.line_width,
+                                        "lw", "linewidth")
 
         if self.directed:
-            p["ec"] = p.get("ec", "k")
-            p["fc"] = p.get("fc", "k")
+            p["ec"] = _pop_multiple(p, "k", "ec", "edgecolor")
+            p["fc"] = _pop_multiple(p, "k", "fc", "facecolor")
             p["head_length"] = p.get("head_length", 0.25)
             p["head_width"] = p.get("head_width", 0.1)
 
-            p["width"] = 0
-            p["linewidth"] = p.get("lw", ctx.line_width)
-
             # Build an arrow.
-            ar = FancyArrow(*self._get_coords(ctx),
+            ar = FancyArrow(*self._get_coords(ctx), width=0,
                         length_includes_head=True,
-                        **self.plot_params)
+                        **p)
 
             # Add the arrow to the axes.
             ax.add_artist(ar)
             return ar
         else:
             p["color"] = p.get("color", "k")
-            p["lw"] = p.get("lw", ctx.line_width)
 
             # Get the right coordinates.
             x, y, dx, dy = self._get_coords(ctx)
@@ -387,7 +400,7 @@ class Plate(object):
         self.label = label
         self.label_offset = label_offset
         self.shift = shift
-        self.rect_params = rect_params
+        self.rect_params = dict(rect_params)
 
     def render(self, ctx):
         """
@@ -406,11 +419,11 @@ class Plate(object):
         r = np.concatenate([bl, tr - bl])
 
         p = self.rect_params
-        p["ec"] = p.get("ec", "k")
-        p["fc"] = p.get("fc", "none")
-        p["lw"] = p.get("lw", ctx.line_width)
+        p["ec"] = _pop_multiple(p, "k", "ec", "edgecolor")
+        p["fc"] = _pop_multiple(p, "none", "fc", "facecolor")
+        p["lw"] = _pop_multiple(p, ctx.line_width, "lw", "linewidth")
 
-        rect = Rectangle(r[:2], *r[2:], **self.rect_params)
+        rect = Rectangle(r[:2], *r[2:], **p)
         ax.add_artist(rect)
 
         if self.label is not None:
@@ -428,7 +441,7 @@ class _rendering_context(object):
     :param origin:
         The coordinates of the bottom left corner of the plot.
 
-    :param grid_size:
+    :param grid_unit:
         The size of the grid spacing measured in centimeters.
 
     :param node_unit:
@@ -446,6 +459,9 @@ class _rendering_context(object):
 
     :param directed:
         Should the edges be directed by default?
+
+    :param aspect:
+        The default aspect ratio for the nodes.
 
     """
     def __init__(self, **kwargs):
@@ -469,6 +485,7 @@ class _rendering_context(object):
         self.node_unit = kwargs.get("node_unit", 1.0)
         self.node_ec = kwargs.get("node_ec", "k")
         self.directed = kwargs.get("directed", True)
+        self.aspect = kwargs.get("aspect", 1.0)
 
         # Initialize the figure to ``None`` to handle caching later.
         self._figure = None
@@ -503,3 +520,43 @@ class _rendering_context(object):
         """
         assert len(xy) == 2
         return self.grid_unit * (np.atleast_1d(xy) - self.origin)
+
+
+def _pop_multiple(d, default, *args):
+    """
+    A helper function for dealing with the way that matplotlib annoyingly
+    allows multiple keyword arguments. For example, ``edgecolor`` and ``ec``
+    are generally equivalent but no exception is thrown if they are both
+    used.
+
+    *Note: This function does throw a :class:`ValueError` if more than one
+    of the equivalent arguments are provided.*
+
+    :param d:
+        A :class:`dict`-like object to "pop" from.
+
+    :param default:
+        The default value to return if none of the arguments are provided.
+
+    :param *args:
+        The arguments to try to retrieve.
+
+    """
+    assert len(args) > 0, "You must provide at least one argument to 'pop'."
+
+    results = []
+    for k in args:
+        try:
+            results.append((k, d.pop(k)))
+        except KeyError:
+            pass
+
+    if len(results) > 1:
+        raise TypeError("The arguments ({0}) are equivalent, you can only "
+                .format(", ".join([k for k, v in results]))
+                + "provide one of them.")
+
+    if len(results) == 0:
+        return default
+
+    return results[0][1]

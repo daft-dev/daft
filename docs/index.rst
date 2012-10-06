@@ -1,7 +1,17 @@
 Daft
 ====
 
-.. include:: examples/index.rst
+.. raw:: html
+
+    <div id="examples"></div>
+    <div id="more-examples" style="text-align: right;font-size: 0.8em;">
+        <a href="/examples/">More…</a>
+    </div>
+    <script src="/_static/d3.v2.min.js"></script>
+    <script src="/_static/examples.js"></script>
+    <script>
+        show_examples(6);
+    </script>
 
 
 Summary
@@ -10,8 +20,10 @@ Summary
 **Daft** is a Python package that uses `matplotlib <http://matplotlib.org/>`_
 to render pixel-perfect *probabilistic graphical models* for publication
 in a journal or on the internet. With a short Python script and an intuitive
-model-building syntax you can design directed and undirected graphs and save
-them in any formats that matplotlib supports.
+model-building syntax you can design directed (Bayesian Networks, directed
+acyclic graphs) and undirected (Markov random fields) models and save
+them in any formats that matplotlib supports (including PDF, PNG, EPS and
+SVG).
 
 
 Installation
