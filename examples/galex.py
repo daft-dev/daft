@@ -12,18 +12,16 @@ from matplotlib import rc
 rc("font", family="serif", size=12)
 rc("text", usetex=True)
 import daft
-pgm = daft.PGM([5.4, 5.2], origin=[1.2, 1.2])
+pgm = daft.PGM([5.4, 5.4], origin=[1.2, 1.2])
 wide = 1.5
 verywide = 1.5 * wide
 dy = 0.75
 
 # electrons
 el_x, el_y = 2., 2.
-pgm.add_plate(daft.Plate([el_x - 0.6, el_y - 0.6, 2.2, 3 * dy + 0.3], label="electrons $i$"))
-pgm.add_node(daft.Node("raw6", r"raw6$_i$", el_x, el_y, aspect=wide, observed=True))
-pgm.add_node(daft.Node("xabc", r"xa$_i$,xabc$_i$,ya$_i$,\textit{etc}", el_x + 0.5, el_y + 1 * dy, aspect=2.3 * wide))
-pgm.add_edge("xabc", "raw6")
-pgm.add_node(daft.Node("xyti", r"$x_i,y_i,t_i$", el_x + 1., el_y + 2 * dy, aspect=wide))
+pgm.add_plate(daft.Plate([el_x - 0.6, el_y - 0.6, 2.2, 2 * dy + 0.3], label="electrons $i$"))
+pgm.add_node(daft.Node("xabc", r"xa$_i$,xabc$_i$,ya$_i$,\textit{etc}", el_x + 0.5, el_y + 0 * dy, aspect=2.3 * wide, observed=True))
+pgm.add_node(daft.Node("xyti", r"$x_i,y_i,t_i$", el_x + 1., el_y + 1 * dy, aspect=wide))
 pgm.add_edge("xyti", "xabc")
 
 # intensity fields
@@ -36,7 +34,7 @@ pgm.add_node(daft.Node("Iadt", r"$I_{\nu}(\alpha,\delta,t)$", ph_x, ph_y + 2 * d
 pgm.add_edge("Iadt", "Ixnt")
 
 # s/c
-sc_x, sc_y = ph_x + 1.5, ph_y - 2 * dy
+sc_x, sc_y = ph_x + 1.5, ph_y - 1.5 * dy
 pgm.add_node(daft.Node("dark", r"dark", sc_x, sc_y - 1 * dy, aspect=wide))
 pgm.add_edge("dark", "xyti")
 pgm.add_node(daft.Node("flat", r"flat", sc_x, sc_y, aspect=wide))
@@ -47,6 +45,8 @@ pgm.add_node(daft.Node("optics", r"optics", sc_x, sc_y + 2 * dy, aspect=wide))
 pgm.add_edge("optics", "Ixyt")
 pgm.add_node(daft.Node("psf", r"psf", sc_x, sc_y + 1 * dy))
 pgm.add_edge("psf", "xyti")
+pgm.add_node(daft.Node("fee", r"f.e.e.", sc_x, sc_y - 2 * dy, aspect=wide))
+pgm.add_edge("fee", "xabc")
 
 # sky
 pgm.add_node(daft.Node("sky", r"sky", sc_x, sc_y + 4 * dy))
