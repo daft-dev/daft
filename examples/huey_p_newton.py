@@ -11,11 +11,11 @@ rc("text", usetex=True)
 
 import daft
 
-pgm = daft.PGM([5.1, 2.0], origin=[0.45, 0.35])
+pgm = daft.PGM([5.4, 2.0], origin=[0.65, 0.35])
 
-kx, ky = 1., 1.
+kx, ky = 1.5, 1.
 nx, ny = kx + 3., ky + 0.
-hx, hy, dhx = kx + 0., ky + 1., 1.
+hx, hy, dhx = kx - 0.5, ky + 1., 1.
 
 pgm.add_node(daft.Node("dyn", r"$\theta_{\mathrm{dyn}}$", hx + 0. * dhx, hy + 0.))
 pgm.add_node(daft.Node("ic", r"$\theta_{\mathrm{I.C.}}$", hx + 1. * dhx, hy + 0.))
