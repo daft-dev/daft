@@ -41,7 +41,7 @@ for c in range(16):
 
 pgm.add_node(daft.Node("output", r"output", 7.5, -1., aspect=3.))
 pgm.add_edge("r040000", "output")
-pgm.add_node(daft.Node("answer", r"\texttt{http://dwh.gg/}", 12., -1., aspect=3., plot_params={"ec":"none"}))
+pgm.add_node(daft.Node("answer", r'\texttt{"http://dwh.gg/"}', 12., -1., aspect=3.5, plot_params={"ec":"none"}))
 pgm.add_edge("output", "answer")
 
 pgm.render()
