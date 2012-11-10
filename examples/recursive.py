@@ -26,7 +26,7 @@ def recurse(pgm, nodename, level, c):
         return recurse(pgm, r1nodename, level + 1, r)
     return
 
-pgm = daft.PGM([16, 8], origin=[-0.5, -1.5])
+pgm = daft.PGM([16.2, 8], origin=[-0.6, -1.5])
 
 pgm.add_node(daft.Node("query", r'\texttt{"kittens?"}', 3, 6., aspect=3., plot_params={"ec":"none"}))
 pgm.add_node(daft.Node("input", r'input', 7.5, 6., aspect=3.))
@@ -41,7 +41,7 @@ for c in range(16):
 
 pgm.add_node(daft.Node("output", r"output", 7.5, -1., aspect=3.))
 pgm.add_edge("r040000", "output")
-pgm.add_node(daft.Node("answer", r'\texttt{"http://dwh.gg/"}', 12., -1., aspect=3.5, plot_params={"ec":"none"}))
+pgm.add_node(daft.Node("answer", r'\texttt{"http://dwh.gg/"}', 12., -1., aspect=4.5, plot_params={"ec":"none"}))
 pgm.add_edge("output", "answer")
 
 pgm.render()
