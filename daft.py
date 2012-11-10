@@ -251,19 +251,21 @@ class Node(object):
         if self.observed:
             # Update the plotting parameters depending on the style of
             # observed node.
-            d = float(diameter)
+            h = float(diameter)
+            w = aspect * float(diameter)
             if ctx.observed_style == "shaded":
                 p["fc"] = "0.7"
             elif ctx.observed_style == "outer":
-                d = 1.1 * diameter
+                h = diameter + 0.1 * diameter
+                w = aspect * diameter + 0.1 * diameter
             elif ctx.observed_style == "inner":
-                d = 0.9 * diameter
+                h = diameter - 0.1 * diameter
+                w = aspect * diameter - 0.1 * diameter
                 p["fc"] = fc
 
             # Draw the background ellipse.
             bg = Ellipse(xy=ctx.convert(self.x, self.y),
-                         width=d * aspect, height=d,
-                         **p)
+                         width=w, height=h, **p)
             ax.add_artist(bg)
 
             # Reset the face color.
