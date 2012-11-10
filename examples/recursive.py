@@ -15,7 +15,7 @@ import daft
 
 def recurse(pgm, nodename, level, c):
     if level > 4:
-        return
+        return nodename
     r = c / 2
     r1nodename = "r%02d%04d" % (level, r)
     if 2 * r == c:
@@ -26,18 +26,24 @@ def recurse(pgm, nodename, level, c):
         return recurse(pgm, r1nodename, level + 1, r)
     return
 
-if __name__ == "__main__":
-    pgm = daft.PGM([16, 7], origin=[-0.5, -1.5])
+pgm = daft.PGM([16, 8], origin=[-0.5, -1.5])
 
-    pgm.add_node(daft.Node("query", r'\texttt{"kittens?"}', 3.5, 5.2, aspect=3., plot_params={"ec":"none"}))
+pgm.add_node(daft.Node("query", r'\texttt{"kittens?"}', 3, 6., aspect=3., plot_params={"ec":"none"}))
+pgm.add_node(daft.Node("input", r'input', 7.5, 6., aspect=3.))
+pgm.add_edge("query", "input")
 
-    for c in range(16):
-        nodename = "cpu%04d" % c
-        pgm.add_node(daft.Node(nodename, r"\texttt{%s}" % nodename, c, 3., aspect=1.9))
-        pgm.add_edge("query", nodename)
-        level = 1
-        recurse(pgm, nodename, level, c)
+for c in range(16):
+    nodename = "map %02d" % c
+    pgm.add_node(daft.Node(nodename, r"%s" % nodename, c, 3., aspect=1.9))
+    pgm.add_edge("input", nodename)
+    level = 1
+    recurse(pgm, nodename, level, c)
 
-    pgm.render()
-    pgm.figure.savefig("recursive.pdf")
-    pgm.figure.savefig("recursive.png", dpi=200)
+pgm.add_node(daft.Node("output", r"output", 7.5, -1., aspect=3.))
+pgm.add_edge("r040000", "output")
+pgm.add_node(daft.Node("answer", r"\texttt{http://dwh.gg/}", 12., -1., aspect=3., plot_params={"ec":"none"}))
+pgm.add_edge("output", "answer")
+
+pgm.render()
+pgm.figure.savefig("recursive.pdf")
+pgm.figure.savefig("recursive.png", dpi=200)
