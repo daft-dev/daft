@@ -19,7 +19,9 @@ s_color = {"ec": "#f89406"}
 
 pgm = daft.PGM([3.6, 3.5], origin=[0.7, 0])
 
-pgm.add_node(daft.Node("phi", r"$\phi$", 1, 3, plot_params=s_color))
+n = daft.Node("phi", r"$\phi$", 1, 3, plot_params=s_color)
+n.va = "baseline"
+pgm.add_node(n)
 pgm.add_node(daft.Node("speckle_coeff", r"$z_i$", 2, 3, plot_params=s_color))
 pgm.add_node(daft.Node("speckle_img", r"$x_i$", 2, 2, plot_params=s_color))
 
