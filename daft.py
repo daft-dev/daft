@@ -193,7 +193,10 @@ class Node(object):
 
         # Text parameters.
         self.offset = list(offset)
-        self.label_params = dict(label_params)
+        if label_params is not None:
+            self.label_params = dict(label_params)
+        else:
+            self.label_params = None
 
     def render(self, ctx):
         """
@@ -221,11 +224,12 @@ class Node(object):
 
         # And the label parameters.
         if self.label_params is None:
-            l = dict(ctx.get("label_params", {"va": "center"}))
+            l = dict(ctx.label_params)
         else:
             l = dict(self.label_params)
 
-        l["va"] = _pop_multiple(l, , "va",
+        l["va"] = _pop_multiple(l, "center", "va", "verticalalignment")
+        l["ha"] = _pop_multiple(l, "center", "ha", "horizontalalignment")
 
         # Deal with ``fixed`` nodes.
         scale = self.scale
@@ -283,8 +287,9 @@ class Node(object):
 
         # Annotate the node.
         ax.annotate(self.content, ctx.convert(self.x, self.y),
-                xycoords="data", ha="center", va=self.va,
-                xytext=self.offset, textcoords="offset points")
+                xycoords="data",
+                xytext=self.offset, textcoords="offset points",
+                **l)
 
         return el
 
