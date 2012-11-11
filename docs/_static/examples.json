@@ -6,5 +6,6 @@
     "weaklensing":     [200,  85],
     "mrf":             [ 18,  18],
     "exoplanets":      [117, 140],
-    "badfont":         [ 15,  10]
+    "badfont":         [ 15,  10],
+    "recursive":       [247, 350]
 }
