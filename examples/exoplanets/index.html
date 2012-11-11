@@ -63,14 +63,15 @@ color the nodes and add arbitrary labels to the figure.</p>
 
 <span class="kn">import</span> <span class="nn">daft</span>
 
-
 <span class="c"># Colors.</span>
 <span class="n">p_color</span> <span class="o">=</span> <span class="p">{</span><span class="s">&quot;ec&quot;</span><span class="p">:</span> <span class="s">&quot;#46a546&quot;</span><span class="p">}</span>
 <span class="n">s_color</span> <span class="o">=</span> <span class="p">{</span><span class="s">&quot;ec&quot;</span><span class="p">:</span> <span class="s">&quot;#f89406&quot;</span><span class="p">}</span>
 
 <span class="n">pgm</span> <span class="o">=</span> <span class="n">daft</span><span class="o">.</span><span class="n">PGM</span><span class="p">([</span><span class="mf">3.6</span><span class="p">,</span> <span class="mf">3.5</span><span class="p">],</span> <span class="n">origin</span><span class="o">=</span><span class="p">[</span><span class="mf">0.7</span><span class="p">,</span> <span class="mi">0</span><span class="p">])</span>
 
-<span class="n">pgm</span><span class="o">.</span><span class="n">add_node</span><span class="p">(</span><span class="n">daft</span><span class="o">.</span><span class="n">Node</span><span class="p">(</span><span class="s">&quot;phi&quot;</span><span class="p">,</span> <span class="s">r&quot;$\phi$&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="n">plot_params</span><span class="o">=</span><span class="n">s_color</span><span class="p">))</span>
+<span class="n">n</span> <span class="o">=</span> <span class="n">daft</span><span class="o">.</span><span class="n">Node</span><span class="p">(</span><span class="s">&quot;phi&quot;</span><span class="p">,</span> <span class="s">r&quot;$\phi$&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="n">plot_params</span><span class="o">=</span><span class="n">s_color</span><span class="p">)</span>
+<span class="n">n</span><span class="o">.</span><span class="n">va</span> <span class="o">=</span> <span class="s">&quot;baseline&quot;</span>
+<span class="n">pgm</span><span class="o">.</span><span class="n">add_node</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
 <span class="n">pgm</span><span class="o">.</span><span class="n">add_node</span><span class="p">(</span><span class="n">daft</span><span class="o">.</span><span class="n">Node</span><span class="p">(</span><span class="s">&quot;speckle_coeff&quot;</span><span class="p">,</span> <span class="s">r&quot;$z_i$&quot;</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="n">plot_params</span><span class="o">=</span><span class="n">s_color</span><span class="p">))</span>
 <span class="n">pgm</span><span class="o">.</span><span class="n">add_node</span><span class="p">(</span><span class="n">daft</span><span class="o">.</span><span class="n">Node</span><span class="p">(</span><span class="s">&quot;speckle_img&quot;</span><span class="p">,</span> <span class="s">r&quot;$x_i$&quot;</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">plot_params</span><span class="o">=</span><span class="n">s_color</span><span class="p">))</span>
 

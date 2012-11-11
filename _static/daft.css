@@ -159,6 +159,7 @@ input.searchfield:focus {
     padding: 15px;
     margin: 15px 0;
     border: 1px solid #DDD;
+    overflow: auto;
 }
 
 /* API */
