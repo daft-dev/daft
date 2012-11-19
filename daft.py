@@ -44,12 +44,16 @@ class PGM(object):
     :param aspect: (optional)
         The default aspect ratio for the nodes.
 
+    :param label_params: (optional)
+        Default node label parameters.
+
     """
     def __init__(self, shape, origin=[0, 0],
             grid_unit=2, node_unit=1,
             observed_style="shaded",
             line_width=1, node_ec="k",
-            directed=True, aspect=1.0):
+            directed=True, aspect=1.0,
+            label_params={}):
         self._nodes = {}
         self._edges = []
         self._plates = []
@@ -57,7 +61,8 @@ class PGM(object):
         self._ctx = _rendering_context(shape=shape, origin=origin,
                 grid_unit=grid_unit, node_unit=node_unit,
                 observed_style=observed_style, line_width=line_width,
-                node_ec=node_ec, directed=directed, aspect=aspect)
+                node_ec=node_ec, directed=directed, aspect=aspect,
+                label_params=label_params)
 
     def add_node(self, node):
         """
@@ -167,7 +172,7 @@ class Node(object):
     """
     def __init__(self, name, content, x, y, scale=1, aspect=None,
                  observed=False, fixed=False,
-                 offset=[0, 0], plot_params={}):
+                 offset=[0, 0], plot_params={}, label_params=None):
         # Node style.
         assert not (observed and fixed), \
                 "A node cannot be both 'observed' and 'fixed'."
@@ -188,14 +193,10 @@ class Node(object):
 
         # Text parameters.
         self.offset = list(offset)
-        self.va = "center"
-
-        # TODO: Make this depend on the node/grid units.
-        if self.fixed:
-            self.offset[1] += 6
-            self.scale /= 6.
-            self.va = "bottom"
-            self.plot_params["fc"] = "k"
+        if label_params is not None:
+            self.label_params = dict(label_params)
+        else:
+            self.label_params = None
 
     def render(self, ctx):
         """
@@ -208,12 +209,8 @@ class Node(object):
         # Get the axes and default plotting parameters from the rendering
         # context.
         ax = ctx.ax()
-        diameter = ctx.node_unit * self.scale
-        if self.aspect is not None:
-            aspect = self.aspect
-        else:
-            aspect = ctx.aspect
 
+        # Resolve the plotting parameters.
         p = dict(self.plot_params)
         p["lw"] = _pop_multiple(p, ctx.line_width, "lw", "linewidth")
 
@@ -224,6 +221,35 @@ class Node(object):
         fc = p["fc"]
 
         p["alpha"] = p.get("alpha", 1)
+
+        # And the label parameters.
+        if self.label_params is None:
+            l = dict(ctx.label_params)
+        else:
+            l = dict(self.label_params)
+
+        l["va"] = _pop_multiple(l, "center", "va", "verticalalignment")
+        l["ha"] = _pop_multiple(l, "center", "ha", "horizontalalignment")
+
+        # Deal with ``fixed`` nodes.
+        scale = self.scale
+        if self.fixed:
+            # MAGIC: These magic numbers should depend on the grid/node units.
+            self.offset[1] += 6
+            scale /= 6.
+
+            l["va"] = "baseline"
+            l.pop("verticalalignment", None)
+            l.pop("ma", None)
+
+            if p["fc"] == "none":
+                p["fc"] = "k"
+
+        diameter = ctx.node_unit * scale
+        if self.aspect is not None:
+            aspect = self.aspect
+        else:
+            aspect = ctx.aspect
 
         # Set up an observed node. Note the fc INSANITY.
         if self.observed:
@@ -261,8 +287,9 @@ class Node(object):
 
         # Annotate the node.
         ax.annotate(self.content, ctx.convert(self.x, self.y),
-                xycoords="data", ha="center", va=self.va,
-                xytext=self.offset, textcoords="offset points")
+                xycoords="data",
+                xytext=self.offset, textcoords="offset points",
+                **l)
 
         return el
 
@@ -463,6 +490,9 @@ class _rendering_context(object):
     :param aspect:
         The default aspect ratio for the nodes.
 
+    :param label_params:
+        Default node label parameters.
+
     """
     def __init__(self, **kwargs):
         # Save the style defaults.
@@ -486,6 +516,7 @@ class _rendering_context(object):
         self.node_ec = kwargs.get("node_ec", "k")
         self.directed = kwargs.get("directed", True)
         self.aspect = kwargs.get("aspect", 1.0)
+        self.label_params = dict(kwargs.get("label_params", {}))
 
         # Initialize the figure to ``None`` to handle caching later.
         self._figure = None

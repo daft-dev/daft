@@ -46,18 +46,21 @@ def main(fn, thumb_info):
     pyfn = os.path.join(example_dir, fn + ".py")
     src = open(pyfn).read()
     print("Executing: " + pyfn)
-    exec src
+
+    ns = {}
+    exec src in ns
+    pgm = ns["pgm"]
 
     # Generate the RST source file.
     src = src.split("\n")
-    if __doc__ is None:
+    if ns["__doc__"] is None:
         title = fn.title() + "\n" + "=" * len(fn)
         doc = ""
     else:
-        doc = __doc__.split("\n")
+        doc = ns["__doc__"].split("\n")
         title = "\n".join(doc[:3])
         doc = "\n".join(doc)
-        src = src[len(__doc__.split("\n")):]
+        src = src[len(ns["__doc__"].split("\n")):]
 
     fmt_src = "\n".join(["    " + l for l in src])
     img_path = os.path.join(img_out_dir, fn + ".png")
