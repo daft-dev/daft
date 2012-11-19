@@ -186,6 +186,8 @@ class Node(object):
         # Coordinates and dimensions.
         self.x, self.y = x, y
         self.scale = scale
+        if self.fixed:
+            self.scale /= 6.0
         self.aspect = aspect
 
         # Display parameters.
@@ -236,7 +238,6 @@ class Node(object):
         if self.fixed:
             # MAGIC: These magic numbers should depend on the grid/node units.
             self.offset[1] += 6
-            scale /= 6.
 
             l["va"] = "baseline"
             l.pop("verticalalignment", None)
