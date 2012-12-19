@@ -417,18 +417,22 @@ class Plate(object):
         The vertical "shift" of the plate measured in model units. This will
         move the bottom of the panel by ``shift`` units.
 
+    :param position: (optional)
+        One of ``"bottom left"`` or ``"bottom right"``.
+
     :param rect_params: (optional)
         A dictionary of parameters to pass to the
         :class:`matplotlib.patches.Rectangle` constructor.
 
     """
     def __init__(self, rect, label=None, label_offset=[5, 5], shift=0,
-            rect_params={}):
+            position="bottom left", rect_params={}):
         self.rect = rect
         self.label = label
         self.label_offset = label_offset
         self.shift = shift
         self.rect_params = dict(rect_params)
+        self.position = position
 
     def render(self, ctx):
         """
@@ -455,8 +459,22 @@ class Plate(object):
         ax.add_artist(rect)
 
         if self.label is not None:
-            ax.annotate(self.label, r[:2], xycoords="data",
-                    xytext=self.label_offset, textcoords="offset points")
+            offset = np.array(self.label_offset)
+            if self.position == "bottom left":
+                pos = r[:2]
+                ha = "left"
+            elif self.position == "bottom right":
+                pos = r[:2]
+                pos[0] += r[2]
+                ha = "right"
+                offset[0] -= 2 * offset[0]
+            else:
+                raise RuntimeError("Unknown positioning string: {0}"
+                                   .format(self.position))
+
+            ax.annotate(self.label, pos, xycoords="data",
+                    xytext=offset, textcoords="offset points",
+                    horizontalalignment=ha)
 
         return rect
 
