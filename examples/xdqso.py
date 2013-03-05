@@ -22,13 +22,13 @@ pgm.add_node(daft.Node("sigma", r"$\Sigma$", 1, 1))
 
 # Latent variables.
 pgm.add_node(daft.Node("q", r"$q_n$", 2, 3))
-pgm.add_node(daft.Node("qt", r"$q_m$", 0, 3))
+pgm.add_node(daft.Node("qt", r"$q_m$", 0, 3, observed=True))
 pgm.add_node(daft.Node("X", r"$X_n$", 2, 2))
 pgm.add_node(daft.Node("Xt", r"$X_m$", 0, 3))
 
 # Data.
 pgm.add_node(daft.Node("x", r"$x_n$", 2, 1, observed=True))
-pgm.add_node(daft.Node("x", r"$x_n$", 0, 1, observed=True))
+pgm.add_node(daft.Node("xt", r"$x_n$", 0, 1, observed=True))
 
 # Add in the edges.
 pgm.add_edge("alpha", "theta")
