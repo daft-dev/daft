@@ -347,8 +347,6 @@ class Edge(object):
         dist1 = np.sqrt(dy * dy + dx * dx / float(a1 ** 2))
         dist2 = np.sqrt(dy * dy + dx * dx / float(a2 ** 2))
 
-        print self.node1, self.node2, self.node1.scale, self.node2.scale
-
         # Compute the fractional effect of the radii of the nodes.
         alpha1 = 0.5 * ctx.node_unit * self.node1.scale / dist1
         alpha2 = 0.5 * ctx.node_unit * self.node2.scale / dist2
