@@ -186,6 +186,8 @@ class Node(object):
         # Coordinates and dimensions.
         self.x, self.y = x, y
         self.scale = scale
+        if self.fixed:
+            self.scale = scale / 6. # magic number
         self.aspect = aspect
 
         # Display parameters.
@@ -232,11 +234,9 @@ class Node(object):
         l["ha"] = _pop_multiple(l, "center", "ha", "horizontalalignment")
 
         # Deal with ``fixed`` nodes.
-        scale = self.scale
         if self.fixed:
             # MAGIC: These magic numbers should depend on the grid/node units.
             self.offset[1] += 6
-            scale /= 6.
 
             l["va"] = "baseline"
             l.pop("verticalalignment", None)
@@ -245,7 +245,7 @@ class Node(object):
             if p["fc"] == "none":
                 p["fc"] = "k"
 
-        diameter = ctx.node_unit * scale
+        diameter = ctx.node_unit * self.scale
         if self.aspect is not None:
             aspect = self.aspect
         else:
@@ -346,6 +346,8 @@ class Edge(object):
         dx, dy = x2 - x1, y2 - y1
         dist1 = np.sqrt(dy * dy + dx * dx / float(a1 ** 2))
         dist2 = np.sqrt(dy * dy + dx * dx / float(a2 ** 2))
+
+        print self.node1, self.node2, self.node1.scale, self.node2.scale
 
         # Compute the fractional effect of the radii of the nodes.
         alpha1 = 0.5 * ctx.node_unit * self.node1.scale / dist1
