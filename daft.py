@@ -93,8 +93,7 @@ class PGM(object):
         if directed is None:
             directed = self._ctx.directed
 
-        e = Edge(self._nodes[name1], self._nodes[name2], directed=directed,
-                **kwargs)
+        e = Edge(self._nodes[name1], self._nodes[name2], directed=directed, plot_params=kwargs)
         self._edges.append(e)
 
         return e
@@ -374,6 +373,13 @@ class Edge(object):
         p = self.plot_params
         p["linewidth"] = _pop_multiple(p, ctx.line_width,
                                         "lw", "linewidth")
+
+        # annotate
+        if self.plot_params.has_key('label'):
+            x, y, dx, dy = self._get_coords(ctx)
+            ax.annotate(self.plot_params['label'], [x+dx/2, y+dy/2], xycoords="data", 
+                        xytext=[0, 3], textcoords="offset points",
+                        ha="center", va="center")
 
         if self.directed:
             p["ec"] = _pop_multiple(p, "k", "ec", "edgecolor")
