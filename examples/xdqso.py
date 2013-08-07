@@ -13,12 +13,13 @@ rc("text", usetex=True)
 import daft
 
 # Instantiate the PGM.
-pgm = daft.PGM([3.2, 3.55], origin=[-0.6, 0.3])
+pgm = daft.PGM([4.00, 3.55], origin=[-0.6, 0.3])
 
 # Hierarchical parameters.
 pgm.add_node(daft.Node("alpha", r"$\alpha$", 1, 3.5, fixed=True))
 pgm.add_node(daft.Node("theta", r"$\theta$", 1, 2.5))
-pgm.add_node(daft.Node("sigma", r"$\Sigma$", 1, 1))
+pgm.add_node(daft.Node("Sigma", r"$\Sigma$", 1, 1))
+pgm.add_node(daft.Node("sigma", r"$\sigma$", 3, 1))
 
 # Latent variables.
 pgm.add_node(daft.Node("q", r"$q_m$", 2, 3))
@@ -37,7 +38,7 @@ pgm.add_edge("theta", "qt")
 pgm.add_edge("theta", "X")
 pgm.add_edge("theta", "Xt")
 pgm.add_edge("sigma", "x")
-pgm.add_edge("sigma", "xt")
+pgm.add_edge("Sigma", "xt")
 pgm.add_edge("X", "x")
 pgm.add_edge("Xt", "xt")
 pgm.add_edge("q", "X")
