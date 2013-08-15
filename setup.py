@@ -10,20 +10,22 @@ except ImportError:
     setup, Extension
 
 import os
+import re
 import sys
 
 if sys.argv[-1] == "publish":
     os.system("python setup.py sdist upload")
     sys.exit()
 
-sys.path.append(os.path.dirname(__file__))
-
-import daft
+vre = re.compile("__version__ = \"(.*?)\"")
+m = open(os.path.join(os.path.dirname(os.path.abspath(__file__)),
+                      "daft.py")).read()
+version = vre.findall(m)[0]
 
 
 setup(
     name="daft",
-    version=daft.__version__,
+    version=version,
     description="PGM rendering at its finest.",
     long_description=open("README.rst").read(),
     author="David W. Hogg & Daniel Foreman-Mackey",
@@ -33,9 +35,9 @@ setup(
     package_data={"": ["LICENSE.rst"]},
     include_package_data=True,
     install_requires=[
-                        "numpy",
-                        "matplotlib"
-                     ],
+        "numpy",
+        "matplotlib"
+    ],
     classifiers=[
         "Development Status :: 3 - Alpha",
         "Intended Audience :: Developers",

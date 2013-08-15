@@ -49,20 +49,23 @@ class PGM(object):
 
     """
     def __init__(self, shape, origin=[0, 0],
-            grid_unit=2, node_unit=1,
-            observed_style="shaded",
-            line_width=1, node_ec="k",
-            directed=True, aspect=1.0,
-            label_params={}):
+                 grid_unit=2, node_unit=1,
+                 observed_style="shaded",
+                 line_width=1, node_ec="k",
+                 directed=True, aspect=1.0,
+                 label_params={}):
         self._nodes = {}
         self._edges = []
         self._plates = []
 
         self._ctx = _rendering_context(shape=shape, origin=origin,
-                grid_unit=grid_unit, node_unit=node_unit,
-                observed_style=observed_style, line_width=line_width,
-                node_ec=node_ec, directed=directed, aspect=aspect,
-                label_params=label_params)
+                                       grid_unit=grid_unit,
+                                       node_unit=node_unit,
+                                       observed_style=observed_style,
+                                       line_width=line_width,
+                                       node_ec=node_ec, directed=directed,
+                                       aspect=aspect,
+                                       label_params=label_params)
 
     def add_node(self, node):
         """
@@ -94,7 +97,7 @@ class PGM(object):
             directed = self._ctx.directed
 
         e = Edge(self._nodes[name1], self._nodes[name2], directed=directed,
-                **kwargs)
+                 plot_params=kwargs)
         self._edges.append(e)
 
         return e
@@ -175,7 +178,7 @@ class Node(object):
                  offset=[0, 0], plot_params={}, label_params=None):
         # Node style.
         assert not (observed and fixed), \
-                "A node cannot be both 'observed' and 'fixed'."
+            "A node cannot be both 'observed' and 'fixed'."
         self.observed = observed
         self.fixed = fixed
 
@@ -187,7 +190,7 @@ class Node(object):
         self.x, self.y = x, y
         self.scale = scale
         if self.fixed:
-            self.scale = scale / 6. # magic number
+            self.scale /= 6.0
         self.aspect = aspect
 
         # Display parameters.
@@ -287,9 +290,9 @@ class Node(object):
 
         # Annotate the node.
         ax.annotate(self.content, ctx.convert(self.x, self.y),
-                xycoords="data",
-                xytext=self.offset, textcoords="offset points",
-                **l)
+                    xycoords="data",
+                    xytext=self.offset, textcoords="offset points",
+                    **l)
 
         return el
 
@@ -372,7 +375,15 @@ class Edge(object):
 
         p = self.plot_params
         p["linewidth"] = _pop_multiple(p, ctx.line_width,
-                                        "lw", "linewidth")
+                                       "lw", "linewidth")
+
+        # Add edge annotation.
+        if "label" in self.plot_params:
+            x, y, dx, dy = self._get_coords(ctx)
+            ax.annotate(self.plot_params["label"],
+                        [x + 0.5 * dx, y + 0.5 * dy], xycoords="data",
+                        xytext=[0, 3], textcoords="offset points",
+                        ha="center", va="center")
 
         if self.directed:
             p["ec"] = _pop_multiple(p, "k", "ec", "edgecolor")
@@ -382,8 +393,8 @@ class Edge(object):
 
             # Build an arrow.
             ar = FancyArrow(*self._get_coords(ctx), width=0,
-                        length_includes_head=True,
-                        **p)
+                            length_includes_head=True,
+                            **p)
 
             # Add the arrow to the axes.
             ax.add_artist(ar)
@@ -416,18 +427,22 @@ class Plate(object):
         The vertical "shift" of the plate measured in model units. This will
         move the bottom of the panel by ``shift`` units.
 
+    :param position: (optional)
+        One of ``"bottom left"`` or ``"bottom right"``.
+
     :param rect_params: (optional)
         A dictionary of parameters to pass to the
         :class:`matplotlib.patches.Rectangle` constructor.
 
     """
     def __init__(self, rect, label=None, label_offset=[5, 5], shift=0,
-            rect_params={}):
+                 position="bottom left", rect_params={}):
         self.rect = rect
         self.label = label
         self.label_offset = label_offset
         self.shift = shift
         self.rect_params = dict(rect_params)
+        self.position = position
 
     def render(self, ctx):
         """
@@ -454,8 +469,22 @@ class Plate(object):
         ax.add_artist(rect)
 
         if self.label is not None:
-            ax.annotate(self.label, r[:2], xycoords="data",
-                    xytext=self.label_offset, textcoords="offset points")
+            offset = np.array(self.label_offset)
+            if self.position == "bottom left":
+                pos = r[:2]
+                ha = "left"
+            elif self.position == "bottom right":
+                pos = r[:2]
+                pos[0] += r[2]
+                ha = "right"
+                offset[0] -= 2 * offset[0]
+            else:
+                raise RuntimeError("Unknown positioning string: {0}"
+                                   .format(self.position))
+
+            ax.annotate(self.label, pos, xycoords="data",
+                        xytext=offset, textcoords="offset points",
+                        horizontalalignment=ha)
 
         return rect
 
@@ -502,9 +531,9 @@ class _rendering_context(object):
         self.observed_style = kwargs.get("observed_style", "shaded").lower()
         styles = ["shaded", "inner", "outer"]
         assert self.observed_style in styles, \
-                "Unrecognized observed node style: {0}\n".format(
-                        self.observed_style) \
-                + "\tOptions are: {0}".format(", ".join(styles))
+            "Unrecognized observed node style: {0}\n".format(
+                self.observed_style) \
+            + "\tOptions are: {0}".format(", ".join(styles))
 
         # Set up the figure and grid dimensions.
         self.shape = np.array(kwargs.get("shape", [1, 1]))
@@ -534,7 +563,7 @@ class _rendering_context(object):
 
         # Add a new axis object if it doesn't exist.
         self._ax = self.figure().add_axes((0, 0, 1, 1), frameon=False,
-                xticks=[], yticks=[])
+                                          xticks=[], yticks=[])
 
         # Set the bounds.
         l0 = self.convert(*self.origin)
@@ -584,8 +613,8 @@ def _pop_multiple(d, default, *args):
 
     if len(results) > 1:
         raise TypeError("The arguments ({0}) are equivalent, you can only "
-                .format(", ".join([k for k, v in results]))
-                + "provide one of them.")
+                        .format(", ".join([k for k, v in results]))
+                        + "provide one of them.")
 
     if len(results) == 0:
         return default
