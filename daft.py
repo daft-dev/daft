@@ -174,13 +174,14 @@ class Node(object):
 
     """
     def __init__(self, name, content, x, y, scale=1, aspect=None,
-                 observed=False, fixed=False,
+                 observed=False, fixed=False, rectangle=False,
                  offset=[0, 0], plot_params={}, label_params=None):
         # Node style.
         assert not (observed and fixed), \
             "A node cannot be both 'observed' and 'fixed'."
         self.observed = observed
         self.fixed = fixed
+        self.rectangle = rectangle
 
         # Metadata.
         self.name = name
@@ -272,7 +273,12 @@ class Node(object):
                 p["fc"] = fc
 
             # Draw the background ellipse.
-            bg = Ellipse(xy=ctx.convert(self.x, self.y),
+            if self.rectangle:
+                bg = Rectangle(xy=ctx.convert(self.x-w/2, self.y-h/2),
+                         width=w, height=h, **p)
+                print "hi"
+            else:
+                bg = Ellipse(xy=ctx.convert(self.x, self.y),
                          width=w, height=h, **p)
             ax.add_artist(bg)
 
@@ -282,7 +288,13 @@ class Node(object):
         # Draw the foreground ellipse.
         if ctx.observed_style == "inner" and not self.fixed and self.observed:
             p["fc"] = "none"
-        el = Ellipse(xy=ctx.convert(self.x, self.y),
+        if self.rectangle:
+            xy = ctx.convert(self.x, self.y)
+            xy = (xy[0]-diameter/2.0, xy[1]-diameter/2.0)
+            el = Rectangle(xy=xy,
+                     width=diameter * aspect, height=diameter, **p)
+        else:
+            el = Ellipse(xy=ctx.convert(self.x, self.y),
                      width=diameter * aspect, height=diameter, **p)
         ax.add_artist(el)
 
@@ -351,9 +363,12 @@ class Edge(object):
         dist1 = np.sqrt(dy * dy + dx * dx / float(a1 ** 2))
         dist2 = np.sqrt(dy * dy + dx * dx / float(a2 ** 2))
 
+        radius1 = 0.5 * ctx.node_unit * self.node1.scale
+        radius2 = 0.5 * ctx.node_unit * self.node2.scale
+
         # Compute the fractional effect of the radii of the nodes.
-        alpha1 = 0.5 * ctx.node_unit * self.node1.scale / dist1
-        alpha2 = 0.5 * ctx.node_unit * self.node2.scale / dist2
+        alpha1 = radius1 / dist1
+        alpha2 = radius2 / dist2
 
         # Get the coordinates of the starting position.
         x0, y0 = x1 + alpha1 * dx, y1 + alpha1 * dy
@@ -361,6 +376,18 @@ class Edge(object):
         # Get the width and height of the line.
         dx0 = dx * (1. - alpha1 - alpha2)
         dy0 = dy * (1. - alpha1 - alpha2)
+
+        if self.node1.rectangle:
+            print self.node1.name
+            # replace start coordinates (polar)
+            _, angle = cart2polar(dx0, dy0)
+            angle = angle + np.pi/2.0
+            displacment_dist = radius1/abs(np.cos(angle))  - radius1
+            displacement = polar2cart(displacment_dist, angle)
+            print  vec2deg(angle), np.cos(angle), displacment_dist
+
+            x0 += displacement[1]
+            y0 -= displacement[0]
 
         return x0, y0, dx0, dy0
 
@@ -621,3 +648,18 @@ def _pop_multiple(d, default, *args):
         return default
 
     return results[0][1]
+
+def polar2cart(r, theta):
+    """polar coordinates to cartesian coordinates"""
+    x = r  * np.cos(theta)
+    y = r  * np.sin(theta)
+    return x, y
+
+def cart2polar(x,y):
+    """ cartesian coordinates to polar coordinates"""
+    r = np.sqrt(x**2 + y**2)
+    theta = np.arctan2(y, x)
+    return r, theta
+
+def vec2deg(vec):
+    return 180*vec/np.pi
