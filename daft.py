@@ -377,7 +377,7 @@ class Edge(object):
         dx0 = dx * (1. - alpha1 - alpha2)
         dy0 = dy * (1. - alpha1 - alpha2)
 
-        if self.node1.rectangle:
+        if self.node1.rectangle or self.node2.rectangle:
             # replace start coordinates (polar)
             length, angle = cart2polar(dx0, dy0)
             if abs(angle)>np.pi*0.25 and abs(angle)<np.pi*0.75: # upper & lower
@@ -388,12 +388,13 @@ class Edge(object):
             displacment_dist = radius1/abs(np.cos(angle2))  - radius1
             displacement = polar2cart(displacment_dist, angle)
 
-            x0 += displacement[0]
-            y0 += displacement[1]
-            dx0, dy0 = polar2cart(length-displacment_dist, angle)
-
-            if self.node2.rectangle:
+            if self.node1.rectangle:
+                x0 += displacement[0]
+                y0 += displacement[1]
+            if self.node2.rectangle and self.node1.rectangle:
                 dx0, dy0 = polar2cart(length-2*displacment_dist, angle)
+            else:
+                dx0, dy0 = polar2cart(length-displacment_dist, angle)
 
         return x0, y0, dx0, dy0
 
