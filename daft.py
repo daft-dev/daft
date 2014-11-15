@@ -280,7 +280,7 @@ class Node(object):
             p["fc"] = fc
 
         # Draw the foreground ellipse.
-        if ctx.observed_style == "inner" and not self.fixed:
+        if ctx.observed_style == "inner" and not self.fixed and self.observed:
             p["fc"] = "none"
         el = Ellipse(xy=ctx.convert(self.x, self.y),
                      width=diameter * aspect, height=diameter, **p)
