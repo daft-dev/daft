@@ -437,12 +437,13 @@ class Plate(object):
 
     """
     def __init__(self, rect, label=None, label_offset=[5, 5], shift=0,
-                 position="bottom left", rect_params={}):
+                 position="bottom left", rect_params={}, bbox={}):
         self.rect = rect
         self.label = label
         self.label_offset = label_offset
         self.shift = shift
         self.rect_params = dict(rect_params)
+        self.bbox = dict(bbox)
         self.position = position
 
     def render(self, ctx):
@@ -485,6 +486,7 @@ class Plate(object):
 
             ax.annotate(self.label, pos, xycoords="data",
                         xytext=offset, textcoords="offset points",
+                        bbox=self.bbox,
                         horizontalalignment=ha)
 
         return rect
