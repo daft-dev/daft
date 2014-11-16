@@ -155,8 +155,13 @@ class Node(object):
     :param aspect: (optional)
         The aspect ratio width/height for elliptical nodes; default 1.
 
-    :param observed: (optional)
-        Should this be a conditioned variable?
+    :param rectangle: (optional)
+        If `True` node has a rectangular shape.
+
+    :param double: (optional)
+        Double lines. This must be ``"inner"`` or ``"outer"``.
+        Node is shown as double shapes with the second shape plotted inside
+        or outside of the standard one, respectively.
 
     :param fixed: (optional)
         Should this be a fixed (not permitted to vary) variable?
@@ -175,6 +180,7 @@ class Node(object):
     """
     def __init__(self, name, content, x, y, scale=1, aspect=None,
                  observed=False, fixed=False, rectangle=False,
+                 double = "",
                  offset=[0, 0], plot_params={}, label_params=None):
         # Node style.
         assert not (observed and fixed), \
@@ -182,6 +188,7 @@ class Node(object):
         self.observed = observed
         self.fixed = fixed
         self.rectangle = rectangle
+        self.double = double
 
         # Metadata.
         self.name = name
@@ -257,26 +264,26 @@ class Node(object):
             aspect = ctx.aspect
 
         # Set up an observed node. Note the fc INSANITY.
-        if self.observed:
+        if self.observed or self.double =="inner" or self.double=="outer":
             # Update the plotting parameters depending on the style of
             # observed node.
             h = float(diameter)
             w = aspect * float(diameter)
-            if ctx.observed_style == "shaded":
+            if ctx.observed_style == "shaded" and self.observed:
                 p["fc"] = "0.7"
-            elif ctx.observed_style == "outer":
+            elif ctx.observed_style == "outer" or self.double == "outer":
                 h = diameter + 0.1 * diameter
                 w = aspect * diameter + 0.1 * diameter
-            elif ctx.observed_style == "inner":
+            elif ctx.observed_style == "inner" or self.double == "inner":
                 h = diameter - 0.1 * diameter
                 w = aspect * diameter - 0.1 * diameter
                 p["fc"] = fc
 
             # Draw the background ellipse.
             if self.rectangle:
-                bg = Rectangle(xy=ctx.convert(self.x-w/2, self.y-h/2),
-                         width=w, height=h, **p)
-                print "hi"
+                xy = np.array(ctx.convert(self.x, self.y)) - diameter/2.0
+                xy = xy + (diameter-w)/float(2)
+                bg = Rectangle(xy=xy, width=w, height=h, **p)
             else:
                 bg = Ellipse(xy=ctx.convert(self.x, self.y),
                          width=w, height=h, **p)
@@ -286,13 +293,13 @@ class Node(object):
             p["fc"] = fc
 
         # Draw the foreground ellipse.
-        if ctx.observed_style == "inner" and not self.fixed and self.observed:
+        if ctx.observed_style == "inner" and not self.fixed and \
+            (self.observed or self.double == "inner"):
             p["fc"] = "none"
         if self.rectangle:
-            xy = ctx.convert(self.x, self.y)
-            xy = (xy[0]-diameter/2.0, xy[1]-diameter/2.0)
-            el = Rectangle(xy=xy,
-                     width=diameter * aspect, height=diameter, **p)
+            xy = np.array(ctx.convert(self.x, self.y)) - diameter/2.0
+            el = Rectangle(xy=xy, width=diameter * aspect,
+                     height=diameter, **p)
         else:
             el = Ellipse(xy=ctx.convert(self.x, self.y),
                      width=diameter * aspect, height=diameter, **p)
@@ -378,23 +385,22 @@ class Edge(object):
         dy0 = dy * (1. - alpha1 - alpha2)
 
         if self.node1.rectangle or self.node2.rectangle:
-            # replace start coordinates (polar)
+            # calc displacement of the edge (in direction of the edge)
             length, angle = cart2polar(dx0, dy0)
             if abs(angle)>np.pi*0.25 and abs(angle)<np.pi*0.75: # upper & lower
                 angle2 = angle - np.pi/2.0
             else:
                 angle2 = angle
-
-            displacment_dist = radius1/abs(np.cos(angle2))  - radius1
-            displacement = polar2cart(displacment_dist, angle)
+            displacement = radius1/abs(np.cos(angle2))  - radius1
 
             if self.node1.rectangle:
-                x0 += displacement[0]
-                y0 += displacement[1]
+                displacement_xy = polar2cart(displacement, angle)
+                x0 += displacement_xy[0]
+                y0 += displacement_xy[1]
             if self.node2.rectangle and self.node1.rectangle:
-                dx0, dy0 = polar2cart(length-2*displacment_dist, angle)
+                dx0, dy0 = polar2cart(length-2*displacement, angle)
             else:
-                dx0, dy0 = polar2cart(length-displacment_dist, angle)
+                dx0, dy0 = polar2cart(length-displacement, angle)
 
         return x0, y0, dx0, dy0
 
@@ -667,6 +673,3 @@ def cart2polar(x,y):
     r = np.sqrt(x**2 + y**2)
     theta = np.arctan2(y, x)
     return r, theta
-
-def vec2deg(vec):
-    return 180*vec/np.pi
