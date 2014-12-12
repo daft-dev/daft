@@ -171,11 +171,20 @@ class Node(object):
     :param plot_params: (optional)
         A dictionary of parameters to pass to the
         :class:`matplotlib.patches.Ellipse` constructor.
+    
+    :param label_param: (optional)
+        Default value: None
+        FIXME (undocumented)
+
+    :param shape: (optional)
+        String in {ellipse (default), rectangle}
+        If rectangle, aspect and scale holds for rectangle
 
     """
     def __init__(self, name, content, x, y, scale=1, aspect=None,
                  observed=False, fixed=False,
-                 offset=[0, 0], plot_params={}, label_params=None):
+                 offset=[0, 0], plot_params={}, label_params=None,
+                 shape="ellipse"):
         # Node style.
         assert not (observed and fixed), \
             "A node cannot be both 'observed' and 'fixed'."
@@ -202,6 +211,13 @@ class Node(object):
             self.label_params = dict(label_params)
         else:
             self.label_params = None
+
+        # Shape
+        if shape in ["ellipse", "rectangle"]:
+            self.shape = shape
+        else:
+            print("Warning: wrong shape value, set to ellispe instead")
+            self.shape = "ellispe"
 
     def render(self, ctx):
         """
@@ -272,8 +288,21 @@ class Node(object):
                 p["fc"] = fc
 
             # Draw the background ellipse.
-            bg = Ellipse(xy=ctx.convert(self.x, self.y),
-                         width=w, height=h, **p)
+            if self.shape == "ellipse":
+                bg = Ellipse(xy=ctx.convert(self.x, self.y),
+                             width=w, height=h, **p)
+            elif self.shape == "rectangle":
+                # Adapt to make Rectangle the same api than ellipse
+                wi = w
+                xy = ctx.convert(self.x, self.y) 
+                xy[0] = xy[0] - wi / 2.
+                xy[1] = xy[1] - h /2.
+
+                bg = Rectangle(xy=xy, width=wi, height=h, **p)
+            else:
+                # Should never append
+                raise(ValueError("Wrong shape in object causes an error in render"))
+
             ax.add_artist(bg)
 
             # Reset the face color.
@@ -282,8 +311,22 @@ class Node(object):
         # Draw the foreground ellipse.
         if ctx.observed_style == "inner" and not self.fixed:
             p["fc"] = "none"
-        el = Ellipse(xy=ctx.convert(self.x, self.y),
-                     width=diameter * aspect, height=diameter, **p)
+
+        if self.shape == "ellipse":
+            el = Ellipse(xy=ctx.convert(self.x, self.y),
+                         width=diameter * aspect, height=diameter, **p)
+        elif self.shape =="rectangle":
+            # Adapt to make Rectangle the same api than ellipse
+            wi = diameter * aspect
+            xy = ctx.convert(self.x, self.y) 
+            xy[0] = xy[0] - wi / 2.
+            xy[1] = xy[1] - diameter /2.
+
+            el = Rectangle(xy=xy, width=wi, height=diameter, **p)
+        else:
+            # Should never append
+            raise(ValueError("Wrong shape in object causes an error in render"))
+
         ax.add_artist(el)
 
         # Reset the face color.
@@ -296,6 +339,75 @@ class Node(object):
                     **l)
 
         return el
+
+    def get_frontier_coord(self, target_xy, ctx):
+        """
+        Get the coordinates of the point of intersection between the 
+        shape of the node and a line starting from the center of the node to an
+        arbitrary point. See the example of rectangle bellow:
+
+                    _____________                                      
+                    |            |    ____--X (target_node)             
+                    |        __--X----                                 
+                    |     X--    |(return coordinate of this point)    
+                    |            |                                     
+                    |____________|                                     
+
+        :target_xy: (x float, y float)
+            A tuple of coordinate of target node
+        """
+        
+        # Scale the coordinates appropriately.
+        x1, y1 = ctx.convert(self.x, self.y)
+        x2, y2 = target_xy[0], target_xy[1]
+
+        # Aspect ratios.
+        a = self.aspect
+        if a is None:
+            a = ctx.aspect
+        
+        if self.shape == 'ellipse':
+            # Compute the distances.
+            dx, dy = x2 - x1, y2 - y1
+            dist1 = np.sqrt(dy * dy + dx * dx / float(a ** 2))
+
+            # Compute the fractional effect of the radii of the nodes.
+            alpha1 = 0.5 * ctx.node_unit * self.scale / dist1
+
+            # Get the coordinates of the starting position.
+            x0, y0 = x1 + alpha1 * dx, y1 + alpha1 * dy
+
+            return x0, y0
+
+        elif self.shape == 'rectangle':
+            
+            dx, dy = x2 - x1, y2 - y1
+
+            theta = np.angle(complex(dx, dy))
+            #print(theta)
+            #left or right intersection
+            dxx1 = self.scale*a/2.*np.sign(dx)
+            dyy1 = self.scale*a/2.*np.abs(dy/dx)*np.sign(dy)
+            val1 = np.abs(complex(dxx1, dyy1))
+
+            #up or bottom intersection
+            dxx2 =  self.scale*0.5*np.abs(dx/dy)*np.sign(dx ) 
+            dyy2 =  self.scale*0.5*np.sign(dy ) 
+            val2 = np.abs(complex(dxx2, dyy2))
+            
+
+            if val1 < 0.1*val2:
+                return x1 + dxx1, y1 + dyy1
+            else:
+                return x1 + dxx2, y1 + dyy2
+
+
+        else:
+            # Should never append
+            raise(ValueError("Wrong shape in object causes an error"))
+
+
+
 
 
 class Edge(object):
@@ -339,30 +451,11 @@ class Edge(object):
         x1, y1 = ctx.convert(self.node1.x, self.node1.y)
         x2, y2 = ctx.convert(self.node2.x, self.node2.y)
 
-        # Aspect ratios.
-        a1, a2 = self.node1.aspect, self.node2.aspect
-        if a1 is None:
-            a1 = ctx.aspect
-        if a2 is None:
-            a2 = ctx.aspect
+        x3, y3 = self.node1.get_frontier_coord((x2, y2), ctx)
+        x4, y4 = self.node2.get_frontier_coord((x1, y1), ctx)
 
-        # Compute the distances.
-        dx, dy = x2 - x1, y2 - y1
-        dist1 = np.sqrt(dy * dy + dx * dx / float(a1 ** 2))
-        dist2 = np.sqrt(dy * dy + dx * dx / float(a2 ** 2))
 
-        # Compute the fractional effect of the radii of the nodes.
-        alpha1 = 0.5 * ctx.node_unit * self.node1.scale / dist1
-        alpha2 = 0.5 * ctx.node_unit * self.node2.scale / dist2
-
-        # Get the coordinates of the starting position.
-        x0, y0 = x1 + alpha1 * dx, y1 + alpha1 * dy
-
-        # Get the width and height of the line.
-        dx0 = dx * (1. - alpha1 - alpha2)
-        dy0 = dy * (1. - alpha1 - alpha2)
-
-        return x0, y0, dx0, dy0
+        return x3, y3, x4 - x3, y4 - y3
 
     def render(self, ctx):
         """
