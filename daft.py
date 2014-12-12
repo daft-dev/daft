@@ -386,13 +386,13 @@ class Node(object):
             theta = np.angle(complex(dx, dy))
             #print(theta)
             #left or right intersection
-            dxx1 = self.scale*a/2.*np.sign(dx)
-            dyy1 = self.scale*a/2.*np.abs(dy/dx)*np.sign(dy)
+            dxx1 = self.scale*a/2.*(np.sign(dx) or 1.)
+            dyy1 = self.scale*a/2.*np.abs(dy/dx)*(np.sign(dy) or 1.)
             val1 = np.abs(complex(dxx1, dyy1))
 
             #up or bottom intersection
-            dxx2 =  self.scale*0.5*np.abs(dx/dy)*np.sign(dx ) 
-            dyy2 =  self.scale*0.5*np.sign(dy ) 
+            dxx2 =  self.scale*0.5*np.abs(dx/dy)*(np.sign(dx ) or 1.)
+            dyy2 =  self.scale*0.5*(np.sign(dy ) or 1.)
             val2 = np.abs(complex(dxx2, dyy2))
             
 
@@ -486,13 +486,21 @@ class Edge(object):
             p["head_width"] = p.get("head_width", 0.1)
 
             # Build an arrow.
-            ar = FancyArrow(*self._get_coords(ctx), width=0,
-                            length_includes_head=True,
-                            **p)
+            args = self._get_coords(ctx)
 
-            # Add the arrow to the axes.
-            ax.add_artist(ar)
-            return ar
+            #zero lengh arrow produce error
+            if not(args[2] == 0. and args[3] == 0.): 
+                ar = FancyArrow(*self._get_coords(ctx), width=0,
+                    length_includes_head=True, **p)
+
+                # Add the arrow to the axes.
+                ax.add_artist(ar)
+                return ar
+
+            else:
+                print(args[2], args[3] )
+
+
         else:
             p["color"] = p.get("color", "k")
 
