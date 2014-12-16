@@ -396,7 +396,7 @@ class Node(object):
             val2 = np.abs(complex(dxx2, dyy2))
             
 
-            if val1 < 0.1*val2:
+            if val1 < val2:
                 return x1 + dxx1, y1 + dyy1
             else:
                 return x1 + dxx2, y1 + dyy2
