@@ -126,8 +126,8 @@ class PGM(object):
         for edge in self._edges:
             edge.render(self._ctx)
 
-        for name, node in self._nodes.iteritems():
-            node.render(self._ctx)
+        for name in self._nodes:
+            self._nodes[name].render(self._ctx)
 
         return self.ax
 
