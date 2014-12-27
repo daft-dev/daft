@@ -1,8 +1,9 @@
+# -*- coding: utf-8 -*-
+
+from __future__ import division, print_function
+
 __all__ = ["PGM", "Node", "Edge", "Plate"]
-
-
-__version__ = "0.0.3"
-
+__version__ = "0.0.4-dev"
 
 import matplotlib.pyplot as plt
 from matplotlib.patches import Ellipse
