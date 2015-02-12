@@ -1,8 +1,14 @@
+"""This a fork of the daft project by Daniel Foreman-Mackey, David W. Hogg, 
+and others (https://github.com/dfm/daft ). 
+
+O. Lindemann (https://github.com/lindemann09/daft)
+"""
+
 __all__ = ["PGM", "Node", "Edge", "Plate"]
 
 
-__version__ = "0.0.3"
-
+__version__ = "0.1"
+__author__ = "Oliver Lindemann"
 
 import matplotlib.pyplot as plt
 from matplotlib.patches import Ellipse
@@ -131,6 +137,19 @@ class PGM(object):
 
         return self.ax
 
+    def add(self, plate_or_note):
+        """
+        Add a :class: `Plate` or `Node` to the model.
+
+        """
+        if type(plate_or_note) == Node:
+            self.add_node(plate_or_note)
+        elif type(plate_or_note) == Plate:
+            self.add_plate(plate_or_note)
+        else:
+            raise RuntimeError("Known object to be added to model")
+
+
 
 class Node(object):
     """
@@ -177,11 +196,17 @@ class Node(object):
         A dictionary of parameters to pass to the
         :class:`matplotlib.patches.Ellipse` constructor.
 
+    :param space_double_line: (optional)
+        Distance between the two line for double lines notes.
+        default = 0.15
+
     """
+
     def __init__(self, name, content, x, y, scale=1, aspect=None,
                  observed=False, fixed=False, rectangle=False,
                  double = "",
-                 offset=[0, 0], plot_params={}, label_params=None):
+                 offset=[0, 0], plot_params={}, label_params=None,
+                 space_double_line=0.15):
         # Node style.
         assert not (observed and fixed), \
             "A node cannot be both 'observed' and 'fixed'."
@@ -189,6 +214,7 @@ class Node(object):
         self.fixed = fixed
         self.rectangle = rectangle
         self.double = double
+        self.space_double_line = space_double_line
 
         # Metadata.
         self.name = name
@@ -272,11 +298,11 @@ class Node(object):
             if ctx.observed_style == "shaded" and self.observed:
                 p["fc"] = "0.7"
             elif ctx.observed_style == "outer" or self.double == "outer":
-                h = diameter + 0.1 * diameter
-                w = aspect * diameter + 0.1 * diameter
+                h = diameter + self.space_double_line
+                w = aspect * diameter + self.space_double_line
             elif ctx.observed_style == "inner" or self.double == "inner":
-                h = diameter - 0.1 * diameter
-                w = aspect * diameter - 0.1 * diameter
+                h = diameter - self.space_double_line
+                w = aspect * diameter - self.space_double_line
                 p["fc"] = fc
 
             # Draw the background ellipse.
@@ -457,6 +483,7 @@ class Plate(object):
 
     :param rect:
         The rectangle describing the plate bounds in model coordinates.
+        [left, bottom, width, height]
 
     :param label: (optional)
         A string to annotate the plate.
