@@ -1,5 +1,5 @@
-"""This a fork of the daft project by Daniel Foreman-Mackey, David W. Hogg, 
-and others (https://github.com/dfm/daft ). 
+"""This a fork of the daft project by Daniel Foreman-Mackey, David W. Hogg,
+and others (https://github.com/dfm/daft ).
 
 O. Lindemann (https://github.com/lindemann09/daft)
 """
@@ -63,6 +63,7 @@ class PGM(object):
         self._nodes = {}
         self._edges = []
         self._plates = []
+        self._annotations = []
 
         self._ctx = _rendering_context(shape=shape, origin=origin,
                                        grid_unit=grid_unit,
@@ -116,6 +117,15 @@ class PGM(object):
         self._plates.append(plate)
         return None
 
+    def add_annotation(self, position, text, **kwargs):
+        """
+        Add an annotation text to the model.
+
+        """
+
+        self._annotations.append([position, text, kwargs])
+        return
+
     def render(self):
         """
         Render the :class:`Plate`, :class:`Edge` and :class:`Node` objects in
@@ -134,6 +144,10 @@ class PGM(object):
 
         for name, node in self._nodes.iteritems():
             node.render(self._ctx)
+
+        for pos, text, kwargs in self._annotations:
+            self.ax.annotate(text, self._ctx.convert(pos[0], pos[1]),
+                    **kwargs)
 
         return self.ax
 
