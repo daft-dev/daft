@@ -3,7 +3,7 @@
 from __future__ import division, print_function
 
 __all__ = ["PGM", "Node", "Edge", "Plate"]
-__version__ = "0.0.4-dev"
+__version__ = "0.0.4"
 
 import matplotlib.pyplot as plt
 from matplotlib.patches import Ellipse
