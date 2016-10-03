@@ -9,9 +9,24 @@ import matplotlib.pyplot as plt
 from matplotlib.patches import Ellipse
 from matplotlib.patches import FancyArrow
 from matplotlib.patches import Rectangle as Rectangle
+from matplotlib.text import Annotation
 
 import numpy as np
 
+class Tree(object):
+    """
+    Simple generic tree implementation for storing
+    and connecting artists when rendering the PGM.
+    """
+    def __init__(self, data=None, branches=None):
+        self.root = data
+        if branches is None:
+            self.branches = []
+        else:
+            self.branches = branches
+
+    def add_branch(self, obj):
+        self.branches.append(obj)
 
 class PGM(object):
     """
@@ -111,7 +126,22 @@ class PGM(object):
         self._plates.append(plate)
         return None
 
-    def render(self):
+    def __str__(self):
+        """
+        Print the positions of :class:`Plate` and :class:`Node` objects in
+        the model. This is useful if you interactively edited the model
+        and want to know the new parameters for later reuse.
+        """
+        st = ""
+        for name in self._nodes:
+            st += self._nodes[name].__str__() + "\n"
+
+        for plate in self._plates:
+            st += plate.__str__() + "\n"
+
+        return st
+
+    def render(self, interactive=False):
         """
         Render the :class:`Plate`, :class:`Edge` and :class:`Node` objects in
         the model. This will create a new figure with the correct dimensions
@@ -120,17 +150,94 @@ class PGM(object):
         """
         self.figure = self._ctx.figure()
         self.ax = self._ctx.ax()
+        self.artistTreeList = {} 
+        # Artist tree will contain a dictionary of Nodes and Plates
+        # with pointers to their artists (lines, ellipses, text, arrows)
+
+        for name in self._nodes:
+            artistTree = self._nodes[name].render(self._ctx)
+            self.artistTreeList.update({self._nodes[name]: artistTree})
 
         for plate in self._plates:
-            plate.render(self._ctx)
+            artistTree = plate.render(self._ctx)
+            self.artistTreeList.update({plate: artistTree})
 
         for edge in self._edges:
             edge.render(self._ctx)
+            # Add each arrow to the node1 and node2 trees.
+            self.artistTreeList[edge.node1].add_branch(edge)
+            self.artistTreeList[edge.node2].add_branch(edge)
 
-        for name in self._nodes:
-            self._nodes[name].render(self._ctx)
+        if interactive:
+            # Collect artists
+            self.artists = [key.root for key in self.artistTreeList.values()]
+            tolerance = 5  # some tolerance for grabbing artists 
+            for artist in self.artists:
+                artist.set_picker(tolerance)
+            self.currently_dragging = False
+            self.current_artist = None
+            self.offset = (0, 0)
+            for canvas in set(artist.figure.canvas for artist in self.artists):
+                canvas.mpl_connect('button_press_event', self.on_press)
+                canvas.mpl_connect('button_release_event', self.on_release)
+                canvas.mpl_connect('pick_event', self.on_pick)
+                canvas.mpl_connect('motion_notify_event', self.on_motion)
+            plt.show()
 
         return self.ax
+
+    def on_press(self, event):
+        """Event: click"""
+        self.currently_dragging = True
+
+    def on_release(self, event):
+        """Event: releasing artists"""
+        self.currently_dragging = False
+        self.current_artist = None
+
+    def on_pick(self, event):
+        """
+        Picking artists
+        """
+        if self.current_artist is None:
+            self.current_artist = event.artist
+            x1, y1 = event.mouseevent.xdata, event.mouseevent.ydata
+            # Offset of artist position with respect to click
+            if isinstance(self.current_artist, Rectangle):
+                x0, y0 = self.current_artist.xy
+            elif isinstance(self.current_artist, Ellipse):
+                x0, y0 = self.current_artist.center
+            else:
+                x0, y0 = x1, y1
+            self.offset = (x0 - x1), (y0 - y1)
+
+    def on_motion(self, event):
+        """
+        Moving artist and changing the content of the relevant Node/Plate
+        """
+        if not self.currently_dragging:
+            return
+        if self.current_artist is None:
+            return
+        dx, dy = self.offset  # offset of artist center w.r. to click
+        xp, yp = event.xdata + dx, event.ydata + dy  # plot space
+        xm, ym = self._ctx.invconvert(xp, yp)  # model space
+        for k, v in self.artistTreeList.items():
+            if v.root == self.current_artist:
+                k.move(xm, ym, xp, yp)
+        for key, tree in self.artistTreeList.items():
+            # Traverse list to get the right Plate/Node and its artistTree 
+            if tree.root == self.current_artist:
+                # Move the dependent artists
+                for ar in tree.branches:
+                    if isinstance(ar, Edge):
+                        ar.ar.remove()  # removing artist 
+                        ar.render(self._ctx)  # drawing it again
+                    if isinstance(ar, (Rectangle, Annotation)):
+                        ar.xy = xp, yp
+                    if isinstance(ar, Ellipse):
+                        ar.center = xp, yp
+        self.current_artist.figure.canvas.draw()
 
 
 class Node(object):
@@ -190,8 +297,9 @@ class Node(object):
         # Coordinates and dimensions.
         self.x, self.y = x, y
         self.scale = scale
+        self.scalefac = 6.0
         if self.fixed:
-            self.scale /= 6.0
+            self.scale /= self.scalefac
         self.aspect = aspect
 
         # Display parameters.
@@ -203,6 +311,26 @@ class Node(object):
             self.label_params = dict(label_params)
         else:
             self.label_params = None
+
+    def __str__(self):
+        """
+        Print the input parameters of 
+        """
+        st = "Node("
+        st += "'" + str(self.name) + "'"
+        st += ", "  + "r'" + str(self.content) + "'"
+        st += ", "  + str(self.x)
+        if self.fixed:
+            st += ", scale="  + str(self.scalefac * self.scale)
+        else:
+            st += ", scale="  + str(self.scale)
+        st += ", "  + str(self.y)
+        for atnm in ['aspect', 'observed', 'fixed', 'offset', 'plot_params', 'label_params']:
+            at = getattr(self, atnm)
+            if at is not None:
+                st += ", " + atnm + "="  + str(at)
+        st += ")"
+        return st
 
     def render(self, ctx):
         """
@@ -256,6 +384,7 @@ class Node(object):
         else:
             aspect = ctx.aspect
 
+        self.artistTree = Tree()
         # Set up an observed node. Note the fc INSANITY.
         if self.observed:
             # Update the plotting parameters depending on the style of
@@ -276,6 +405,7 @@ class Node(object):
             bg = Ellipse(xy=ctx.convert(self.x, self.y),
                          width=w, height=h, **p)
             ax.add_artist(bg)
+            self.artistTree.add_branch(bg)
 
             # Reset the face color.
             p["fc"] = fc
@@ -283,20 +413,25 @@ class Node(object):
         # Draw the foreground ellipse.
         if ctx.observed_style == "inner" and not self.fixed:
             p["fc"] = "none"
-        el = Ellipse(xy=ctx.convert(self.x, self.y),
+        self.artistTree.root = Ellipse(xy=ctx.convert(self.x, self.y),
                      width=diameter * aspect, height=diameter, **p)
-        ax.add_artist(el)
+        ax.add_artist(self.artistTree.root)
 
         # Reset the face color.
         p["fc"] = fc
 
         # Annotate the node.
-        ax.annotate(self.content, ctx.convert(self.x, self.y),
+        an = ax.annotate(self.content, ctx.convert(self.x, self.y),
                     xycoords="data",
                     xytext=self.offset, textcoords="offset points",
                     **l)
+        self.artistTree.add_branch(an)
 
-        return el
+        return self.artistTree
+
+    def move(self, xm, ym, xp, yp):
+        self.x, self.y = xm, ym
+        self.artistTree.root.center = xp, yp
 
 
 class Edge(object):
@@ -382,7 +517,7 @@ class Edge(object):
         # Add edge annotation.
         if "label" in self.plot_params:
             x, y, dx, dy = self._get_coords(ctx)
-            ax.annotate(self.plot_params["label"],
+            an = ax.annotate(self.plot_params["label"],
                         [x + 0.5 * dx, y + 0.5 * dy], xycoords="data",
                         xytext=[0, 3], textcoords="offset points",
                         ha="center", va="center")
@@ -394,13 +529,12 @@ class Edge(object):
             p["head_width"] = p.get("head_width", 0.1)
 
             # Build an arrow.
-            ar = FancyArrow(*self._get_coords(ctx), width=0,
+            self.ar = FancyArrow(*self._get_coords(ctx), width=0,
                             length_includes_head=True,
                             **p)
 
             # Add the arrow to the axes.
-            ax.add_artist(ar)
-            return ar
+            ax.add_artist(self.ar)
         else:
             p["color"] = p.get("color", "k")
 
@@ -408,8 +542,8 @@ class Edge(object):
             x, y, dx, dy = self._get_coords(ctx)
 
             # Plot the line.
-            line = ax.plot([x, x + dx], [y, y + dy], **p)
-            return line
+            self.ar = ax.plot([x, x + dx], [y, y + dy], **p)
+        return self.ar
 
 
 class Plate(object):
@@ -446,6 +580,21 @@ class Plate(object):
         self.rect_params = dict(rect_params)
         self.bbox = dict(bbox)
         self.position = position
+
+    def __str__(self):
+        """
+        Print the input parameters of 
+        """
+        st = "Plate("
+        st += str(self.rect)
+        st += ", label=r'" + self.label + "'"
+        st += ", position='" + self.position + "'"
+        for atnm in ['label_offset', 'shift', 'rect_params', 'bbox']:
+            at = getattr(self, atnm)
+            if at is not None:
+                st += ", " + atnm + "="  + str(at)
+        st += ")"
+        return st
 
     def render(self, ctx):
         """
@@ -485,13 +634,18 @@ class Plate(object):
                 raise RuntimeError("Unknown positioning string: {0}"
                                    .format(self.position))
 
-            ax.annotate(self.label, pos, xycoords="data",
+            an = ax.annotate(self.label, pos, xycoords="data",
                         xytext=offset, textcoords="offset points",
                         bbox=self.bbox,
                         horizontalalignment=ha)
 
-        return rect
+        self.artistTree = Tree(rect, [an])
 
+        return self.artistTree
+
+    def move(self, xm, ym, xp, yp):
+        self.x, self.y = xm, ym
+        self.artistTree.root.xy = xp, yp
 
 class _rendering_context(object):
     """
@@ -584,6 +738,14 @@ class _rendering_context(object):
         """
         assert len(xy) == 2
         return self.grid_unit * (np.atleast_1d(xy) - self.origin)
+
+    def invconvert(self, *xy):
+        """
+        Convert from plot coordinates to model coordinates.
+
+        """
+        assert len(xy) == 2
+        return self.origin + np.atleast_1d(xy) / self.grid_unit
 
 
 def _pop_multiple(d, default, *args):
