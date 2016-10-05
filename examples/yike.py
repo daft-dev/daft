@@ -30,6 +30,6 @@ pgm.add_plate(daft.Plate([0.5, 2.25, 2, 1.25],
         label=r"galaxies $n$"))
 pgm.add_plate(daft.Plate([0.25, 1.75, 2.5, 2.75],
         label=r"patches $m$"))
-pgm.render()
+pgm.render(interactive=True)
 pgm.figure.savefig("yike.pdf")
 pgm.figure.savefig("yike.png", dpi=150)

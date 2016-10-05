@@ -17,6 +17,6 @@ if __name__ == "__main__":
     pgm.add_edge("alpha", "true")
     pgm.add_edge("Sigma", "sigma")
     pgm.add_edge("sigma", "obs")
-    pgm.render()
+    pgm.render(interactive=True)
     pgm.figure.savefig("gaia.pdf")
     pgm.figure.savefig("gaia.png", dpi=150)
