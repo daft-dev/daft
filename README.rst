@@ -6,7 +6,9 @@ in a journal or on the internet. With a short Python script and an intuitive
 model-building syntax you can design directed and undirected graphs and save
 them in any formats that matplotlib supports.
 
-Get more information at: `daft-pgm.org <http://daft-pgm.org>`_
+Get more information at `daft-pgm.org <http://daft-pgm.org>`_
+
+Try making some PGMs with the `example notebooks <http://mybinder.org:/repo/drphilmarshall/daft>`_
 
 .. image:: http://mybinder.org/badge.svg 
   :target: http://mybinder.org:/repo/drphilmarshall/daft
