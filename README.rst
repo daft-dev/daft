@@ -14,5 +14,7 @@ Try making some PGMs with the `example notebooks <http://mybinder.org:/repo/drph
   :target: http://mybinder.org:/repo/drphilmarshall/daft
 
 
+(You may need to `rebuild the binder <http://mybinder.org/status/drphilmarshall/daft>`_.)
+
 **************************************************************
 
