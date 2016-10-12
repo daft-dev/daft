@@ -6,3 +6,4 @@ dist
 *.egg-info
 *~
 *.png
+*ipynb_checkpoints*
