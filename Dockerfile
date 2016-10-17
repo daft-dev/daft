@@ -6,6 +6,6 @@ USER root
 
 # Add dependency
 RUN apt-get update
-RUN apt-get install -qy texlive-full
+RUN apt-get install -qy texlive-base
 
 USER main
