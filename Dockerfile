@@ -1,6 +1,11 @@
-RUN apt-get update -q
+FROM andrewosh/binder-base
+
+MAINTAINER Boris Leistedt <boris.leistedt@gmail.com>
+
+USER root
+
+# Add dependency
+RUN apt-get update
 RUN apt-get install -qy texlive-full 
 
-docker pull jupyter/notebook
-docker pull jupyter/nbviewer
-docker run -p 8080:8080 jupyter/nbviewer
+USER main
