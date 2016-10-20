@@ -11,10 +11,10 @@ Get more information at `daft-pgm.org <http://daft-pgm.org>`_
 Try making some PGMs with the `example notebooks <http://mybinder.org:/repo/drphilmarshall/daft>`_
 
 .. image:: http://mybinder.org/badge.svg 
-  :target: http://mybinder.org:/repo/drphilmarshall/daft
+  :target: http://mybinder.org:/repo/dfm/daft
 
 
-(You may need to `rebuild the binder <http://mybinder.org/status/drphilmarshall/daft>`_.)
+(You may need to `rebuild the binder <http://mybinder.org/status/dfm/daft>`_.)
 
 **************************************************************
 
