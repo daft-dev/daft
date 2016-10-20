@@ -63,6 +63,6 @@ pgm.add_node(daft.Node("star pos", r"$\vec{x_n}$", star_x, star_y))
 pgm.add_edge("star pos", "star adt")
 
 # done
-pgm.render()
+pgm.render(interactive=True)
 pgm.figure.savefig("galex.pdf")
 pgm.figure.savefig("galex.png", dpi=150)

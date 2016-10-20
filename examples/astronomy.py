@@ -155,6 +155,6 @@ pgm.add_node(daft.Node("cosmic rays", r"~\\cosmic-ray\\model", 8.0, 1.5, aspect=
 pgm.add_edge("cosmic rays", "noise patch")
 
 # Render and save.
-pgm.render()
+pgm.render(interactive=True)
 pgm.figure.savefig("astronomy.pdf")
 pgm.figure.savefig("astronomy.png", dpi=150)

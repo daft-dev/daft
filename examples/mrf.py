@@ -27,6 +27,6 @@ for e in [(4, 9), (6, 7), (3, 7), (10, 11), (10, 9), (10, 14),
     pgm.add_edge(str(e[0]), str(e[1]))
 
 # Render and save.
-pgm.render()
+pgm.render(interactive=True)
 pgm.figure.savefig("mrf.pdf")
 pgm.figure.savefig("mrf.png", dpi=150)

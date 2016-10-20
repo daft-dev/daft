@@ -41,6 +41,6 @@ pgm.add_edge("yk", "Yn")
 pgm.add_edge("sigman", "Yn")
 
 # Render and save.
-pgm.render()
+pgm.render(interactive=True)
 pgm.figure.savefig("huey_p_newton.pdf")
 pgm.figure.savefig("huey_p_newton.png", dpi=150)

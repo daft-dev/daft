@@ -40,6 +40,6 @@ pgm.add_plate(daft.Plate([0.5, 0.5, 2, 1], label=r"$n = 1, \ldots, N$",
     shift=-0.1))
 
 # Render and save.
-pgm.render()
+pgm.render(interactive=True)
 pgm.figure.savefig("nogray.pdf")
 pgm.figure.savefig("nogray.png", dpi=150)

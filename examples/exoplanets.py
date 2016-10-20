@@ -49,6 +49,6 @@ pgm.add_plate(daft.Plate([2, 0.5, 1, 1], label=r"pixel $j$",
     shift=-0.1))
 
 # Render and save.
-pgm.render()
+pgm.render(interactive=True)
 pgm.figure.savefig("exoplanets.pdf")
 pgm.figure.savefig("exoplanets.png", dpi=150)

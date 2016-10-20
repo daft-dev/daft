@@ -11,6 +11,6 @@ if __name__ == "__main__":
     pgm.add_plate(daft.Plate([0.5, 2.25, 1, 1.25], label=r"data $n$"))
     pgm.add_edge("a", "b")
     pgm.add_edge("b", "c")
-    pgm.render()
+    pgm.render(interactive=True)
     pgm.figure.savefig("bca.pdf")
     pgm.figure.savefig("bca.png", dpi=150)

@@ -47,6 +47,6 @@ pgm.add_node(daft.Node("answer", r'\texttt{"http://dwh.gg/"}', 12., -1.,
                        aspect=4.5, plot_params={"ec": "none"}))
 pgm.add_edge("output", "answer")
 
-pgm.render()
+pgm.render(interactive=True)
 pgm.figure.savefig("recursive.pdf")
 pgm.figure.savefig("recursive.png", dpi=200)

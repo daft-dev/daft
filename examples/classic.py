@@ -38,6 +38,6 @@ pgm.add_plate(daft.Plate([0.5, 0.5, 2, 1], label=r"$n = 1, \cdots, N$",
     shift=-0.1))
 
 # Render and save.
-pgm.render()
+pgm.render(interactive=True)
 pgm.figure.savefig("classic.pdf")
 pgm.figure.savefig("classic.png", dpi=150)
