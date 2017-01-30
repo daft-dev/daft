@@ -79,7 +79,8 @@ class PGM(object):
         self._nodes[node.name] = node
         return node
 
-    def add_edge(self, name1, name2, directed=None, **kwargs):
+    def add_edge(self, name1, name2, directed=None, 
+                 xoffset=0, yoffset=0, **kwargs):
         """
         Construct an :class:`Edge` between two named :class:`Node` objects.
 
@@ -98,7 +99,7 @@ class PGM(object):
             directed = self._ctx.directed
 
         e = Edge(self._nodes[name1], self._nodes[name2], directed=directed,
-                 plot_params=kwargs)
+                 xoffset=xoffset, yoffset=yoffset, plot_params=kwargs)
         self._edges.append(e)
 
         return e
@@ -318,11 +319,14 @@ class Edge(object):
         rendering.
 
     """
-    def __init__(self, node1, node2, directed=True, plot_params={}):
+    def __init__(self, node1, node2, directed=True,
+                 xoffset=0, yoffset=0, plot_params={}):
         self.node1 = node1
         self.node2 = node2
         self.directed = directed
         self.plot_params = dict(plot_params)
+        self.xoffset = xoffset
+        self.yoffset = yoffset
 
     def _get_coords(self, ctx):
         """
@@ -383,7 +387,9 @@ class Edge(object):
         if "label" in self.plot_params:
             x, y, dx, dy = self._get_coords(ctx)
             ax.annotate(self.plot_params["label"],
-                        [x + 0.5 * dx, y + 0.5 * dy], xycoords="data",
+                        [x + 0.5 * dx + self.xoffset,
+                         y + 0.5 * dy + self.yoffset],
+                         xycoords="data",
                         xytext=[0, 3], textcoords="offset points",
                         ha="center", va="center")
 
