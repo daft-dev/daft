@@ -579,6 +579,9 @@ class Plate(object):
         self.shift = shift
         self.rect_params = dict(rect_params)
         self.bbox = dict(bbox)
+        self.bbox['alpha'] = 0
+        self.bbox['fc'] = 'w'
+        self.bbox['ec'] = None
         self.position = position
 
     def __str__(self):
