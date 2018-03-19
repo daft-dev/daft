@@ -49,10 +49,10 @@ class PGM(object):
         Default node label parameters.
 
     """
-    def __init__(self, shape, origin=[0, 0],
-                 grid_unit=2, node_unit=1,
+    def __init__(self, shape, origin=[0., 0.],
+                 grid_unit=2., node_unit=1.,
                  observed_style="shaded",
-                 line_width=1, node_ec="k",
+                 line_width=1., node_ec="k",
                  directed=True, aspect=1.0,
                  label_params={}):
         self._nodes = {}
@@ -183,9 +183,9 @@ class Node(object):
         If rectangle, aspect and scale holds for rectangle
 
     """
-    def __init__(self, name, content, x, y, scale=1, aspect=None,
+    def __init__(self, name, content, x, y, scale=1., aspect=1.,
                  observed=False, fixed=False,
-                 offset=[0, 0], plot_params={}, label_params=None,
+                 offset=[0., 0.], plot_params={}, label_params=None,
                  shape="ellipse"):
         # Node style.
         assert not (observed and fixed), \
@@ -198,11 +198,11 @@ class Node(object):
         self.content = content
 
         # Coordinates and dimensions.
-        self.x, self.y = x, y
-        self.scale = scale
+        self.x, self.y = float(x), float(y)
+        self.scale = float(scale)
         if self.fixed:
             self.scale /= 6.0
-        self.aspect = aspect
+        self.aspect = float(aspect)
 
         # Display parameters.
         self.plot_params = dict(plot_params)
