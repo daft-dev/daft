@@ -545,13 +545,19 @@ class Plate(object):
 
     """
     def __init__(self, rect, label=None, label_offset=[5, 5], shift=0,
-                 position="bottom left", rect_params={}, bbox={}):
+                 position="bottom left", rect_params=None, bbox=None):
         self.rect = rect
         self.label = label
         self.label_offset = label_offset
         self.shift = shift
-        self.rect_params = dict(rect_params)
-        self.bbox = dict(bbox)
+        if rect_params is not None:
+            self.rect_params = dict(rect_params)
+        else:
+            self.rect_params = None
+        if bbox is not None:
+            self.bbox = dict(bbox)
+        else:
+            self.bbox = None
         self.position = position
 
     def render(self, ctx):
