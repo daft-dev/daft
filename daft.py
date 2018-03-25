@@ -576,12 +576,16 @@ class Plate(object):
         tr = ctx.convert(*(r[:2] + r[2:]))
         r = np.concatenate([bl, tr - bl])
 
-        p = self.rect_params
+        if self.rect_params is not None:
+            p = self.rect_params
+        else:
+            p = dict({})
+            
         p["ec"] = _pop_multiple(p, "k", "ec", "edgecolor")
         p["fc"] = _pop_multiple(p, "none", "fc", "facecolor")
         p["lw"] = _pop_multiple(p, ctx.line_width, "lw", "linewidth")
-
         rect = Rectangle(r[:2], *r[2:], **p)
+
         ax.add_artist(rect)
 
         if self.label is not None:
