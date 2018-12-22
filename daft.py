@@ -5,10 +5,13 @@ from __future__ import division, print_function
 __all__ = ["PGM", "Node", "Edge", "Plate"]
 __version__ = "0.0.4"
 
+import matplotlib
+matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 from matplotlib.patches import Ellipse
 from matplotlib.patches import FancyArrow
 from matplotlib.patches import Rectangle as Rectangle
+
 
 import numpy as np
 
@@ -218,8 +221,8 @@ class Node(object):
         if shape in ["ellipse", "rectangle"]:
             self.shape = shape
         else:
-            print("Warning: wrong shape value, set to ellispe instead")
-            self.shape = "ellispe"
+            print("Warning: wrong shape value, set to ellipse instead")
+            self.shape = "ellipse"
 
     def render(self, ctx):
         """
