@@ -218,8 +218,8 @@ class Node(object):
         if shape in ["ellipse", "rectangle"]:
             self.shape = shape
         else:
-            print("Warning: wrong shape value, set to ellispe instead")
-            self.shape = "ellispe"
+            print("Warning: wrong shape value, set to ellipse instead")
+            self.shape = "ellipse"
 
     def render(self, ctx):
         """
