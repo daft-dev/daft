@@ -6,7 +6,6 @@ __all__ = ["PGM", "Node", "Edge", "Plate"]
 __version__ = "0.0.4"
 
 import matplotlib
-matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 from matplotlib.patches import Ellipse
 from matplotlib.patches import FancyArrow
@@ -51,17 +50,22 @@ class PGM(object):
     :param label_params: (optional)
         Default node label parameters.
 
+    :param backend: (optional)
+        The default matplotlib backend.
     """
     def __init__(self, shape, origin=[0., 0.],
                  grid_unit=2., node_unit=1.,
                  observed_style="shaded",
                  line_width=1., node_ec="k",
                  directed=True, aspect=1.0,
-                 label_params={}):
+                 label_params={}, backend=None):
         self._nodes = {}
         self._edges = []
         self._plates = []
-
+        if backend:
+            matplotlib.use(backend,warn=False, force=True )
+            import matplotlib.pyplot as plt
+            print ("matplotlib backend:", matplotlib.get_backend())
         self._ctx = _rendering_context(shape=shape, origin=origin,
                                        grid_unit=grid_unit,
                                        node_unit=node_unit,
