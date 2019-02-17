@@ -5,6 +5,7 @@ from __future__ import division, print_function
 __all__ = ["PGM", "Node", "Edge", "Plate"]
 __version__ = "0.0.4"
 
+import matplotlib as mpl
 import matplotlib.pyplot as plt
 from matplotlib.patches import Ellipse
 from matplotlib.patches import FancyArrow
@@ -253,11 +254,11 @@ class PGM(object):
             def get_max(maxsize, artist):
                 if isinstance(artist, Ellipse):
                     maxsize = np.maximum(maxsize, artist.center +
-                                  np.array([artist.width, artist.height])/2)
+                        np.array([artist.width, artist.height])/2, dtype=np.float)
                 elif isinstance(artist, Rectangle):
                     maxsize = np.maximum(maxsize,
-                                  np.array([artist._x0, artist._y0]) +
-                                  np.array([artist._width, artist._height]))
+                        np.array([artist._x0, artist._y0], dtype=np.float) +
+                        np.array([artist._width, artist._height]), dtype=np.float)
                 return maxsize
 
             maxsize = np.copy(self._ctx.origin)
@@ -817,7 +818,7 @@ class Plate(object):
         """
         ax = ctx.ax()
 
-        s = np.array([0, self.shift])
+        s = np.array([0, self.shift], dtype=np.float)
         r = np.atleast_1d(self.rect)
         bl = ctx.convert(*(r[:2] + s))
         tr = ctx.convert(*(r[:2] + r[2:]))
@@ -836,7 +837,7 @@ class Plate(object):
         ax.add_artist(rect)
 
         if self.label is not None:
-            offset = np.array(self.label_offset)
+            offset = np.array(self.label_offset, dtype=np.float)
             if self.position == "bottom left":
                 pos = r[:2]
                 ha = "left"
@@ -925,8 +926,8 @@ class _rendering_context(object):
         self.padding = .1
         self.shp_fig_scale = 2.54
 
-        self.shape = np.array(kwargs.get("shape", [1, 1]))
-        self.origin = np.array(kwargs.get("origin", [0, 0]))
+        self.shape = np.array(kwargs.get("shape", [1, 1]), dtype=np.float)
+        self.origin = np.array(kwargs.get("origin", [0, 0]), dtype=np.float)
         self.grid_unit = kwargs.get("grid_unit", 2.0)
         self.figsize = self.grid_unit * self.shape / self.shp_fig_scale
 
