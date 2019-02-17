@@ -17,11 +17,13 @@ class PGM(object):
     """
     The base object for building a graphical model representation.
 
-    :param shape:
-        The number of rows and columns in the grid.
+    :param shape: (optional)
+        The number of rows and columns in the grid. Will automatically
+        determine is not provided.
 
-    :param origin:
-        The coordinates of the bottom left corner of the plot.
+    :param origin: (optional)
+        The coordinates of the bottom left corner of the plot. Will
+        automatically determine if not provided.
 
     :param grid_unit: (optional)
         The size of the grid spacing measured in centimeters.
@@ -53,6 +55,9 @@ class PGM(object):
 
     :param label_params: (optional)
         Default node label parameters.
+
+    :param dpi: (optional)
+        Set DPI for display and saving files.
 
     """
     def __init__(self, shape=None, origin=None,
@@ -123,8 +128,8 @@ class PGM(object):
             ``facecolor``, and a few other ``plot_params`` settings.
             This setting conflicts with ``observed``.
 
-    :param deterministic: (optional)
-        Should this be a deterministic variable?
+        :param deterministic: (optional)
+            Should this be a deterministic variable?
 
         :param offset: (optional)
             The ``(dx, dy)`` offset of the label (in points) from the default
@@ -137,9 +142,10 @@ class PGM(object):
             A dictionary of parameters to pass to the
             :class:`matplotlib.patches.Ellipse` constructor.
 
-        :param label_param: (optional)
-            Default value: None
-            FIXME (undocumented)
+        :param label_params: (optional)
+            A dictionary of parameters to pass to the
+            :class:`matplotlib.text.Annotation` constructor. Any kwargs not
+            used by Annontation get passed to :class:`matplotlib.text.Text`.
 
         :param shape: (optional)
             String in {ellipse (default), rectangle}
@@ -233,6 +239,9 @@ class PGM(object):
         the model. This will create a new figure with the correct dimensions
         and plot the model in this area.
 
+        :param dpi: (optional)
+            The DPI value to use for rendering.
+
         """
 
         # self.dpi = kwargs.get('dpi', self._dpi)
@@ -307,10 +316,31 @@ class PGM(object):
         return self.ax
 
     def show(self, dpi=None, *args, **kwargs):
+        """
+        Wrapper on :class:`PGM.render()` that calls `matplotlib.show()` immediately
+        after.
+
+        :param dpi: (optional)
+            The DPI value to use for rendering.
+
+        """
+
         self.render(dpi=dpi)
         plt.show(*args, **kwargs)
 
     def savefig(self, fname, *args, **kwargs):
+        """
+        Wrapper on `matplotlib.Figure.savefig()` that sets default image
+        padding using `bbox_inchaes = tight`.
+        `*args` and **kwargs` are passed to `matplotlib.Figure.savefig()`.
+
+        :param fname:
+            The filename to save as.
+
+        :param dpi: (optional)
+            The DPI value to use for saving.
+
+        """
         kwargs['bbox_inches'] = kwargs.get('bbox_inches', 'tight')
         kwargs['dpi'] = kwargs.get('dpi', self._dpi)
         self.figure.savefig(fname, *args, **kwargs)
@@ -362,9 +392,10 @@ class Node(object):
         A dictionary of parameters to pass to the
         :class:`matplotlib.patches.Ellipse` constructor.
 
-    :param label_param: (optional)
-        Default value: None
-        FIXME (undocumented)
+    :param label_params: (optional)
+        A dictionary of parameters to pass to the
+        :class:`matplotlib.text.Annotation` constructor. Any kwargs not
+        used by Annontation get passed to :class:`matplotlib.text.Text`.
 
     :param shape: (optional)
         String in {ellipse (default), rectangle}
@@ -864,6 +895,9 @@ class _rendering_context(object):
 
     :param label_params:
         Default node label parameters.
+
+    :param dpi: (optional)
+        The DPI value to use for rendering.
 
     """
 
