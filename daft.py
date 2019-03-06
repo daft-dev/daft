@@ -545,7 +545,7 @@ class Plate(object):
 
     :param bbox: (optional)
         A dictionary of parameters to pass to the 
-        :class:`matplotlib.axes.Axes.annotate` function.
+        `matplotlib.axes.Axes.annotate` function.
 
     """
     def __init__(self, rect, label=None, label_offset=[5, 5], shift=0,
