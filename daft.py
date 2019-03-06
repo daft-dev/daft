@@ -549,8 +549,7 @@ class Plate(object):
 
     """
     def __init__(self, rect, label=None, label_offset=[5, 5], shift=0,
-                 position="bottom left", rect_params=None,
-                 bbox=None):
+                 position="bottom left", rect_params=None, bbox=None):
         self.rect = rect
         self.label = label
         self.label_offset = label_offset
