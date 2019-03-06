@@ -543,9 +543,14 @@ class Plate(object):
         A dictionary of parameters to pass to the
         :class:`matplotlib.patches.Rectangle` constructor.
 
+    :param bbox: (optional)
+        A dictionary of parameters to pass to the 
+        :class:`matplotlib.axes.Axes.annotate` function.
+
     """
     def __init__(self, rect, label=None, label_offset=[5, 5], shift=0,
-                 position="bottom left", rect_params=None, bbox=None):
+                 position="bottom left", rect_params=None,
+                 bbox=None):
         self.rect = rect
         self.label = label
         self.label_offset = label_offset
@@ -557,7 +562,7 @@ class Plate(object):
         if bbox is not None:
             self.bbox = dict(bbox)
         else:
-            self.bbox = None
+            self.bbox = {"color": "none"}
         self.position = position
 
     def render(self, ctx):
