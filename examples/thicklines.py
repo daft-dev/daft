@@ -12,7 +12,9 @@ from matplotlib import rc
 rc("font", family="serif", size=14)
 rc("text", usetex=True)
 rc('text.latex',
-   preamble="\usepackage{amssymb}\usepackage{amsmath}\usepackage{mathrsfs}")
+    preamble=[r"\usepackage{amssymb}",
+        r"\usepackage{amsmath}",
+        r"\usepackage{mathrsfs}"])
 
 import daft
 
