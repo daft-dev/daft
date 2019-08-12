@@ -9,6 +9,7 @@ them in any formats that matplotlib supports.
 Get more information at: `daft-pgm.org <http://daft-pgm.org>`_
 **************************************************************
 
-## Now "hiring"!
+Help wanted
+***********
 **Daft** needs a new maintainer. If you have pushed code to the project,
 and want to serve science and humanity, let us know on issue #108.
