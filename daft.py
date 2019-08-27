@@ -39,8 +39,8 @@ class PGM(object):
         ``outer`` nodes are shown as double circles with the second circle
         plotted inside or outside of the standard one, respectively.
 
-    :param deterministic_style: (optional)
-        How should the "deterministic" nodes be indicated? This must be one of:
+    :param alternate_style: (optional)
+        How should the "alternate" nodes be indicated? This must be one of:
         ``"shaded"``, ``"inner"`` or ``"outer"`` where ``inner`` and
         ``outer`` nodes are shown as double circles with the second circle
         plotted inside or outside of the standard one, respectively.
@@ -61,10 +61,11 @@ class PGM(object):
         Set DPI for display and saving files.
 
     """
+
     def __init__(self, shape=None, origin=None,
                  grid_unit=2., node_unit=1.,
                  observed_style="shaded",
-                 deterministic_style='inner',
+                 alternate_style='inner',
                  line_width=1., node_ec="k",
                  directed=True, aspect=1.0,
                  label_params={}, dpi=None):
@@ -73,7 +74,7 @@ class PGM(object):
         self._plates = []
         self._dpi = dpi
 
-        #if shape and origin are not given, pass a default
+        # if shape and origin are not given, pass a default
         # and we will determine at rendering time
         self.shape = shape
         self.origin = origin
@@ -86,7 +87,7 @@ class PGM(object):
                                        grid_unit=grid_unit,
                                        node_unit=node_unit,
                                        observed_style=observed_style,
-                                       deterministic_style=deterministic_style,
+                                       alternate_style=alternate_style,
                                        line_width=line_width,
                                        node_ec=node_ec, directed=directed,
                                        aspect=aspect,
@@ -94,7 +95,7 @@ class PGM(object):
                                        dpi=dpi)
 
     def add_node(self, node, content='', x=0, y=0, scale=1., aspect=None,
-                 observed=False, fixed=False, deterministic=False,
+                 observed=False, fixed=False, alternate=False,
                  offset=[0., 0.], fontsize=None, plot_params={}, label_params=None,
                  shape="ellipse"):
         """
@@ -129,8 +130,8 @@ class PGM(object):
             ``facecolor``, and a few other ``plot_params`` settings.
             This setting conflicts with ``observed``.
 
-        :param deterministic: (optional)
-            Should this be a deterministic variable?
+        :param alternate: (optional)
+            Should this use the alternate style?
 
         :param offset: (optional)
             The ``(dx, dy)`` offset of the label (in points) from the default
@@ -157,9 +158,9 @@ class PGM(object):
             _node = node
         else:
             _node = Node(node, content, x, y, scale, aspect,
-                     observed, fixed, deterministic,
-                     offset, fontsize, plot_params, label_params,
-                     shape)
+                         observed, fixed, alternate,
+                         offset, fontsize, plot_params, label_params,
+                         shape)
 
         self._nodes[_node.name] = _node
 
@@ -180,6 +181,14 @@ class PGM(object):
         :param directed: (optional)
             Should this be a directed edge?
 
+        :param xoffset: (optional)
+            The x-offset from the middle of the arrow to plot the label.
+            Only takes effect if `label` is defined in `plot_params`.
+
+        :param yoffset: (optional)
+            The y-offset from the middle of the arrow to plot the label.
+            Only takes effect if `label` is defined in `plot_params`.
+
         :param plot_params: (optional)
             A dictionary of parameters to pass to the plotting command when
             rendering.
@@ -195,7 +204,7 @@ class PGM(object):
         return e
 
     def add_plate(self, plate, label=None, label_offset=[5, 5], shift=0,
-                 position="bottom left", fontsize=None, rect_params=None, bbox=None):
+                  position="bottom left", fontsize=None, rect_params=None, bbox=None):
         """
         Add a :class:`Plate` object to the model.
 
@@ -228,7 +237,7 @@ class PGM(object):
             _plate = plate
         else:
             _plate = Plate(plate, label, label_offset, shift,
-                                 position, fontsize, rect_params, bbox)
+                           position, fontsize, rect_params, bbox)
 
         self._plates.append(_plate)
 
@@ -254,11 +263,11 @@ class PGM(object):
             def get_max(maxsize, artist):
                 if isinstance(artist, Ellipse):
                     maxsize = np.maximum(maxsize, artist.center +
-                        np.array([artist.width, artist.height])/2, dtype=np.float)
+                                         np.array([artist.width, artist.height  ])/2, dtype=np.float)
                 elif isinstance(artist, Rectangle):
                     maxsize = np.maximum(maxsize,
-                        np.array([artist._x0, artist._y0], dtype=np.float) +
-                        np.array([artist._width, artist._height]), dtype=np.float)
+                                         np.array([artist._x0, artist._y0], dtype=np.float) +
+                                         np.array([artist._width, artist._height]), dtype=np.float)
                 return maxsize
 
             maxsize = np.copy(self._ctx.origin)
@@ -280,10 +289,10 @@ class PGM(object):
             def get_min(minsize, artist):
                 if isinstance(artist, Ellipse):
                     minsize = np.minimum(minsize, artist.center -
-                        np.array([artist.width, artist.height])/2, dtype=np.float)
+                                         np.array([artist.width, artist.height  ])/2, dtype=np.float)
                 elif isinstance(artist, Rectangle):
                     minsize = np.minimum(minsize,
-                        np.array([artist._x0, artist._y0], dtype=np.float))
+                                         np.array([artist._x0, artist._y0], dtype=np.float))
                 return minsize
 
             minsize = np.copy(self._ctx.shape * self._ctx.grid_unit)
@@ -379,8 +388,8 @@ class Node(object):
         ``facecolor``, and a few other ``plot_params`` settings.
         This setting conflicts with ``observed``.
 
-    :param deterministic: (optional)
-        Should this be a deterministic variable?
+    :param alternate: (optional)
+        Should this use the alternate style?
 
     :param offset: (optional)
         The ``(dx, dy)`` offset of the label (in points) from the default
@@ -403,16 +412,23 @@ class Node(object):
         If rectangle, aspect and scale holds for rectangle
 
     """
+
     def __init__(self, name, content, x, y, scale=1., aspect=None,
-                 observed=False, fixed=False, deterministic=False,
+                 observed=False, fixed=False, alternate=False,
                  offset=[0., 0.], fontsize=None, plot_params={}, label_params=None,
                  shape="ellipse"):
-        # Node style.
-        assert not (observed and fixed and deterministic), \
-            "A node cannot be more than one of 'observed', 'fixed', or 'deterministic'."
+
+        # Check Node style.
+        # Iterable is consumed, so first condition checks if two or more are true
+        truthy = iter((observed, alternate, fixed))
+        test = (any(truthy) and not any(truthy)) \
+            or not any((observed, alternate, fixed))
+
+        assert test, \
+            "A node cannot be more than one of 'observed', 'fixed', or 'alternate'."
         self.observed = observed
         self.fixed = fixed
-        self.deterministic = deterministic
+        self.alternate = alternate
 
         # Metadata.
         self.name = name
@@ -503,11 +519,11 @@ class Node(object):
         else:
             aspect = ctx.aspect
 
-        # Set up an observed node or deterministic node. Note the fc INSANITY.
+        # Set up an observed node or alternate node. Note the fc INSANITY.
         if self.observed and not self.fixed:
             style = ctx.observed_style
-        elif self.deterministic and not self.fixed:
-            style = ctx.deterministic_style
+        elif self.alternate and not self.fixed:
+            style = ctx.alternate_style
         else:
             style = False
 
@@ -535,7 +551,7 @@ class Node(object):
                 wi = w
                 xy = ctx.convert(self.x, self.y)
                 xy[0] = xy[0] - wi / 2.
-                xy[1] = xy[1] - h /2.
+                xy[1] = xy[1] - h / 2.
 
                 bg = Rectangle(xy=xy, width=wi, height=h, **p)
             else:
@@ -554,12 +570,12 @@ class Node(object):
         if self.shape == "ellipse":
             el = Ellipse(xy=ctx.convert(self.x, self.y),
                          width=diameter * aspect, height=diameter, **p)
-        elif self.shape =="rectangle":
+        elif self.shape == "rectangle":
             # Adapt to make Rectangle the same api than ellipse
             wi = diameter * aspect
             xy = ctx.convert(self.x, self.y)
             xy[0] = xy[0] - wi / 2.
-            xy[1] = xy[1] - diameter /2.
+            xy[1] = xy[1] - diameter / 2.
 
             el = Rectangle(xy=xy, width=wi, height=diameter, **p)
         else:
@@ -601,14 +617,15 @@ class Node(object):
         x2, y2 = target_xy[0], target_xy[1]
 
         # Aspect ratios.
-        a = self.aspect
-        if a is None:
-            a = ctx.aspect
+        if self.aspect is not None:
+            aspect = self.aspect
+        else:
+            aspect = ctx.aspect
 
         if self.shape == 'ellipse':
             # Compute the distances.
             dx, dy = x2 - x1, y2 - y1
-            dist1 = np.sqrt(dy * dy + dx * dx / float(a ** 2))
+            dist1 = np.sqrt(dy * dy + dx * dx / float(aspect ** 2))
 
             # Compute the fractional effect of the radii of the nodes.
             alpha1 = 0.5 * ctx.node_unit * self.scale / dist1
@@ -622,31 +639,27 @@ class Node(object):
 
             dx, dy = x2 - x1, y2 - y1
 
-            theta = np.angle(complex(dx, dy))
-            #print(theta)
-            #left or right intersection
-            dxx1 = self.scale*a/2.*(np.sign(dx) or 1.)
-            dyy1 = self.scale*a/2.*np.abs(dy/dx)*(np.sign(dy) or 1.)
+            # theta = np.angle(complex(dx, dy))
+            # print(theta)
+            # left or right intersection
+            dxx1 = self.scale * aspect / 2. * (np.sign(dx) or 1.)
+            dyy1 = self.scale * aspect / 2. * \
+                np.abs(dy / dx) * (np.sign(dy) or 1.)
             val1 = np.abs(complex(dxx1, dyy1))
 
-            #up or bottom intersection
-            dxx2 =  self.scale*0.5*np.abs(dx/dy)*(np.sign(dx ) or 1.)
-            dyy2 =  self.scale*0.5*(np.sign(dy ) or 1.)
+            # up or bottom intersection
+            dxx2 = self.scale * 0.5 * np.abs(dx / dy) * (np.sign(dx) or 1.)
+            dyy2 = self.scale * 0.5 * (np.sign(dy) or 1.)
             val2 = np.abs(complex(dxx2, dyy2))
-
 
             if val1 < val2:
                 return x1 + dxx1, y1 + dyy1
             else:
                 return x1 + dxx2, y1 + dyy2
 
-
         else:
             # Should never append
             raise(ValueError("Wrong shape in object causes an error"))
-
-
-
 
 
 class Edge(object):
@@ -663,11 +676,20 @@ class Edge(object):
         Should the edge be directed from ``node1`` to ``node2``? In other
         words: should it have an arrow?
 
+    :param xoffset: (optional)
+        The x-offset from the middle of the arrow to plot the label.
+        Only takes effect if `label` is defined in `plot_params`.
+
+    :param yoffset: (optional)
+        The y-offset from the middle of the arrow to plot the label.
+        Only takes effect if `label` is defined in `plot_params`.
+
     :param plot_params: (optional)
         A dictionary of parameters to pass to the plotting command when
         rendering.
 
     """
+
     def __init__(self, node1, node2, directed=True,
                  xoffset=0, yoffset=0, plot_params={}):
         self.node1 = node1
@@ -696,7 +718,6 @@ class Edge(object):
         x3, y3 = self.node1.get_frontier_coord((x2, y2), ctx)
         x4, y4 = self.node2.get_frontier_coord((x1, y1), ctx)
 
-
         return x3, y3, x4 - x3, y4 - y3
 
     def render(self, ctx):
@@ -721,7 +742,7 @@ class Edge(object):
             ax.annotate(self.plot_params["label"],
                         [x + 0.5 * dx + self.xoffset,
                          y + 0.5 * dy + self.yoffset],
-                         xycoords="data",
+                        xycoords="data",
                         xytext=[0, 3], textcoords="offset points",
                         ha="center", va="center")
 
@@ -734,18 +755,17 @@ class Edge(object):
             # Build an arrow.
             args = self._get_coords(ctx)
 
-            #zero lengh arrow produce error
+            # zero lengh arrow produce error
             if not(args[2] == 0. and args[3] == 0.):
                 ar = FancyArrow(*self._get_coords(ctx), width=0,
-                    length_includes_head=True, **p)
+                                length_includes_head=True, **p)
 
                 # Add the arrow to the axes.
                 ax.add_artist(ar)
                 return ar
 
             else:
-                print(args[2], args[3] )
-
+                print(args[2], args[3])
 
         else:
             p["color"] = p.get("color", "k")
@@ -786,6 +806,7 @@ class Plate(object):
         :class:`matplotlib.patches.Rectangle` constructor.
 
     """
+
     def __init__(self, rect, label=None, label_offset=[5, 5], shift=0,
                  position="bottom left", fontsize=None, rect_params=None, bbox=None):
         self.rect = rect
@@ -879,8 +900,8 @@ class _rendering_context(object):
         ``outer`` nodes are shown as double circles with the second circle
         plotted inside or outside of the standard one, respectively.
 
-    :param deterministic_style: (optional)
-        How should the "deterministic" nodes be indicated? This must be one of:
+    :param alternate_style: (optional)
+        How should the "alternate" nodes be indicated? This must be one of:
         ``"shaded"``, ``"inner"`` or ``"outer"`` where ``inner`` and
         ``outer`` nodes are shown as double circles with the second circle
         plotted inside or outside of the standard one, respectively.
@@ -914,12 +935,12 @@ class _rendering_context(object):
                 self.observed_style) \
             + "\tOptions are: {0}".format(", ".join(styles))
 
-        # Make sure that the deterministic node style is one that we recognize.
-        self.deterministic_style = kwargs.get("deterministic_style", "inner").lower()
+        # Make sure that the alternate node style is one that we recognize.
+        self.alternate_style = kwargs.get("alternate_style", "inner").lower()
         styles = ["shaded", "inner", "outer"]
-        assert self.deterministic_style in styles, \
-            "Unrecognized deterministic node style: {0}\n".format(
-                self.deterministic_style) \
+        assert self.alternate_style in styles, \
+            "Unrecognized alternate node style: {0}\n".format(
+                self.alternate_style) \
             + "\tOptions are: {0}".format(", ".join(styles))
 
         # Set up the figure and grid dimensions.

@@ -1,5 +1,18 @@
+"""
+Node Types
+==========
+
+There are four default styles of nodes.
+
+"""
+
 import daft
 
-pgm = daft.PGM([2, 1], observed_style="outer", aspect=3.2)
-pgm.add_node(daft.Node("fixed", r"Fixed!", 1, 0.5, observed=True))
-pgm.render().figure.savefig("fixed.png", dpi=150)
+pgm = daft.PGM(aspect=1.5, node_unit=1.75)
+pgm.add_node("unobs", r"Unobserved!", 1, 4)
+pgm.add_node("obs", r"Observed!", 1, 3, observed=True)
+pgm.add_node("alt", r"Alternate!", 1, 2, alternate=True)
+pgm.add_node("fixed", r"Fixed!", 1, 1, fixed=True, aspect=1., offset=[0, 5])
+
+pgm.render()
+pgm.savefig("fixed.png", dpi=150)
