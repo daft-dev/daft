@@ -15,4 +15,5 @@ pgm.add_node("alt", r"Alternate!", 1, 2, alternate=True)
 pgm.add_node("fixed", r"Fixed!", 1, 1, fixed=True, aspect=1., offset=[0, 5])
 
 pgm.render()
+pgm.savefig("fixed.pdf")
 pgm.savefig("fixed.png", dpi=150)

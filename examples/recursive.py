@@ -21,7 +21,7 @@ def recurse(pgm, nodename, level, c):
     r = c // 2
     r1nodename = "r{0:02d}{1:04d}".format(level, r)
     if 2 * r == c:
-        print("adding {0}".format(r1nodename))
+        # print("adding {0}".format(r1nodename))
         pgm.add_node(r1nodename, r"reduce", 2 ** level
                      * (r + 0.5) - 0.5, 3 - 0.7 * level, aspect=1.9)
     pgm.add_edge(nodename, r1nodename)
