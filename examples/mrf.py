@@ -13,8 +13,7 @@ import itertools
 import daft
 
 # Instantiate the PGM.
-pgm = daft.PGM([3.6, 3.6], origin=[0.7, 0.7], node_unit=0.4, grid_unit=1,
-               directed=False)
+pgm = daft.PGM(node_unit=0.4, grid_unit=1, directed=False)
 
 for i, (xi, yi) in enumerate(itertools.product(range(1, 5), range(1, 5))):
     pgm.add_node(str(i), "", xi, yi)

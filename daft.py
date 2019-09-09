@@ -681,12 +681,12 @@ class Node(object):
         if self.shape == "ellipse":
             # Compute the distances.
             dx, dy = x2 - x1, y2 - y1
-            dist1 = np.sqrt(dy * dy + dx * dx / float(aspect ** 2))
-            if dist1 == 0.:
+            if dx == 0. and dy == 0.:
                 raise SameLocationError(edge)
+            dist1 = np.sqrt(dy * dy + dx * dx / float(aspect * aspect))
 
             # Compute the fractional effect of the radii of the nodes.
-            alpha1 = 0.5 * ctx.node_unit * self.scale / dist1
+            alpha1 = .5 * ctx.node_unit * self.scale / dist1
 
             # Get the coordinates of the starting position.
             x0, y0 = x1 + alpha1 * dx, y1 + alpha1 * dy

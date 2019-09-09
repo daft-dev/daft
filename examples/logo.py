@@ -11,7 +11,7 @@ rc("text", usetex=True)
 import daft
 
 # Instantiate the PGM.
-pgm = daft.PGM((3.7, 0.7), origin=(0.15, 0.15))
+pgm = daft.PGM()
 
 pgm.add_node("d", r"$D$", 0.5, 0.5)
 pgm.add_node("a", r"$a$", 1.5, 0.5, observed=True)
