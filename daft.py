@@ -55,17 +55,18 @@ class PGM(object):
         The default aspect ratio for the nodes.
 
     :param label_params: (optional)
-        Default node label parameters.
+        Default node label parameters. See :class:`PGM.Node` for details.
 
     :param dpi: (optional)
         Set DPI for display and saving files.
 
     """
 
-    def __init__(self, shape=None, origin=None,
+    def __init__(self,
+                 shape=None, origin=None,
                  grid_unit=2., node_unit=1.,
                  observed_style="shaded",
-                 alternate_style='inner',
+                 alternate_style="inner",
                  line_width=1., node_ec="k",
                  directed=True, aspect=1.0,
                  label_params={}, dpi=None):
@@ -83,20 +84,24 @@ class PGM(object):
         if origin is None:
             origin = [0, 0]
 
-        self._ctx = _rendering_context(shape=shape, origin=origin,
-                                       grid_unit=grid_unit,
-                                       node_unit=node_unit,
-                                       observed_style=observed_style,
-                                       alternate_style=alternate_style,
-                                       line_width=line_width,
-                                       node_ec=node_ec, directed=directed,
-                                       aspect=aspect,
-                                       label_params=label_params,
-                                       dpi=dpi)
+        self._ctx = _rendering_context(
+            shape=shape,
+            origin=origin,
+            grid_unit=grid_unit,
+            node_unit=node_unit,
+            observed_style=observed_style,
+            alternate_style=alternate_style,
+            line_width=line_width,
+            node_ec=node_ec, directed=directed,
+            aspect=aspect,
+            label_params=label_params,
+            dpi=dpi)
 
-    def add_node(self, node, content='', x=0, y=0, scale=1., aspect=None,
+    def add_node(self, node, content="",
+                 x=0, y=0, scale=1., aspect=None,
                  observed=False, fixed=False, alternate=False,
-                 offset=[0., 0.], fontsize=None, plot_params={}, label_params=None,
+                 offset=[0., 0.], fontsize=None,
+                 plot_params={}, label_params=None,
                  shape="ellipse"):
         """
         Add a :class:`Node` to the model.
@@ -223,7 +228,9 @@ class PGM(object):
             move the bottom of the panel by ``shift`` units.
 
         :param position: (optional)
-            One of ``"bottom left"`` or ``"bottom right"``.
+            One of ``"{vertical} {horizontal}"`` where vertical is ``"bottom"``
+            or ``"middle"`` or ``"top"`` and horizontal is ``"left"`` or
+            ``"center"`` or ``"right"``.
 
         :param fontsize: (optional)
             The fontsize to use.
@@ -243,7 +250,31 @@ class PGM(object):
 
         return None
 
-    def render(self, **kwargs):
+    def add_text(self, x, y, label, fontsize=None):
+        """
+        A subclass of plate to writing text using grid coordinates. Any **kwargs
+        are passed through to :class:`PGM.Plate`.
+
+        :param x:
+            The x-coordinate of the text in *model units*.
+
+        :param y:
+            The y-coordinate of the text.
+
+        :param label:
+            A string to write.
+
+        :param fontsize: (optional)
+            The fontsize to use.
+
+        """
+
+        text = Text(x=x, y=y, label=label, fontsize=fontsize)
+        self._plates.append(text)
+
+        return None
+
+    def render(self, dpi=None):
         """
         Render the :class:`Plate`, :class:`Edge` and :class:`Node` objects in
         the model. This will create a new figure with the correct dimensions
@@ -254,21 +285,34 @@ class PGM(object):
 
         """
 
-        # self.dpi = kwargs.get('dpi', self._dpi)
-        self._ctx.dpi = kwargs.get('dpi', self._dpi)
+        if dpi is None:
+            self._ctx.dpi = self._dpi
+        else:
+            self._ctx.dpi = dpi
+
+        def get_max(maxsize, artist):
+            if isinstance(artist, Ellipse):
+                maxsize = np.maximum(maxsize, artist.center
+                                     + np.array([artist.width, artist.height]) / 2, dtype=np.float)
+            elif isinstance(artist, Rectangle):
+                maxsize = np.maximum(maxsize,
+                                     np.array(
+                                         [artist._x0, artist._y0], dtype=np.float)
+                                     + np.array([artist._width, artist._height]), dtype=np.float)
+            return maxsize
+
+        def get_min(minsize, artist):
+            if isinstance(artist, Ellipse):
+                minsize = np.minimum(minsize, artist.center
+                                     - np.array([artist.width, artist.height]) / 2, dtype=np.float)
+            elif isinstance(artist, Rectangle):
+                minsize = np.minimum(minsize,
+                                     np.array([artist._x0, artist._y0], dtype=np.float))
+            return minsize
 
         # Auto-set shape
         # We pass through each object once to find the maximum coordinates
         if self.shape is None:
-            def get_max(maxsize, artist):
-                if isinstance(artist, Ellipse):
-                    maxsize = np.maximum(maxsize, artist.center +
-                                         np.array([artist.width, artist.height  ])/2, dtype=np.float)
-                elif isinstance(artist, Rectangle):
-                    maxsize = np.maximum(maxsize,
-                                         np.array([artist._x0, artist._y0], dtype=np.float) +
-                                         np.array([artist._width, artist._height]), dtype=np.float)
-                return maxsize
 
             maxsize = np.copy(self._ctx.origin)
 
@@ -286,14 +330,6 @@ class PGM(object):
 
         # Pass through each object to find the minimum coordinates
         if self.origin is None:
-            def get_min(minsize, artist):
-                if isinstance(artist, Ellipse):
-                    minsize = np.minimum(minsize, artist.center -
-                                         np.array([artist.width, artist.height  ])/2, dtype=np.float)
-                elif isinstance(artist, Rectangle):
-                    minsize = np.minimum(minsize,
-                                         np.array([artist._x0, artist._y0], dtype=np.float))
-                return minsize
 
             minsize = np.copy(self._ctx.shape * self._ctx.grid_unit)
 
@@ -351,8 +387,8 @@ class PGM(object):
             The DPI value to use for saving.
 
         """
-        kwargs['bbox_inches'] = kwargs.get('bbox_inches', 'tight')
-        kwargs['dpi'] = kwargs.get('dpi', self._dpi)
+        kwargs["bbox_inches"] = kwargs.get("bbox_inches", "tight")
+        kwargs["dpi"] = kwargs.get("dpi", self._dpi)
         self.figure.savefig(fname, *args, **kwargs)
 
 
@@ -413,19 +449,21 @@ class Node(object):
 
     """
 
-    def __init__(self, name, content, x, y, scale=1., aspect=None,
+    def __init__(self, name, content, x, y,
+                 scale=1., aspect=None,
                  observed=False, fixed=False, alternate=False,
-                 offset=[0., 0.], fontsize=None, plot_params={}, label_params=None,
+                 offset=[0., 0.], fontsize=None,
+                 plot_params={}, label_params=None,
                  shape="ellipse"):
 
         # Check Node style.
         # Iterable is consumed, so first condition checks if two or more are true
-        truthy = iter((observed, alternate, fixed))
-        test = (any(truthy) and not any(truthy)) \
+        node_style = iter((observed, alternate, fixed))
+        test = (any(node_style) and not any(node_style)) \
             or not any((observed, alternate, fixed))
 
         assert test, \
-            "A node cannot be more than one of 'observed', 'fixed', or 'alternate'."
+            "A node cannot be more than one of `observed`, `fixed`, or `alternate`."
         self.observed = observed
         self.fixed = fixed
         self.alternate = alternate
@@ -448,7 +486,7 @@ class Node(object):
         if fontsize is not None:
             self.fontsize = fontsize
         else:
-            self.fontsize = mpl.rcParams['font.size']
+            self.fontsize = mpl.rcParams["font.size"]
 
         # Display parameters.
         self.plot_params = dict(plot_params)
@@ -480,25 +518,31 @@ class Node(object):
         ax = ctx.ax()
 
         # Resolve the plotting parameters.
-        p = dict(self.plot_params)
-        p["lw"] = _pop_multiple(p, ctx.line_width, "lw", "linewidth")
+        plot_params = dict(self.plot_params)
 
-        p["ec"] = p["edgecolor"] = _pop_multiple(p, ctx.node_ec,
-                                                 "ec", "edgecolor")
+        plot_params["lw"] = _pop_multiple(
+            plot_params, ctx.line_width, "lw", "linewidth")
 
-        p["fc"] = _pop_multiple(p, "none", "fc", "facecolor")
-        fc = p["fc"]
+        plot_params["ec"] = plot_params["edgecolor"] = _pop_multiple(
+            plot_params, ctx.node_ec, "ec", "edgecolor")
 
-        p["alpha"] = p.get("alpha", 1)
+        plot_params["fc"] = _pop_multiple(
+            plot_params, "none", "fc", "facecolor")
+        fc = plot_params["fc"]
+
+        plot_params["alpha"] = plot_params.get("alpha", 1)
 
         # And the label parameters.
         if self.label_params is None:
-            l = dict(ctx.label_params)
+            label_params = dict(ctx.label_params)
         else:
-            l = dict(self.label_params)
+            label_params = dict(self.label_params)
 
-        l["va"] = _pop_multiple(l, "center", "va", "verticalalignment")
-        l["ha"] = _pop_multiple(l, "center", "ha", "horizontalalignment")
+        label_params["va"] = _pop_multiple(
+            label_params, "center", "va", "verticalalignment")
+
+        label_params["ha"] = _pop_multiple(
+            label_params, "center", "ha", "horizontalalignment")
 
         # Deal with ``fixed`` nodes.
         scale = self.scale
@@ -506,12 +550,12 @@ class Node(object):
             # MAGIC: These magic numbers should depend on the grid/node units.
             self.offset[1] += 6
 
-            l["va"] = "baseline"
-            l.pop("verticalalignment", None)
-            l.pop("ma", None)
+            label_params["va"] = "baseline"
+            label_params.pop("verticalalignment", None)
+            label_params.pop("ma", None)
 
-            if p["fc"] == "none":
-                p["fc"] = "k"
+            if plot_params["fc"] == "none":
+                plot_params["fc"] = "k"
 
         diameter = ctx.node_unit * scale
         if self.aspect is not None:
@@ -533,19 +577,19 @@ class Node(object):
             h = float(diameter)
             w = aspect * float(diameter)
             if style == "shaded":
-                p["fc"] = "0.7"
+                plot_params["fc"] = "0.7"
             elif style == "outer":
                 h = diameter + 0.1 * diameter
                 w = aspect * diameter + 0.1 * diameter
             elif style == "inner":
                 h = diameter - 0.1 * diameter
                 w = aspect * diameter - 0.1 * diameter
-                p["fc"] = fc
+                plot_params["fc"] = fc
 
             # Draw the background ellipse.
             if self.shape == "ellipse":
                 bg = Ellipse(xy=ctx.convert(self.x, self.y),
-                             width=w, height=h, **p)
+                             width=w, height=h, **plot_params)
             elif self.shape == "rectangle":
                 # Adapt to make Rectangle the same api than ellipse
                 wi = w
@@ -553,7 +597,7 @@ class Node(object):
                 xy[0] = xy[0] - wi / 2.
                 xy[1] = xy[1] - h / 2.
 
-                bg = Rectangle(xy=xy, width=wi, height=h, **p)
+                bg = Rectangle(xy=xy, width=wi, height=h, **plot_params)
             else:
                 # Should never append
                 raise(ValueError("Wrong shape in object causes an error in render"))
@@ -561,15 +605,15 @@ class Node(object):
             ax.add_artist(bg)
 
             # Reset the face color.
-            p["fc"] = fc
+            plot_params["fc"] = fc
 
         # Draw the foreground ellipse.
         if style == "inner" and not self.fixed:
-            p["fc"] = "none"
+            plot_params["fc"] = "none"
 
         if self.shape == "ellipse":
             el = Ellipse(xy=ctx.convert(self.x, self.y),
-                         width=diameter * aspect, height=diameter, **p)
+                         width=diameter * aspect, height=diameter, **plot_params)
         elif self.shape == "rectangle":
             # Adapt to make Rectangle the same api than ellipse
             wi = diameter * aspect
@@ -577,7 +621,7 @@ class Node(object):
             xy[0] = xy[0] - wi / 2.
             xy[1] = xy[1] - diameter / 2.
 
-            el = Rectangle(xy=xy, width=wi, height=diameter, **p)
+            el = Rectangle(xy=xy, width=wi, height=diameter, **plot_params)
         else:
             # Should never append
             raise(ValueError("Wrong shape in object causes an error in render"))
@@ -585,21 +629,23 @@ class Node(object):
         ax.add_artist(el)
 
         # Reset the face color.
-        p["fc"] = fc
+        plot_params["fc"] = fc
 
         # Annotate the node.
         ax.annotate(self.content, ctx.convert(self.x, self.y),
                     xycoords="data",
                     xytext=self.offset, textcoords="offset points",
-                    size=self.fontsize, **l)
+                    size=self.fontsize, **label_params)
 
         return el
 
-    def get_frontier_coord(self, target_xy, ctx):
+    def get_frontier_coord(self, target_xy, ctx, edge):
         """
         Get the coordinates of the point of intersection between the
         shape of the node and a line starting from the center of the node to an
-        arbitrary point. See the example of rectangle bellow:
+        arbitrary point. Will throw a :class:`SameLocationError` if the nodes
+        contain the same `x` and `y` coordinates. See the example of rectangle
+        below:
 
                     _____________
                     |            |    ____--X (target_node)
@@ -622,10 +668,12 @@ class Node(object):
         else:
             aspect = ctx.aspect
 
-        if self.shape == 'ellipse':
+        if self.shape == "ellipse":
             # Compute the distances.
             dx, dy = x2 - x1, y2 - y1
             dist1 = np.sqrt(dy * dy + dx * dx / float(aspect ** 2))
+            if dist1 == 0.:
+                raise SameLocationError(edge)
 
             # Compute the fractional effect of the radii of the nodes.
             alpha1 = 0.5 * ctx.node_unit * self.scale / dist1
@@ -635,7 +683,7 @@ class Node(object):
 
             return x0, y0
 
-        elif self.shape == 'rectangle':
+        elif self.shape == "rectangle":
 
             dx, dy = x2 - x1, y2 - y1
 
@@ -715,8 +763,8 @@ class Edge(object):
         x1, y1 = ctx.convert(self.node1.x, self.node1.y)
         x2, y2 = ctx.convert(self.node2.x, self.node2.y)
 
-        x3, y3 = self.node1.get_frontier_coord((x2, y2), ctx)
-        x4, y4 = self.node2.get_frontier_coord((x1, y1), ctx)
+        x3, y3 = self.node1.get_frontier_coord((x2, y2), ctx, self)
+        x4, y4 = self.node2.get_frontier_coord((x1, y1), ctx, self)
 
         return x3, y3, x4 - x3, y4 - y3
 
@@ -730,11 +778,11 @@ class Edge(object):
         """
         ax = ctx.ax()
 
-        p = self.plot_params
-        p["linewidth"] = _pop_multiple(p, ctx.line_width,
-                                       "lw", "linewidth")
+        plot_params = self.plot_params
+        plot_params["linewidth"] = _pop_multiple(plot_params, ctx.line_width,
+                                                 "lw", "linewidth")
 
-        p["linestyle"] = p.get("linestyle", '-')
+        plot_params["linestyle"] = plot_params.get("linestyle", "-")
 
         # Add edge annotation.
         if "label" in self.plot_params:
@@ -747,10 +795,12 @@ class Edge(object):
                         ha="center", va="center")
 
         if self.directed:
-            p["ec"] = _pop_multiple(p, "k", "ec", "edgecolor")
-            p["fc"] = _pop_multiple(p, "k", "fc", "facecolor")
-            p["head_length"] = p.get("head_length", 0.25)
-            p["head_width"] = p.get("head_width", 0.1)
+            plot_params["ec"] = _pop_multiple(
+                plot_params, "k", "ec", "edgecolor")
+            plot_params["fc"] = _pop_multiple(
+                plot_params, "k", "fc", "facecolor")
+            plot_params["head_length"] = plot_params.get("head_length", 0.25)
+            plot_params["head_width"] = plot_params.get("head_width", 0.1)
 
             # Build an arrow.
             args = self._get_coords(ctx)
@@ -758,7 +808,7 @@ class Edge(object):
             # zero lengh arrow produce error
             if not(args[2] == 0. and args[3] == 0.):
                 ar = FancyArrow(*self._get_coords(ctx), width=0,
-                                length_includes_head=True, **p)
+                                length_includes_head=True, **plot_params)
 
                 # Add the arrow to the axes.
                 ax.add_artist(ar)
@@ -768,13 +818,13 @@ class Edge(object):
                 print(args[2], args[3])
 
         else:
-            p["color"] = p.get("color", "k")
+            plot_params["color"] = plot_params.get("color", "k")
 
             # Get the right coordinates.
             x, y, dx, dy = self._get_coords(ctx)
 
             # Plot the line.
-            line = ax.plot([x, x + dx], [y, y + dy], **p)
+            line = ax.plot([x, x + dx], [y, y + dy], **plot_params)
             return line
 
 
@@ -784,49 +834,65 @@ class Plate(object):
 
     :param rect:
         The rectangle describing the plate bounds in model coordinates.
+        This is [x-start, y-start, x-length, y-length].
 
     :param label: (optional)
         A string to annotate the plate.
 
     :param label_offset: (optional)
-        The x and y offsets of the label text measured in points.
+        The x- and y- offsets of the label text measured in points.
 
     :param shift: (optional)
         The vertical "shift" of the plate measured in model units. This will
         move the bottom of the panel by ``shift`` units.
 
     :param position: (optional)
-        One of ``"bottom left"`` or ``"bottom right"``.
+        One of ``"{vertical} {horizontal}"`` where vertical is ``"bottom"``
+        or ``"middle"`` or ``"top"`` and horizontal is ``"left"`` or
+        ``"center"`` or ``"right"``.
 
     :param fontsize: (optional)
         The fontsize to use.
 
     :param rect_params: (optional)
         A dictionary of parameters to pass to the
-        :class:`matplotlib.patches.Rectangle` constructor.
+        :class:`matplotlib.patches.Rectangle` constructor, which defines
+        the properties of the plate.
+
+    :param bbox: (optional)
+        A dictionary of parameters to pass to the
+        :class:`matplotlib.axes.Axes.annotate` constructor, which defines
+        the box drawn around the text.
 
     """
 
-    def __init__(self, rect, label=None, label_offset=[5, 5], shift=0,
-                 position="bottom left", fontsize=None, rect_params=None, bbox=None):
+    def __init__(self, rect, label=None, label_offset=[5, 5],
+                 shift=0, position="bottom left",
+                 fontsize=None, rect_params=None, bbox=None):
         self.rect = rect
         self.label = label
         self.label_offset = label_offset
         self.shift = shift
+
         if fontsize is not None:
             self.fontsize = fontsize
         else:
-            self.fontsize = mpl.rcParams['font.size']
+            self.fontsize = mpl.rcParams["font.size"]
+
         if rect_params is not None:
             self.rect_params = dict(rect_params)
         else:
             self.rect_params = None
+
         if bbox is not None:
             self.bbox = dict(bbox)
-            if not "self.bbox['fc']" in locals():
-                self.bbox['fc'] = 'none'
+
+            # Set the awful default blue color to transparent
+            if "fc" not in self.bbox.keys():
+                self.bbox["fc"] = "none"
         else:
             self.bbox = None
+
         self.position = position
 
     def render(self, ctx):
@@ -839,44 +905,95 @@ class Plate(object):
         """
         ax = ctx.ax()
 
-        s = np.array([0, self.shift], dtype=np.float)
-        r = np.atleast_1d(self.rect)
-        bl = ctx.convert(*(r[:2] + s))
-        tr = ctx.convert(*(r[:2] + r[2:]))
-        r = np.concatenate([bl, tr - bl])
+        shift = np.array([0, self.shift], dtype=np.float)
+        rect = np.atleast_1d(self.rect)
+        bottom_left = ctx.convert(*(rect[:2] + shift))
+        top_right = ctx.convert(*(rect[:2] + rect[2:]))
+        rect = np.concatenate([bottom_left, top_right - bottom_left])
 
         if self.rect_params is not None:
-            p = self.rect_params
+            rect_params = self.rect_params
         else:
-            p = dict({})
+            rect_params = {}
 
-        p["ec"] = _pop_multiple(p, "k", "ec", "edgecolor")
-        p["fc"] = _pop_multiple(p, "none", "fc", "facecolor")
-        p["lw"] = _pop_multiple(p, ctx.line_width, "lw", "linewidth")
-        rect = Rectangle(r[:2], *r[2:], **p)
+        rect_params["ec"] = _pop_multiple(rect_params, "k", "ec", "edgecolor")
+        rect_params["fc"] = _pop_multiple(
+            rect_params, "none", "fc", "facecolor")
+        rect_params["lw"] = _pop_multiple(
+            rect_params, ctx.line_width, "lw", "linewidth")
+        rectangle = Rectangle(rect[:2], *rect[2:], **rect_params)
 
-        ax.add_artist(rect)
+        ax.add_artist(rectangle)
 
         if self.label is not None:
             offset = np.array(self.label_offset, dtype=np.float)
-            if self.position == "bottom left":
-                pos = r[:2]
+            if "left" in self.position:
+                position = rect[:2]
                 ha = "left"
-            elif self.position == "bottom right":
-                pos = r[:2]
-                pos[0] += r[2]
+            elif "right" in self.position:
+                position = rect[:2]
+                position[0] += rect[2]
                 ha = "right"
-                offset[0] -= 2 * offset[0]
+                offset[0] = -offset[0]
+            elif "center" in self.position:
+                position = rect[:2]
+                position[0] = rect[2] / 2 + rect[0]
+                ha = "center"
             else:
                 raise RuntimeError("Unknown positioning string: {0}"
                                    .format(self.position))
 
-            ax.annotate(self.label, pos, xycoords="data",
+            if "bottom" in self.position:
+                va = "bottom"
+            elif "top" in self.position:
+                position[1] = rect[1] + rect[3]
+                offset[1] = -offset[1] - .1
+                va = "top"
+            elif "middle" in self.position:
+                position[1] += rect[3] / 2
+                va = "center"
+            else:
+                raise RuntimeError("Unknown positioning string: {0}"
+                                   .format(self.position))
+
+            ax.annotate(self.label, xy=position, xycoords="data",
                         xytext=offset, textcoords="offset points",
                         size=self.fontsize, bbox=self.bbox,
-                        horizontalalignment=ha)
+                        horizontalalignment=ha, verticalalignment=va)
 
-        return rect
+        return rectangle
+
+
+class Text(Plate):
+    """
+    A subclass of plate to writing text using grid coordinates. Any **kwargs
+    are passed through to :class:`PGM.Plate`.
+
+    :param x:
+        The x-coordinate of the text in *model units*.
+
+    :param y:
+        The y-coordinate of the text.
+
+    :param label:
+        A string to write.
+
+    :param fontsize: (optional)
+        The fontsize to use.
+
+    """
+
+    def __init__(self, x, y, label, fontsize=None):
+        self.rect = [x, y, 0., 0.]
+        self.label = label
+        self.fontsize = fontsize
+        self.label_offset = [0., 0.]
+        self.bbox = {"fc": "none", "ec": "none"}
+        self.rect_params = {"ec": "none"}
+
+        super().__init__(
+            rect=self.rect, label=self.label, label_offset=self.label_offset,
+            fontsize=self.fontsize, rect_params=self.rect_params, bbox=self.bbox)
 
 
 class _rendering_context(object):
@@ -958,7 +1075,7 @@ class _rendering_context(object):
         self.aspect = kwargs.get("aspect", 1.0)
         self.label_params = dict(kwargs.get("label_params", {}))
 
-        self.dpi = kwargs.get('dpi', None)
+        self.dpi = kwargs.get("dpi", None)
 
         # Initialize the figure to ``None`` to handle caching later.
         self._figure = None
@@ -979,7 +1096,7 @@ class _rendering_context(object):
             self.figsize = self.grid_unit * self.shape / self.shp_fig_scale
 
     def reset_figure(self):
-        if not self._figure is None:
+        if self._figure is not None:
             plt.close(self._figure)
             self._figure = None
             self._ax = None
@@ -1015,17 +1132,17 @@ class _rendering_context(object):
         return self.grid_unit * (np.atleast_1d(xy) - self.origin)
 
 
-def _pop_multiple(d, default, *args):
+def _pop_multiple(_dict, default, *args):
     """
     A helper function for dealing with the way that matplotlib annoyingly
     allows multiple keyword arguments. For example, ``edgecolor`` and ``ec``
     are generally equivalent but no exception is thrown if they are both
     used.
 
-    *Note: This function does throw a :class:`ValueError` if more than one
+    *Note: This function does throw a :class:`TypeError` if more than one
     of the equivalent arguments are provided.*
 
-    :param d:
+    :param _dict:
         A :class:`dict`-like object to "pop" from.
 
     :param default:
@@ -1035,21 +1152,30 @@ def _pop_multiple(d, default, *args):
         The arguments to try to retrieve.
 
     """
-    assert len(args) > 0, "You must provide at least one argument to 'pop'."
+    assert len(args) > 0, "You must provide at least one argument to `pop()`."
 
     results = []
-    for k in args:
+    for arg in args:
         try:
-            results.append((k, d.pop(k)))
+            results.append((arg, _dict.pop(arg)))
         except KeyError:
             pass
 
     if len(results) > 1:
-        raise TypeError("The arguments ({0}) are equivalent, you can only "
-                        .format(", ".join([k for k, v in results]))
-                        + "provide one of them.")
+        raise TypeError(
+            "The arguments ({0}) are equivalent, you can only provide one of them."
+            .format(", ".join([key for key, value in results]))
+        )
 
     if len(results) == 0:
         return default
 
     return results[0][1]
+
+
+class SameLocationError(Exception):
+    def __init__(self, edge):
+        self.message = (
+            "Attempted to add edge between `{}` and `{}` but they "
+            + "share the same location.").format(edge.node1.name, edge.node2.name)
+        super().__init__(self.message)

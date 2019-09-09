@@ -2,6 +2,9 @@ import os
 import sys
 import importlib
 import daft
+import matplotlib as mpl
+
+mpl.rcParams['figure.max_open_warning'] = 100
 
 OUTPUT_FIGS = False
 
@@ -21,7 +24,7 @@ def get_examples(folder):
     return examples
 
 
-def test_examples(examples, test_figs=False):
+def run_examples(examples, test_figs=False):
     if test_figs:
         daft.PGM.savefig = SAVEFIG
     else:
@@ -41,26 +44,26 @@ def remove_imgs(folder):
                 print('Could not unlink {0}'.format(file))
 
 
-if __name__ == '__main__':
-    this_path = os.path.dirname(os.path.abspath(__file__))
-    daft_path = os.path.abspath(os.path.join(this_path, '..'))
-    sys.path.insert(0, daft_path)
+# if __name__ == '__main__':
+this_path = os.path.dirname(os.path.abspath(__file__))
+daft_path = os.path.abspath(os.path.join(this_path, '..'))
+sys.path.insert(0, daft_path)
 
-    if OUTPUT_FIGS:
-        img_path = os.path.abspath(os.path.join(daft_path, 'test/imgs'))
-        if not os.path.exists(img_path):
-            os.makedirs(img_path)
-        os.chdir(img_path)
+if OUTPUT_FIGS:
+    img_path = os.path.abspath(os.path.join(daft_path, 'test/imgs'))
+    if not os.path.exists(img_path):
+        os.makedirs(img_path)
+    os.chdir(img_path)
 
-    print('\nExecuting examples...\n')
-    examples = get_examples(os.path.abspath(os.path.join(daft_path, 'examples')))
-    test_examples(examples=examples, test_figs=OUTPUT_FIGS)
+print('\nExecuting examples...\n')
+examples = get_examples(os.path.abspath(os.path.join(daft_path, 'examples')))
+run_examples(examples=examples, test_figs=OUTPUT_FIGS)
 
-    if OUTPUT_FIGS:
-        print('\nDeleting all images...\n')
-        remove_imgs(img_path)
-        os.chdir(this_path)
-        try:
-            os.rmdir(img_path)
-        except os.error:
-            print('Could not remove {0}'.format(img_path))
+if OUTPUT_FIGS:
+    remove_imgs(img_path)
+    print('\nDeleting all images...\n')
+    os.chdir(this_path)
+    try:
+        os.rmdir(img_path)
+    except os.error:
+        print('Could not remove {0}'.format(img_path))
