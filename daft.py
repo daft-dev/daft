@@ -172,7 +172,8 @@ class PGM(object):
         return node
 
     def add_edge(self, name1, name2, directed=None,
-                 xoffset=0, yoffset=0, plot_params={}, **kwargs):
+                 xoffset=0., yoffset=.1,
+                 label=None, plot_params={}, label_params={}, **kwargs):
         """
         Construct an :class:`Edge` between two named :class:`Node` objects.
 
@@ -184,7 +185,11 @@ class PGM(object):
             the arrow will point to this node.
 
         :param directed: (optional)
-            Should this be a directed edge?
+            Should the edge be directed from ``node1`` to ``node2``? In other
+            words: should it have an arrow?
+
+        :param label: (optional)
+            A string to annotate the edge.
 
         :param xoffset: (optional)
             The x-offset from the middle of the arrow to plot the label.
@@ -195,15 +200,20 @@ class PGM(object):
             Only takes effect if `label` is defined in `plot_params`.
 
         :param plot_params: (optional)
-            A dictionary of parameters to pass to the plotting command when
-            rendering.
+            A dictionary of parameters to pass to the
+            :class:``matplotlib.patches.FancyArrow`` constructor.
+
+        :param label_params: (optional)
+            A dictionary of parameters to pass to the
+            :class:`matplotlib.axes.Axes.annotate` constructor.
 
         """
         if directed is None:
             directed = self._ctx.directed
 
         e = Edge(self._nodes[name1], self._nodes[name2], directed=directed,
-                 xoffset=xoffset, yoffset=yoffset, plot_params=plot_params)
+                 label=label, xoffset=xoffset, yoffset=yoffset,
+                 plot_params=plot_params, label_params=label_params)
         self._edges.append(e)
 
         return e
@@ -445,7 +455,7 @@ class Node(object):
 
     :param shape: (optional)
         String in {ellipse (default), rectangle}
-        If rectangle, aspect and scale holds for rectangle
+        If rectangle, aspect and scale holds for rectangle.
 
     """
 
@@ -724,6 +734,9 @@ class Edge(object):
         Should the edge be directed from ``node1`` to ``node2``? In other
         words: should it have an arrow?
 
+    :param label: (optional)
+        A string to annotate the edge.
+
     :param xoffset: (optional)
         The x-offset from the middle of the arrow to plot the label.
         Only takes effect if `label` is defined in `plot_params`.
@@ -733,19 +746,27 @@ class Edge(object):
         Only takes effect if `label` is defined in `plot_params`.
 
     :param plot_params: (optional)
-        A dictionary of parameters to pass to the plotting command when
-        rendering.
+        A dictionary of parameters to pass to the
+        :class:``matplotlib.patches.FancyArrow`` constructor to adjust
+        edge behavior.
+
+    :param label_params: (optional)
+        A dictionary of parameters to pass to the
+        :class:`matplotlib.axes.Axes.annotate` constructor to adjust
+        label behavior.
 
     """
 
-    def __init__(self, node1, node2, directed=True,
-                 xoffset=0, yoffset=0, plot_params={}):
+    def __init__(self, node1, node2, directed=True, label=None,
+                 xoffset=0, yoffset=.1, plot_params={}, label_params={}):
         self.node1 = node1
         self.node2 = node2
         self.directed = directed
-        self.plot_params = dict(plot_params)
+        self.label = label
         self.xoffset = xoffset
         self.yoffset = yoffset
+        self.plot_params = dict(plot_params)
+        self.label_params = dict(label_params)
 
     def _get_coords(self, ctx):
         """
@@ -785,14 +806,14 @@ class Edge(object):
         plot_params["linestyle"] = plot_params.get("linestyle", "-")
 
         # Add edge annotation.
-        if "label" in self.plot_params:
+        if self.label is not None:
             x, y, dx, dy = self._get_coords(ctx)
-            ax.annotate(self.plot_params["label"],
+            ax.annotate(self.label,
                         [x + 0.5 * dx + self.xoffset,
                          y + 0.5 * dy + self.yoffset],
                         xycoords="data",
                         xytext=[0, 3], textcoords="offset points",
-                        ha="center", va="center")
+                        ha="center", va="center", **self.label_params)
 
         if self.directed:
             plot_params["ec"] = _pop_multiple(
