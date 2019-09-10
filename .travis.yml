@@ -1,12 +1,12 @@
 language: python
 python:
-  - "2.7"
   - "3.6"
   - "3.7"
 # command to install dependencies
 install:
   - pip install -r dev-requirements.txt
+  - pip install .
 # command to run tests
 script:
-  - flake8
+  - flake8 config=.flake8
   - pytest
