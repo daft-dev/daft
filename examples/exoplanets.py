@@ -7,11 +7,12 @@ color the nodes and add arbitrary labels to the figure.
 
 """
 
+import daft
 from matplotlib import rc
+
 rc("font", family="serif", size=12)
 rc("text", usetex=True)
 
-import daft
 
 # Colors.
 p_color = {"ec": "#46a546"}

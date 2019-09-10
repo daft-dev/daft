@@ -6,11 +6,12 @@ This is Yike Tang's model for weak lensing.
 
 """
 
+import daft
 from matplotlib import rc
+
 rc("font", family="serif", size=12)
 rc("text", usetex=True)
 
-import daft
 
 pgm = daft.PGM()
 pgm.add_node("obs", r"$\epsilon^{\mathrm{obs}}_n$", 2, 3, observed=True)

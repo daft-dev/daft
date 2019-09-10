@@ -1,8 +1,9 @@
+import daft
 from matplotlib import rc
+
 rc("font", family="serif", size=12)
 rc("text", usetex=True)
 
-import daft
 
 pgm = daft.PGM()
 pgm.add_node("a", r"$a$", 1, 5)

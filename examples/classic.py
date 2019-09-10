@@ -8,11 +8,12 @@ and it shows off how much beauty is baked in by default.
 
 """
 
+import daft
 from matplotlib import rc
+
 rc("font", family="serif", size=12)
 rc("text", usetex=True)
 
-import daft
 
 # Instantiate the PGM.
 pgm = daft.PGM()

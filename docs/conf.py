@@ -2,18 +2,14 @@
 
 import os
 import sys
+import daft
 
 # If extensions (or modules to document with autodoc) are in another directory,
 # add these directories to sys.path here. If the directory is relative to the
 # documentation root, use os.path.abspath to make it absolute, like shown here.
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-
-import daft
-
-
-extensions = ["sphinx.ext.autodoc", "sphinx.ext.intersphinx",
-              "sphinx.ext.mathjax"]
+extensions = ["sphinx.ext.autodoc", "sphinx.ext.intersphinx", "sphinx.ext.mathjax"]
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ["_templates"]
@@ -64,9 +60,7 @@ html_theme = "daft"
 # Theme options are theme-specific and customize the look and feel of a theme
 # further.  For a list of options available for each theme, see the
 # documentation.
-html_theme_options = {
-    "tagline": "Beautifully rendered probabilistic graphical models.",
-}
+html_theme_options = {"tagline": "Beautifully rendered probabilistic graphical models."}
 
 # Add any paths that contain custom themes here, relative to this directory.
 html_theme_path = ["_themes"]
@@ -101,9 +95,7 @@ html_static_path = ["_static"]
 # html_use_smartypants = True
 
 # Custom sidebar templates, maps document names to template names.
-html_sidebars = {
-    "**": ["relations.html", "searchbox.html"]
-}
+html_sidebars = {"**": ["relations.html", "searchbox.html"]}
 
 # Additional templates that should be rendered to pages, maps page names to
 # template names.
@@ -136,16 +128,14 @@ html_show_sourcelink = False
 # html_file_suffix = None
 
 # Output file base name for HTML help builder.
-htmlhelp_basename = 'Daftdoc'
+htmlhelp_basename = "Daftdoc"
 
 # LaTeX Options.
 latex_elements = {
     # The paper size ('letterpaper' or 'a4paper').
     # 'papersize': 'letterpaper',
-
     # The font size ('10pt', '11pt' or '12pt').
     # 'pointsize': '10pt',
-
     # Additional stuff for the LaTeX preamble.
     # 'preamble': '',
 }
@@ -154,8 +144,7 @@ latex_elements = {
 # (source start file, target name, title, author, documentclass
 # [howto/manual]).
 latex_documents = [
-    ('index', 'Daft.tex', u'Daft Documentation',
-     u'Dan Foreman-Mackey \\& David W. Hogg', 'manual'),
+    ("index", "Daft.tex", u"Daft Documentation", u"Dan Foreman-Mackey \\& David W. Hogg", "manual")
 ]
 
 # The name of an image file (relative to this directory) to place at the top of
@@ -181,10 +170,7 @@ latex_documents = [
 
 # One entry per manual page. List of tuples
 # (source start file, name, description, authors, manual section).
-man_pages = [
-    ('index', 'daft', u'Daft Documentation',
-     [u'Dan Foreman-Mackey & David W. Hogg'], 1)
-]
+man_pages = [("index", "daft", u"Daft Documentation", [u"Dan Foreman-Mackey & David W. Hogg"], 1)]
 
 # If true, show URL addresses after external links.
 # man_show_urls = False
@@ -194,9 +180,15 @@ man_pages = [
 # (source start file, target name, title, author,
 #  dir menu entry, description, category)
 texinfo_documents = [
-    ('index', 'Daft', u'Daft Documentation',
-     u'Dan Foreman-Mackey & David W. Hogg', 'Daft',
-     'One line description of project.', 'Miscellaneous'),
+    (
+        "index",
+        "Daft",
+        u"Daft Documentation",
+        u"Dan Foreman-Mackey & David W. Hogg",
+        "Daft",
+        "One line description of project.",
+        "Miscellaneous",
+    )
 ]
 
 # Documents to append as an appendix to all manuals.
@@ -210,4 +202,4 @@ texinfo_documents = [
 
 
 # Example configuration for intersphinx: refer to the Python standard library.
-intersphinx_mapping = {'http://docs.python.org/': None}
+intersphinx_mapping = {"http://docs.python.org/": None}

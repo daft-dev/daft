@@ -7,22 +7,43 @@ taken.  It is incomplete!
 
 """
 
+import daft
 from matplotlib import rc
+
 rc("font", family="serif", size=12)
 rc("text", usetex=True)
 
-import daft
 
-pgm = daft.PGM(grid_unit=4., node_unit=1.4)
+pgm = daft.PGM(grid_unit=4.0, node_unit=1.4)
 
 # Start with the plates.
-tweak=0.02
+tweak = 0.02
 rect_params = {"lw": 2}
-pgm.add_plate([1.5+tweak, 0.5+tweak, 6.0-2*tweak, 3.75-2*tweak], label=r"\Large telescope+camera+filter multiplets", rect_params=rect_params)
-pgm.add_plate([2.5+tweak, 1.0+tweak, 4.0-2*tweak, 2.75-2*tweak], label=r"\Large images", rect_params=rect_params)
-pgm.add_plate([3.5+tweak, 1.5+tweak, 2.0-2*tweak, 1.75-2*tweak], label=r"\Large pixel patches", rect_params=rect_params)
-pgm.add_plate([1.0+tweak, 4.25+tweak, 3.5-2*tweak, 1.75-2*tweak], label=r"\Large stars", rect_params=rect_params)
-pgm.add_plate([5.5+tweak, 4.25+tweak, 2.5-2*tweak, 1.75-2*tweak], label=r"\Large galaxies", rect_params=rect_params)
+pgm.add_plate(
+    [1.5 + tweak, 0.5 + tweak, 6.0 - 2 * tweak, 3.75 - 2 * tweak],
+    label=r"\Large telescope+camera+filter multiplets",
+    rect_params=rect_params,
+)
+pgm.add_plate(
+    [2.5 + tweak, 1.0 + tweak, 4.0 - 2 * tweak, 2.75 - 2 * tweak],
+    label=r"\Large images",
+    rect_params=rect_params,
+)
+pgm.add_plate(
+    [3.5 + tweak, 1.5 + tweak, 2.0 - 2 * tweak, 1.75 - 2 * tweak],
+    label=r"\Large pixel patches",
+    rect_params=rect_params,
+)
+pgm.add_plate(
+    [1.0 + tweak, 4.25 + tweak, 3.5 - 2 * tweak, 1.75 - 2 * tweak],
+    label=r"\Large stars",
+    rect_params=rect_params,
+)
+pgm.add_plate(
+    [5.5 + tweak, 4.25 + tweak, 2.5 - 2 * tweak, 1.75 - 2 * tweak],
+    label=r"\Large galaxies",
+    rect_params=rect_params,
+)
 
 # ONLY pixels are observed
 asp = 2.3
@@ -39,7 +60,7 @@ pgm.add_edge("sky prior", "sky")
 # Stars
 pgm.add_node("star patch", r"star patch", 4.0, 3.0, aspect=asp)
 pgm.add_edge("star patch", "true pixels")
-pgm.add_node("star SED", r"~\\spectral energy\\distribution", 2.5, 4.75, aspect=asp+0.2)
+pgm.add_node("star SED", r"~\\spectral energy\\distribution", 2.5, 4.75, aspect=asp + 0.2)
 pgm.add_edge("star SED", "star patch")
 pgm.add_node("star position", r"position", 4.0, 4.75, aspect=asp)
 pgm.add_edge("star position", "star patch")
@@ -65,7 +86,7 @@ pgm.add_edge("star models", "star SED")
 # Galaxies
 pgm.add_node("galaxy patch", r"galaxy patch", 5.0, 3.0, aspect=asp)
 pgm.add_edge("galaxy patch", "true pixels")
-pgm.add_node("galaxy SED", r"~\\spectral energy\\distribution", 6.5, 4.75, aspect=asp+0.2)
+pgm.add_node("galaxy SED", r"~\\spectral energy\\distribution", 6.5, 4.75, aspect=asp + 0.2)
 pgm.add_edge("galaxy SED", "galaxy patch")
 pgm.add_node("morphology", r"morphology", 7.5, 4.75, aspect=asp)
 pgm.add_edge("morphology", "galaxy patch")
@@ -120,7 +141,7 @@ pgm.add_edge("WCS", "galaxy patch")
 pgm.add_node("psf", r"PSF model", 3.0, 3.5, aspect=asp)
 pgm.add_edge("psf", "star patch")
 pgm.add_edge("psf", "galaxy patch")
-pgm.add_node("optics", r"optics", 2.0, 3.0, aspect=asp-1.2)
+pgm.add_node("optics", r"optics", 2.0, 3.0, aspect=asp - 1.2)
 pgm.add_edge("optics", "psf")
 pgm.add_edge("optics", "WCS")
 pgm.add_node("atmosphere", r"~\\atmosphere\\model", 1.0, 3.5, aspect=asp)

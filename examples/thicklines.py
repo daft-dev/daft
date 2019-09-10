@@ -8,15 +8,16 @@ check out the `preamble` option in the `matplotlib.rc` command.
 
 """
 
+import daft
 from matplotlib import rc
+
 rc("font", family="serif", size=14)
 rc("text", usetex=True)
-rc('text.latex',
-    preamble=[r"\usepackage{amssymb}",
-              r"\usepackage{amsmath}",
-              r"\usepackage{mathrsfs}"])
+rc(
+    "text.latex",
+    preamble=[r"\usepackage{amssymb}", r"\usepackage{amsmath}", r"\usepackage{mathrsfs}"],
+)
 
-import daft
 
 # Instantiate the PGM.
 pgm = daft.PGM(line_width=2.5)
@@ -38,8 +39,7 @@ pgm.add_edge("w", "x")
 pgm.add_edge("beta", "x")
 
 # And a plate.
-pgm.add_plate([0.5, 0.5, 2, 1],
-              label=r"$\boldsymbol{n = 1, \cdots, N}$", shift=-0.1)
+pgm.add_plate([0.5, 0.5, 2, 1], label=r"$\boldsymbol{n = 1, \cdots, N}$", shift=-0.1)
 
 # Render and save.
 pgm.render()
