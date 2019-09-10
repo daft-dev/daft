@@ -687,7 +687,7 @@ class Node(object):
             plot_params["fc"] = fc
 
         # Draw the foreground ellipse.
-        if style == "inner" and not self.fixed:
+        if style == "inner" and not self.fixed and self.observed:
             plot_params["fc"] = "none"
 
         if self.shape == "ellipse":
