@@ -8,5 +8,5 @@ install:
   - pip install .
 # command to run tests
 script:
-  - flake8
+  - flake8 config=.flake8
   - pytest
