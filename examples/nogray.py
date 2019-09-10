@@ -17,17 +17,17 @@ rc("text", usetex=True)
 
 import daft
 
-pgm = daft.PGM([2.3, 2.05], origin=[0.3, 0.3], observed_style="inner")
+pgm = daft.PGM(observed_style="inner")
 
 # Hierarchical parameters.
-pgm.add_node(daft.Node("alpha", r"$\alpha$", 0.5, 2, fixed=True))
-pgm.add_node(daft.Node("beta", r"$\beta$", 1.5, 2))
+pgm.add_node("alpha", r"$\alpha$", 0.5, 2, fixed=True)
+pgm.add_node("beta", r"$\beta$", 1.5, 2)
 
 # Latent variable.
-pgm.add_node(daft.Node("w", r"$w_n$", 1, 1))
+pgm.add_node("w", r"$w_n$", 1, 1)
 
 # Data.
-pgm.add_node(daft.Node("x", r"$x_n$", 2, 1, observed=True))
+pgm.add_node("x", r"$x_n$", 2, 1, observed=True)
 
 # Add in the edges.
 pgm.add_edge("alpha", "beta")
@@ -36,10 +36,9 @@ pgm.add_edge("w", "x")
 pgm.add_edge("beta", "x")
 
 # And a plate.
-pgm.add_plate(daft.Plate([0.5, 0.5, 2, 1], label=r"$n = 1, \ldots, N$",
-    shift=-0.1))
+pgm.add_plate([0.5, 0.5, 2, 1], label=r"$n = 1, \ldots, N$", shift=-0.1)
 
 # Render and save.
 pgm.render()
-pgm.figure.savefig("nogray.pdf")
-pgm.figure.savefig("nogray.png", dpi=150)
+pgm.savefig("nogray.pdf")
+pgm.savefig("nogray.png", dpi=150)
