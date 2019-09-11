@@ -11,9 +11,9 @@ announcing a *huge* discovery!
 import daft
 from matplotlib import rc
 
-ff = "comic sans ms"
+# ff = "comic sans ms"
 # ff = "impact"
-# ff = "times new roman"
+ff = "times new roman"
 
 rc("font", family=ff, size=12)
 rc("text", usetex=False)
