@@ -32,15 +32,15 @@ Installation
 Installing the most recent stable version of Daft should be pretty easy
 if you use `pip <http://www.pip-installer.org>`_:
 
-::
+.. code-block:: bash
 
     pip install daft
 
 Otherwise, you can download the source (`tar
-<https://github.com/dfm/daft/tarball/master>`_, `zip
-<https://github.com/dfm/daft/zipball/master>`_) and run:
+<https://github.com/daft-dev/daft/tarball/master>`_, `zip
+<https://github.com/daft-dev/daft/zipball/master>`_) and run:
 
-::
+.. code-block:: bash
 
     python setup.py install
 
@@ -57,27 +57,28 @@ Issues
 ------
 
 If you have any problems or questions, `open an "issue" on Github
-<https://github.com/dfm/daft/issues>`_.
+<https://github.com/daft-dev/daft/issues>`_.
 
 
 Authors & Contributions
 -----------------------
 
-**Daft** is being developed and supported by `Dan Foreman-Mackey
-<http://danfm.ca>`_ and `David W. Hogg <http://cosmo.nyu.edu/hogg>`_.
+**Daft** is being developed and supported by `David S. Fulford
+<https://github.com/dsfulf>`_, `Dan Foreman-Mackey
+<https://dfm.io>`_ and `David W. Hogg <http://cosmo.nyu.edu/hogg>`_.
 
 For the hackers in the house, development happens on `Github
-<https://github.com/dfm/daft>`_ and we welcome pull requests. In particular,
+<https://github.com/daft-dev/daft>`_ and we welcome pull requests. In particular,
 we'd love to see examples of how you're using Daft in your work.
 
 
 License
 -------
 
-*Copyright 2012 Dan Foreman-Mackey, David W. Hogg, and contributors.*
+*Copyright 2012-2019 Daft Developers.*
 
 **Daft** is free software made available under the *MIT License*. For details
-see `the LICENSE file <https://raw.github.com/dfm/daft/master/LICENSE.rst>`_.
+see `the LICENSE file <https://raw.github.com/daft-dev/daft/master/LICENSE.rst>`_.
 
 If you use Daft in academic projects, acknowledgements are greatly
 appreciated.

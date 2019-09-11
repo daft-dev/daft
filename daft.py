@@ -319,7 +319,7 @@ class PGM(object):
     def add_text(self, x, y, label, fontsize=None):
         """
         A subclass of plate to writing text using grid coordinates. Any
-        **kwargs are passed through to :class:`PGM.Plate`.
+        ``**kwargs`` are passed through to :class:`PGM.Plate`.
 
         :param x:
             The x-coordinate of the text in *model units*.
@@ -449,9 +449,9 @@ class PGM(object):
 
     def savefig(self, fname, *args, **kwargs):
         """
-        Wrapper on `matplotlib.Figure.savefig()` that sets default image
-        padding using `bbox_inchaes = tight`.
-        `*args` and **kwargs` are passed to `matplotlib.Figure.savefig()`.
+        Wrapper on ``matplotlib.Figure.savefig()`` that sets default image
+        padding using ``bbox_inchaes = tight``.
+        ``*args`` and ``**kwargs`` are passed to `matplotlib.Figure.savefig()`.
 
         :param fname:
             The filename to save as.
@@ -735,15 +735,18 @@ class Node(object):
         contain the same `x` and `y` coordinates. See the example of rectangle
         below:
 
-                    _____________
-                    |            |    ____--X (target_node)
-                    |        __--X----
-                    |     X--    |(return coordinate of this point)
-                    |            |
-                    |____________|
+        .. code-block:: python
+
+            _____________
+            |            |    ____--X (target_node)
+            |        __--X----
+            |     X--    |(return coordinate of this point)
+            |            |
+            |____________|
 
         :target_xy: (x float, y float)
             A tuple of coordinate of target node
+
         """
 
         # Scale the coordinates appropriately.
