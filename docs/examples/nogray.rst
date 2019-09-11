@@ -22,11 +22,12 @@ option for a different look.
 ::
 
     
+    import daft
     from matplotlib import rc
+    
     rc("font", family="serif", size=12)
     rc("text", usetex=True)
     
-    import daft
     
     pgm = daft.PGM(observed_style="inner")
     

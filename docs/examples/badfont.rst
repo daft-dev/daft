@@ -19,6 +19,7 @@ announcing a *huge* discovery!
 ::
 
     
+    import daft
     from matplotlib import rc
     
     ff = "comic sans ms"
@@ -28,7 +29,6 @@ announcing a *huge* discovery!
     rc("font", family=ff, size=12)
     rc("text", usetex=False)
     
-    import daft
     
     pgm = daft.PGM(aspect=2.1, dpi=150)
     pgm.add_node("confused", r"confused", 3.0, 3.0)
