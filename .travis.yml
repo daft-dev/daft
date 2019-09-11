@@ -12,7 +12,7 @@ script:
   - pytest
 after_success: |
   echo $TRAVIS_PYTHON_VERSION
-  if [ "$TRAVIS_PULL_REQUEST" -eq "false" ] && [ -n "$GITHUB_API_KEY" ] &&  [ "$TRAVIS_PYTHON_VERSION" -eq "3.7" ] ; then
+  if [ "$TRAVIS_PULL_REQUEST" = "false" ] && [ -n "$GITHUB_API_KEY" ] &&  [ "$TRAVIS_PYTHON_VERSION" = "3.7" ] ; then
     cd $TRAVIS_BUILD_DIR
     git checkout $TRAVIS_BRANCH
     python docs/gen_example.py
