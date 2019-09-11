@@ -11,10 +11,11 @@ script:
   - flake8 config=.flake8
   - pytest
 after_success: |
-  if [ -n "$GITHUB_API_KEY" ]; then
+  echo $TRAVIS_PYTHON_VERSION
+  if [ "$TRAVIS_PULL_REQUEST" -eq "false" ] && [ -n "$GITHUB_API_KEY" ] &&  [ "$TRAVIS_PYTHON_VERSION" -eq "3.7" ] ; then
     cd $TRAVIS_BUILD_DIR
     git checkout $TRAVIS_BRANCH
-    python docs/gen_examples.py
+    python docs/gen_example.py
     git -c user.name='daft-bot' -c user.email='foreman.mackey+daft-bot@gmail.com' commit -m "updating examples [ci skip]"
     git push https://$GITHUB_USER_NAME:$GITHUB_API_KEY@github.com/$TRAVIS_REPO_SLUG $TRAVIS_BRANCH
   fi
