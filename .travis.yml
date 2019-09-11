@@ -24,6 +24,7 @@ after_success: |
     cd $TRAVIS_BUILD_DIR
     git checkout $TRAVIS_BRANCH
     python docs/gen_example.py
+    git add _static/examples examples
     git -c user.name='daft-bot' -c user.email='foreman.mackey+daft-bot@gmail.com' commit -m "updating examples [ci skip]"
     git push https://$GITHUB_USER_NAME:$GITHUB_API_KEY@github.com/$TRAVIS_REPO_SLUG $TRAVIS_BRANCH
   fi
