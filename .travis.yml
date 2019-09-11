@@ -9,6 +9,7 @@ addons:
       - texlive-latex-extra
       - texlive-fonts-recommended
       - texlive-fonts-extra
+      - dvipng
 # command to install dependencies
 install:
   - pip install -r dev-requirements.txt
