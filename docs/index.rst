@@ -5,12 +5,12 @@ Daft
 
     <div id="examples"></div>
     <div id="more-examples" style="text-align: right;font-size: 0.8em;">
-        <a href="/examples/">More…</a>
+        <a href="examples">More…</a>
     </div>
-    <script src="/_static/d3.v2.min.js"></script>
-    <script src="/_static/examples.js"></script>
+    <script src="_static/d3.v2.min.js"></script>
+    <script src="_static/examples.js?v=2"></script>
     <script>
-        show_examples(6);
+        show_examples("_static", "examples", 6);
     </script>
 
 
