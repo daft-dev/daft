@@ -2,6 +2,13 @@ language: python
 python:
   - "3.6"
   - "3.7"
+addons:
+  apt:
+    packages:
+      - texlive-latex-recommended
+      - texlive-latex-extra
+      - texlive-fonts-recommended
+      - texlive-fonts-extra
 # command to install dependencies
 install:
   - pip install -r dev-requirements.txt
