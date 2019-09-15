@@ -18,11 +18,12 @@ if you don't want to.
 ::
 
     
+    import daft
     from matplotlib import rc
+    
     rc("font", family="serif", size=12)
     rc("text", usetex=True)
     
-    import daft
     
     pgm = daft.PGM(node_ec="none")
     pgm.add_node("cloudy", r"cloudy", 3, 3)

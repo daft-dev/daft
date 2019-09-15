@@ -1,14 +1,46 @@
 {
-    "classic":         [ 60, 25],
-    "nogray":          [ 60, 25],
-    "nocircles":       [167, 120],
-    "wordy":           [167, 120],
-    "weaklensing":     [220, 110],
-    "mrf":             [ 37, 37],
-    "exoplanets":      [142, 155],
-    "badfont":         [ 20, 25],
-    "recursive":       [252, 365],
-    "astronomy":       [80, 170],
-    "deconvolution":   [660, 70],
-    "fixed":           [5, 50]
+    "classic": [
+        60,
+        25
+    ],
+    "nogray": [
+        60,
+        25
+    ],
+    "nocircles": [
+        167,
+        120
+    ],
+    "wordy": [
+        167,
+        120
+    ],
+    "weaklensing": [
+        220,
+        110
+    ],
+    "mrf": [
+        37,
+        37
+    ],
+    "exoplanets": [
+        142,
+        155
+    ],
+    "recursive": [
+        252,
+        365
+    ],
+    "astronomy": [
+        80,
+        170
+    ],
+    "deconvolution": [
+        660,
+        70
+    ],
+    "fixed": [
+        5,
+        50
+    ]
 }

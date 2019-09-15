@@ -9,7 +9,11 @@ import daft
 # documentation root, use os.path.abspath to make it absolute, like shown here.
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-extensions = ["sphinx.ext.autodoc", "sphinx.ext.intersphinx", "sphinx.ext.mathjax"]
+extensions = [
+    "sphinx.ext.autodoc",
+    "sphinx.ext.intersphinx",
+    "sphinx.ext.mathjax",
+]
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ["_templates"]
@@ -22,7 +26,7 @@ master_doc = "index"
 
 # General information about the project.
 project = u"Daft"
-copyright = u"2012, Dan Foreman-Mackey & David W. Hogg"
+copyright = u"2012-2019, Daft Developers"
 version = daft.__version__
 release = daft.__version__
 
@@ -60,7 +64,9 @@ html_theme = "daft"
 # Theme options are theme-specific and customize the look and feel of a theme
 # further.  For a list of options available for each theme, see the
 # documentation.
-html_theme_options = {"tagline": "Beautifully rendered probabilistic graphical models."}
+html_theme_options = {
+    "tagline": "Beautifully rendered probabilistic graphical models."
+}
 
 # Add any paths that contain custom themes here, relative to this directory.
 html_theme_path = ["_themes"]
@@ -144,7 +150,7 @@ latex_elements = {
 # (source start file, target name, title, author, documentclass
 # [howto/manual]).
 latex_documents = [
-    ("index", "Daft.tex", u"Daft Documentation", u"Dan Foreman-Mackey \\& David W. Hogg", "manual")
+    ("index", "Daft.tex", u"Daft Documentation", u"Daft Developers", "manual")
 ]
 
 # The name of an image file (relative to this directory) to place at the top of
@@ -170,7 +176,7 @@ latex_documents = [
 
 # One entry per manual page. List of tuples
 # (source start file, name, description, authors, manual section).
-man_pages = [("index", "daft", u"Daft Documentation", [u"Dan Foreman-Mackey & David W. Hogg"], 1)]
+man_pages = [("index", "daft", u"Daft Documentation", [u"Daft Developers"], 1)]
 
 # If true, show URL addresses after external links.
 # man_show_urls = False
@@ -184,7 +190,7 @@ texinfo_documents = [
         "index",
         "Daft",
         u"Daft Documentation",
-        u"Dan Foreman-Mackey & David W. Hogg",
+        u"Daft Developers",
         "Daft",
         "One line description of project.",
         "Miscellaneous",

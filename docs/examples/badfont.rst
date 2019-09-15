@@ -19,16 +19,16 @@ announcing a *huge* discovery!
 ::
 
     
+    import daft
     from matplotlib import rc
     
-    ff = "comic sans ms"
+    # ff = "comic sans ms"
     # ff = "impact"
-    # ff = "times new roman"
+    ff = "times new roman"
     
     rc("font", family=ff, size=12)
     rc("text", usetex=False)
     
-    import daft
     
     pgm = daft.PGM(aspect=2.1, dpi=150)
     pgm.add_node("confused", r"confused", 3.0, 3.0)
