@@ -16,22 +16,22 @@ function shuffle(array) {
     return array;
 }
 
-function show_examples(N) {
-    d3.json("/_static/examples.json", function (examples) {
+function show_examples(static_path, examples_path, N) {
+    d3.json(static_path + "/examples.json", function (examples) {
         var k, names = [];
         for (k in examples) {
             names.push(k);
         }
 
-        if (typeof(N) !== "undefined")
+        if (typeof (N) !== "undefined")
             names = shuffle(names).slice(0, N);
 
         d3.select("#examples").selectAll(".example")
-                .data(names)
+            .data(names)
             .enter().append("a")
-                .attr("class", "example")
-                .attr("href", function (d) { return "/examples/" + d + "/"; })
+            .attr("class", "example")
+            .attr("href", function (d) { return examples_path + "/" + d + "/"; })
             .append("img")
-                .attr("src", function (d) { return "/_static/examples/" + d + "-thumb.png"; });
+            .attr("src", function (d) { return static_path + "/examples/" + d + "-thumb.png"; });
     });
 }
