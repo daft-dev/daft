@@ -242,7 +242,7 @@ class PGM(object):
 
         :param plot_params: (optional)
             A dictionary of parameters to pass to the
-            :class:``matplotlib.patches.FancyArrow`` constructor.
+            :class:`matplotlib.patches.FancyArrow` constructor.
 
         :param label_params: (optional)
             A dictionary of parameters to pass to the
@@ -827,7 +827,7 @@ class Edge(object):
 
     :param plot_params: (optional)
         A dictionary of parameters to pass to the
-        :class:``matplotlib.patches.FancyArrow`` constructor to adjust
+        :class:`matplotlib.patches.FancyArrow` constructor to adjust
         edge behavior.
 
     :param label_params: (optional)
