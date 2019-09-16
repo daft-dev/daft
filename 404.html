@@ -13,6 +13,9 @@
 
     <script>
         var path = window.location.pathname;
+        if (path === "/") {
+            path = "";
+        }
         window.location.replace("http://docs.daft-pgm.org/en/latest/" + path)
     </script>
 </body>
