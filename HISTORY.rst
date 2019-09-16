@@ -1,7 +1,7 @@
 .. :changelog:
 
-0.0.5 (upcoming)
-++++++++++++++++
+0.1.0 (2019-09-16)
+++++++++++++++++++
 
 - Auto-sizing of plot. No longer any need to explicitly declare size or origin.
 - Remove need to declare :class:`Node`, :class:`Edge`, or :class:`Plate` classes when calling
@@ -16,7 +16,7 @@
 
 
 0.0.4 (2016-03-14)
-++++++++++++++++
+++++++++++++++++++
 
 - Added ``bbox`` dict to :class:`Plate` which is passed as kwargs to
   :class:`matplotlib.axes.Axes.annotate`
