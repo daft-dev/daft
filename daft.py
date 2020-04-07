@@ -105,6 +105,7 @@ class PGM(object):
             label_params=label_params,
             dpi=dpi,
         )
+        self.figure = None
 
     def add_node(
         self,
@@ -462,6 +463,8 @@ class PGM(object):
         """
         kwargs["bbox_inches"] = kwargs.get("bbox_inches", "tight")
         kwargs["dpi"] = kwargs.get("dpi", self._dpi)
+        if not self.figure:
+            self.render()
         self.figure.savefig(fname, *args, **kwargs)
 
 
