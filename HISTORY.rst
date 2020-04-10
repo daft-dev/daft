@@ -1,5 +1,12 @@
 .. :changelog:
 
+
+0.1.1 (2020-04-10)
+++++++++++++++++++
+
+- Fig bug where ``pgm.savefig()`` is called before ``pmg.render()``.
+
+
 0.1.0 (2019-09-16)
 ++++++++++++++++++
 

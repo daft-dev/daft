@@ -3,7 +3,7 @@
 from __future__ import division, print_function
 
 __all__ = ["PGM", "Node", "Edge", "Plate"]
-__version__ = "0.1.0"
+__version__ = "0.1.1"
 
 import matplotlib as mpl
 import matplotlib.pyplot as plt
