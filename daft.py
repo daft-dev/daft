@@ -362,14 +362,14 @@ class PGM(object):
                 maxsize = np.maximum(
                     maxsize,
                     artist.center + np.array([artist.width, artist.height]) / 2,
-                    dtype=np.float,
+                    dtype=np.float64,
                 )
             elif isinstance(artist, Rectangle):
                 maxsize = np.maximum(
                     maxsize,
-                    np.array([artist._x0, artist._y0], dtype=np.float)
+                    np.array([artist._x0, artist._y0], dtype=np.float64)
                     + np.array([artist._width, artist._height]),
-                    dtype=np.float,
+                    dtype=np.float64,
                 )
             return maxsize
 
@@ -378,10 +378,10 @@ class PGM(object):
                 minsize = np.minimum(
                     minsize,
                     artist.center - np.array([artist.width, artist.height]) / 2,
-                    dtype=np.float,
+                    dtype=np.float64,
                 )
             elif isinstance(artist, Rectangle):
-                minsize = np.minimum(minsize, np.array([artist._x0, artist._y0], dtype=np.float))
+                minsize = np.minimum(minsize, np.array([artist._x0, artist._y0], dtype=np.float64))
             return minsize
 
         # Auto-set shape
@@ -1028,7 +1028,7 @@ class Plate(object):
         """
         ax = ctx.ax()
 
-        shift = np.array([0, self.shift], dtype=np.float)
+        shift = np.array([0, self.shift], dtype=np.float64)
         rect = np.atleast_1d(self.rect)
         bottom_left = ctx.convert(*(rect[:2] + shift))
         top_right = ctx.convert(*(rect[:2] + rect[2:]))
@@ -1047,7 +1047,7 @@ class Plate(object):
         ax.add_artist(rectangle)
 
         if self.label is not None:
-            offset = np.array(self.label_offset, dtype=np.float)
+            offset = np.array(self.label_offset, dtype=np.float64)
             if "left" in self.position:
                 position = rect[:2]
                 ha = "left"
@@ -1193,8 +1193,8 @@ class _rendering_context(object):
         self.padding = 0.1
         self.shp_fig_scale = 2.54
 
-        self.shape = np.array(kwargs.get("shape", [1, 1]), dtype=np.float)
-        self.origin = np.array(kwargs.get("origin", [0, 0]), dtype=np.float)
+        self.shape = np.array(kwargs.get("shape", [1, 1]), dtype=np.float64)
+        self.origin = np.array(kwargs.get("origin", [0, 0]), dtype=np.float64)
         self.grid_unit = kwargs.get("grid_unit", 2.0)
         self.figsize = self.grid_unit * self.shape / self.shp_fig_scale
 
