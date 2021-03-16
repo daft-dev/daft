@@ -433,7 +433,7 @@ class PGM(object):
         for name in self._nodes:
             self._nodes[name].render(self._ctx)
 
-        return self.figure, self.ax
+        return self.ax
 
     def show(self, dpi=None, *args, **kwargs):
         """
