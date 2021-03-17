@@ -3,14 +3,13 @@ Daft
 
 .. raw:: html
 
-    <div id="examples"></div>
+    <div id="examples-block"></div>
     <div id="more-examples" style="text-align: right;font-size: 0.8em;">
         <a href="examples">More…</a>
     </div>
-    <script src="_static/d3.v2.min.js"></script>
     <script src="_static/examples.js?v=2"></script>
     <script>
-        show_examples("_static", "examples", 6);
+        show_examples("_images", "_static", "examples", 6);
     </script>
 
 
@@ -34,23 +33,20 @@ if you use `pip <http://www.pip-installer.org>`_:
 
 .. code-block:: bash
 
-    pip install daft
+    python -m pip install daft
 
-Otherwise, you can download the source (`tar
-<https://github.com/daft-dev/daft/tarball/master>`_, `zip
-<https://github.com/daft-dev/daft/zipball/master>`_) and run:
+Otherwise, you can download the source and run:
 
 .. code-block:: bash
 
-    python setup.py install
+    python -m pip install -e .
 
 in the root directory.
 
 Daft only depends on `matplotlib <http://matplotlib.org/>`_ and
 `numpy <http://numpy.scipy.org>`_. These are standard components of the
 scientific Python stack but if you don't already have them installed ``pip``
-will try to install them for you but sometimes it's easier to do that part
-yourself.
+will try to install them for you.
 
 
 Issues
@@ -75,7 +71,7 @@ we'd love to see examples of how you're using Daft in your work.
 License
 -------
 
-*Copyright 2012-2019 Daft Developers.*
+*Copyright 2012-2021 Daft Developers.*
 
 **Daft** is free software made available under the *MIT License*. For details
 see `the LICENSE file <https://raw.github.com/daft-dev/daft/master/LICENSE.rst>`_.
@@ -91,3 +87,4 @@ API
    :maxdepth: 2
 
    api
+   examples/index

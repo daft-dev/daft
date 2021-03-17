@@ -1,0 +1,16 @@
+repos:
+- repo: https://github.com/pre-commit/pre-commit-hooks
+  rev: v3.4.0
+  hooks:
+  - id: trailing-whitespace
+    exclude: docs
+  - id: end-of-file-fixer
+    exclude_types: [json]
+    exclude: docs
+  - id: debug-statements
+    exclude: docs
+
+- repo: https://github.com/psf/black
+  rev: "20.8b1"
+  hooks:
+  - id: black

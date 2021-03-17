@@ -80,21 +80,24 @@ a.headerlink:hover {
     text-transform: uppercase;
 }
 
-#examples h2 {
+#examples-block h2 {
     display: none;
 }
 
-#examples {
+#examples-block {
     line-height: 0;
     margin-top: 5px;
 }
 
-#examples img {
+#examples-block img {
     border: 1px solid #ccc;
     margin: 5px 0 5px 0;
+    width: 190px;
+    height: 190px;
+    object-fit: none;
 }
 
-#examples a:not(:nth-of-type(3n)) img {
+#examples-block a:not(:nth-of-type(3n)) img {
     margin-right: 8px;
 }
 
@@ -153,13 +156,17 @@ input.searchfield:focus {
     padding: 20px 0;
 }
 
-.figure {
+.figure, .cell_output {
     background: white;
     text-align: center;
     padding: 15px;
     margin: 15px 0;
     border: 1px solid #DDD;
     overflow: auto;
+}
+
+.output {
+    display: none;
 }
 
 /* API */

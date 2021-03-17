@@ -1,0 +1,15 @@
+version: 2
+
+submodules:
+  include: all
+
+python:
+  version: 3.7
+  install:
+    - method: pip
+      path: .
+      extra_requirements:
+        - docs
+
+sphinx:
+  builder: dirhtml
