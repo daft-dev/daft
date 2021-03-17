@@ -32,6 +32,7 @@ jobs:
       - uses: actions/upload-artifact@v2
         with:
           path: ./result_images
+          name: images
 
   dist:
     runs-on: ubuntu-latest
@@ -59,6 +60,7 @@ jobs:
       - uses: actions/upload-artifact@v2
         with:
           path: dist/*
+          name: dist
 
   upload_pypi:
     needs: [tests, dist]
@@ -67,8 +69,8 @@ jobs:
     steps:
       - uses: actions/download-artifact@v2
         with:
-          name: artifact
           path: dist
+          name: dist
 
       - uses: pypa/gh-action-pypi-publish@master
         with:

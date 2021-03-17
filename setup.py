@@ -8,6 +8,7 @@ setup(
     use_scm_version=True,
     description="PGM rendering at its finest",
     long_description=open("README.rst").read(),
+    long_description_content_type="text/x-rst",
     author="Daft Developers",
     author_email="danfm@nyu.edu",
     url="http://daft-pgm.org",
