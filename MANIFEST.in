@@ -1,1 +1,4 @@
-include README.rst LICENSE.rst requirements.txt
+exclude .gitignore *.md
+prune .github
+prune docs
+prune images

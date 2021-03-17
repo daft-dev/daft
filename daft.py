@@ -1,9 +1,8 @@
 # -*- coding: utf-8 -*-
 
-from __future__ import division, print_function
-
 __all__ = ["PGM", "Node", "Edge", "Plate"]
-__version__ = "0.1.1"
+
+from pkg_resources import get_distribution, DistributionNotFound
 
 import matplotlib as mpl
 import matplotlib.pyplot as plt
@@ -12,6 +11,11 @@ from matplotlib.patches import FancyArrow
 from matplotlib.patches import Rectangle as Rectangle
 
 import numpy as np
+
+try:
+    __version__ = get_distribution("daft").version
+except DistributionNotFound:
+    pass
 
 
 class PGM(object):
@@ -105,7 +109,12 @@ class PGM(object):
             label_params=label_params,
             dpi=dpi,
         )
-        self.figure = None
+
+    def __enter__(self):
+        return self
+
+    def __exit__(self, *args):
+        self._ctx.close()
 
     def add_node(
         self,
@@ -311,7 +320,16 @@ class PGM(object):
         if isinstance(plate, Plate):
             _plate = plate
         else:
-            _plate = Plate(plate, label, label_offset, shift, position, fontsize, rect_params, bbox)
+            _plate = Plate(
+                plate,
+                label,
+                label_offset,
+                shift,
+                position,
+                fontsize,
+                rect_params,
+                bbox,
+            )
 
         self._plates.append(_plate)
 
@@ -361,7 +379,8 @@ class PGM(object):
             if isinstance(artist, Ellipse):
                 maxsize = np.maximum(
                     maxsize,
-                    artist.center + np.array([artist.width, artist.height]) / 2,
+                    artist.center
+                    + np.array([artist.width, artist.height]) / 2,
                     dtype=np.float64,
                 )
             elif isinstance(artist, Rectangle):
@@ -377,11 +396,15 @@ class PGM(object):
             if isinstance(artist, Ellipse):
                 minsize = np.minimum(
                     minsize,
-                    artist.center - np.array([artist.width, artist.height]) / 2,
+                    artist.center
+                    - np.array([artist.width, artist.height]) / 2,
                     dtype=np.float64,
                 )
             elif isinstance(artist, Rectangle):
-                minsize = np.minimum(minsize, np.array([artist._x0, artist._y0], dtype=np.float64))
+                minsize = np.minimum(
+                    minsize,
+                    np.array([artist._x0, artist._y0], dtype=np.float64),
+                )
             return minsize
 
         # Auto-set shape
@@ -420,10 +443,6 @@ class PGM(object):
         # Clear the figure from rendering context
         self._ctx.reset_figure()
 
-        # Render figure using
-        self.figure = self._ctx.figure()
-        self.ax = self._ctx.ax()
-
         for plate in self._plates:
             plate.render(self._ctx)
 
@@ -434,6 +453,14 @@ class PGM(object):
             self._nodes[name].render(self._ctx)
 
         return self.ax
+
+    @property
+    def figure(self):
+        return self._ctx.figure()
+
+    @property
+    def ax(self):
+        return self._ctx.ax()
 
     def show(self, dpi=None, *args, **kwargs):
         """
@@ -547,9 +574,13 @@ class Node(object):
         # Iterable is consumed, so first condition checks if two or more are
         # true
         node_style = iter((observed, alternate, fixed))
-        test = (any(node_style) and not any(node_style)) or not any((observed, alternate, fixed))
+        test = (any(node_style) and not any(node_style)) or not any(
+            (observed, alternate, fixed)
+        )
 
-        assert test, "A node cannot be more than one of `observed`, `fixed`, or `alternate`."
+        assert (
+            test
+        ), "A node cannot be more than one of `observed`, `fixed`, or `alternate`."
         self.observed = observed
         self.fixed = fixed
         self.alternate = alternate
@@ -606,13 +637,17 @@ class Node(object):
         # Resolve the plotting parameters.
         plot_params = dict(self.plot_params)
 
-        plot_params["lw"] = _pop_multiple(plot_params, ctx.line_width, "lw", "linewidth")
+        plot_params["lw"] = _pop_multiple(
+            plot_params, ctx.line_width, "lw", "linewidth"
+        )
 
         plot_params["ec"] = plot_params["edgecolor"] = _pop_multiple(
             plot_params, ctx.node_ec, "ec", "edgecolor"
         )
 
-        plot_params["fc"] = _pop_multiple(plot_params, "none", "fc", "facecolor")
+        plot_params["fc"] = _pop_multiple(
+            plot_params, "none", "fc", "facecolor"
+        )
         fc = plot_params["fc"]
 
         plot_params["alpha"] = plot_params.get("alpha", 1)
@@ -623,9 +658,13 @@ class Node(object):
         else:
             label_params = dict(self.label_params)
 
-        label_params["va"] = _pop_multiple(label_params, "center", "va", "verticalalignment")
+        label_params["va"] = _pop_multiple(
+            label_params, "center", "va", "verticalalignment"
+        )
 
-        label_params["ha"] = _pop_multiple(label_params, "center", "ha", "horizontalalignment")
+        label_params["ha"] = _pop_multiple(
+            label_params, "center", "ha", "horizontalalignment"
+        )
 
         # Deal with ``fixed`` nodes.
         scale = self.scale
@@ -671,7 +710,12 @@ class Node(object):
 
             # Draw the background ellipse.
             if self.shape == "ellipse":
-                bg = Ellipse(xy=ctx.convert(self.x, self.y), width=w, height=h, **plot_params)
+                bg = Ellipse(
+                    xy=ctx.convert(self.x, self.y),
+                    width=w,
+                    height=h,
+                    **plot_params
+                )
             elif self.shape == "rectangle":
                 # Adapt to make Rectangle the same api than ellipse
                 wi = w
@@ -682,7 +726,11 @@ class Node(object):
                 bg = Rectangle(xy=xy, width=wi, height=h, **plot_params)
             else:
                 # Should never append
-                raise (ValueError("Wrong shape in object causes an error in render"))
+                raise (
+                    ValueError(
+                        "Wrong shape in object causes an error in render"
+                    )
+                )
 
             ax.add_artist(bg)
 
@@ -710,7 +758,9 @@ class Node(object):
             el = Rectangle(xy=xy, width=wi, height=diameter, **plot_params)
         else:
             # Should never append
-            raise (ValueError("Wrong shape in object causes an error in render"))
+            raise (
+                ValueError("Wrong shape in object causes an error in render")
+            )
 
         ax.add_artist(el)
 
@@ -785,7 +835,13 @@ class Node(object):
             # print(theta)
             # left or right intersection
             dxx1 = self.scale * aspect / 2.0 * (np.sign(dx) or 1.0)
-            dyy1 = self.scale * aspect / 2.0 * np.abs(dy / dx) * (np.sign(dy) or 1.0)
+            dyy1 = (
+                self.scale
+                * aspect
+                / 2.0
+                * np.abs(dy / dx)
+                * (np.sign(dy) or 1.0)
+            )
             val1 = np.abs(complex(dxx1, dyy1))
 
             # up or bottom intersection
@@ -892,7 +948,9 @@ class Edge(object):
         ax = ctx.ax()
 
         plot_params = self.plot_params
-        plot_params["linewidth"] = _pop_multiple(plot_params, ctx.line_width, "lw", "linewidth")
+        plot_params["linewidth"] = _pop_multiple(
+            plot_params, ctx.line_width, "lw", "linewidth"
+        )
 
         plot_params["linestyle"] = plot_params.get("linestyle", "-")
 
@@ -911,8 +969,12 @@ class Edge(object):
             )
 
         if self.directed:
-            plot_params["ec"] = _pop_multiple(plot_params, "k", "ec", "edgecolor")
-            plot_params["fc"] = _pop_multiple(plot_params, "k", "fc", "facecolor")
+            plot_params["ec"] = _pop_multiple(
+                plot_params, "k", "ec", "edgecolor"
+            )
+            plot_params["fc"] = _pop_multiple(
+                plot_params, "k", "fc", "facecolor"
+            )
             plot_params["head_length"] = plot_params.get("head_length", 0.25)
             plot_params["head_width"] = plot_params.get("head_width", 0.1)
 
@@ -922,7 +984,10 @@ class Edge(object):
             # zero lengh arrow produce error
             if not (args[2] == 0.0 and args[3] == 0.0):
                 ar = FancyArrow(
-                    *self._get_coords(ctx), width=0, length_includes_head=True, **plot_params
+                    *self._get_coords(ctx),
+                    width=0,
+                    length_includes_head=True,
+                    **plot_params
                 )
 
                 # Add the arrow to the axes.
@@ -1040,8 +1105,12 @@ class Plate(object):
             rect_params = {}
 
         rect_params["ec"] = _pop_multiple(rect_params, "k", "ec", "edgecolor")
-        rect_params["fc"] = _pop_multiple(rect_params, "none", "fc", "facecolor")
-        rect_params["lw"] = _pop_multiple(rect_params, ctx.line_width, "lw", "linewidth")
+        rect_params["fc"] = _pop_multiple(
+            rect_params, "none", "fc", "facecolor"
+        )
+        rect_params["lw"] = _pop_multiple(
+            rect_params, ctx.line_width, "lw", "linewidth"
+        )
         rectangle = Rectangle(rect[:2], *rect[2:], **rect_params)
 
         ax.add_artist(rectangle)
@@ -1061,7 +1130,9 @@ class Plate(object):
                 position[0] = rect[2] / 2 + rect[0]
                 ha = "center"
             else:
-                raise RuntimeError("Unknown positioning string: {0}".format(self.position))
+                raise RuntimeError(
+                    "Unknown positioning string: {0}".format(self.position)
+                )
 
             if "bottom" in self.position:
                 va = "bottom"
@@ -1073,7 +1144,9 @@ class Plate(object):
                 position[1] += rect[3] / 2
                 va = "center"
             else:
-                raise RuntimeError("Unknown positioning string: {0}".format(self.position))
+                raise RuntimeError(
+                    "Unknown positioning string: {0}".format(self.position)
+                )
 
             ax.annotate(
                 self.label,
@@ -1178,16 +1251,24 @@ class _rendering_context(object):
         # Make sure that the observed node style is one that we recognize.
         self.observed_style = kwargs.get("observed_style", "shaded").lower()
         styles = ["shaded", "inner", "outer"]
-        assert self.observed_style in styles, "Unrecognized observed node style: {0}\n".format(
+        assert (
+            self.observed_style in styles
+        ), "Unrecognized observed node style: {0}\n".format(
             self.observed_style
-        ) + "\tOptions are: {0}".format(", ".join(styles))
+        ) + "\tOptions are: {0}".format(
+            ", ".join(styles)
+        )
 
         # Make sure that the alternate node style is one that we recognize.
         self.alternate_style = kwargs.get("alternate_style", "inner").lower()
         styles = ["shaded", "inner", "outer"]
-        assert self.alternate_style in styles, "Unrecognized alternate node style: {0}\n".format(
+        assert (
+            self.alternate_style in styles
+        ), "Unrecognized alternate node style: {0}\n".format(
             self.alternate_style
-        ) + "\tOptions are: {0}".format(", ".join(styles))
+        ) + "\tOptions are: {0}".format(
+            ", ".join(styles)
+        )
 
         # Set up the figure and grid dimensions.
         self.padding = 0.1
@@ -1225,6 +1306,9 @@ class _rendering_context(object):
             self.figsize = self.grid_unit * self.shape / self.shp_fig_scale
 
     def reset_figure(self):
+        self.close()
+
+    def close(self):
         if self._figure is not None:
             plt.close(self._figure)
             self._figure = None
@@ -1233,7 +1317,10 @@ class _rendering_context(object):
     def figure(self):
         if self._figure is not None:
             return self._figure
-        self._figure = plt.figure(figsize=self.figsize, dpi=self.dpi)
+        args = {"figsize": self.figsize}
+        if self.dpi is not None:
+            args["dpi"] = self.dpi
+        self._figure = plt.figure(**args)
         return self._figure
 
     def ax(self):
@@ -1241,7 +1328,9 @@ class _rendering_context(object):
             return self._ax
 
         # Add a new axis object if it doesn't exist.
-        self._ax = self.figure().add_axes((0, 0, 1, 1), frameon=False, xticks=[], yticks=[])
+        self._ax = self.figure().add_axes(
+            (0, 0, 1, 1), frameon=False, xticks=[], yticks=[]
+        )
 
         # Set the bounds.
         l0 = self.convert(*self.origin)
@@ -1305,6 +1394,7 @@ def _pop_multiple(_dict, default, *args):
 class SameLocationError(Exception):
     def __init__(self, edge):
         self.message = (
-            "Attempted to add edge between `{}` and `{}` but they " + "share the same location."
+            "Attempted to add edge between `{}` and `{}` but they "
+            + "share the same location."
         ).format(edge.node1.name, edge.node2.name)
         super().__init__(self.message)
