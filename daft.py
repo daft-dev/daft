@@ -1226,8 +1226,8 @@ class _rendering_context(object):
 
     def reset_figure(self):
         if self._figure is not None:
-            plt.close(self._figure)
-            self._figure = None
+            # Clear the figure but keep the memory allocated for efficiency
+            self._figure.clf()
             self._ax = None
 
     def figure(self):
