@@ -45,9 +45,10 @@ a.headerlink:hover {
     font-family: "Source Code Pro", Courier, monospace;
 }
 
-.document, .footer, .related {
+.document, .footer {
     width: 600px;
     margin: 0 auto;
+    padding: 0;
 }
 
 .body:first-child h1 {
@@ -78,6 +79,10 @@ a.headerlink:hover {
     font-weight: 300;
     line-height: 1;
     text-transform: uppercase;
+}
+
+#index-examples {
+    display: block;
 }
 
 #examples-block h2 {
@@ -186,4 +191,20 @@ input.searchfield:focus {
 .field-body ul li {
     margin: 0;
     padding: 0;
+}
+
+@media only screen and (max-width: 640px) {
+    .document, .footer {
+        width: 100%;
+        margin: 0;
+        padding: 0;
+    }
+
+    .documentwrapper {
+        margin: 0 20px;
+    }
+
+    #index-examples {
+        display: none;
+    }
 }

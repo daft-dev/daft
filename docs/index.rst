@@ -3,9 +3,11 @@ Daft
 
 .. raw:: html
 
+    <div id="index-examples">
     <div id="examples-block"></div>
     <div id="more-examples" style="text-align: right;font-size: 0.8em;">
         <a href="examples">More…</a>
+    </div>
     </div>
     <script src="_static/examples.js?v=2"></script>
     <script>
