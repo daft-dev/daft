@@ -1,11 +1,6 @@
-.highlight-python {
-    border-left: 2px solid #ccc;
-    padding-left: 10px;
-    margin-left: -10px;
-}
-
 .highlight {
     background: none;
+    margin: 20px;
 }
 
 .highlight pre {
