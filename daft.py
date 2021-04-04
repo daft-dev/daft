@@ -19,7 +19,7 @@ try:
 except DistributionNotFound:
     pass
 
-#pylint: disable=too-many-arguments, protected-access, unused-argument, too-many-lines
+# pylint: disable=too-many-arguments, protected-access, unused-argument, too-many-lines
 
 
 class PGM(object):
@@ -227,7 +227,7 @@ class PGM(object):
         label=None,
         plot_params=None,
         label_params=None,
-        **kwargs  #pylint: disable=unused-argument
+        **kwargs  # pylint: disable=unused-argument
     ):
         """
         Construct an :class:`Edge` between two named :class:`Node` objects.
@@ -1402,6 +1402,7 @@ class SameLocationError(Exception):
     :param edge:
         The Edge object whose nodes are being added.
     """
+
     def __init__(self, edge):
         self.message = (
             "Attempted to add edge between `{}` and `{}` but they "
