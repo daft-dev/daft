@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 
+"""Code for Daft"""
+
 __all__ = ["PGM", "Node", "Edge", "Plate"]
 
 from pkg_resources import get_distribution, DistributionNotFound
@@ -8,7 +10,7 @@ import matplotlib as mpl
 import matplotlib.pyplot as plt
 from matplotlib.patches import Ellipse
 from matplotlib.patches import FancyArrow
-from matplotlib.patches import Rectangle as Rectangle
+from matplotlib.patches import Rectangle
 
 import numpy as np
 
@@ -16,6 +18,8 @@ try:
     __version__ = get_distribution("daft").version
 except DistributionNotFound:
     pass
+
+# pylint: disable=too-many-arguments, protected-access, unused-argument, too-many-lines
 
 
 class PGM(object):
@@ -78,7 +82,7 @@ class PGM(object):
         node_ec="k",
         directed=True,
         aspect=1.0,
-        label_params={},
+        label_params=None,
         dpi=None,
     ):
         self._nodes = {}
@@ -127,9 +131,9 @@ class PGM(object):
         observed=False,
         fixed=False,
         alternate=False,
-        offset=[0.0, 0.0],
+        offset=(0.0, 0.0),
         fontsize=None,
-        plot_params={},
+        plot_params=None,
         label_params=None,
         shape="ellipse",
     ):
@@ -221,9 +225,9 @@ class PGM(object):
         xoffset=0.0,
         yoffset=0.1,
         label=None,
-        plot_params={},
-        label_params={},
-        **kwargs
+        plot_params=None,
+        label_params=None,
+        **kwargs  # pylint: disable=unused-argument
     ):
         """
         Construct an :class:`Edge` between two named :class:`Node` objects.
@@ -280,7 +284,7 @@ class PGM(object):
         self,
         plate,
         label=None,
-        label_offset=[5, 5],
+        label_offset=(5, 5),
         shift=0,
         position="bottom left",
         fontsize=None,
@@ -332,8 +336,6 @@ class PGM(object):
             )
 
         self._plates.append(_plate)
-
-        return None
 
     def add_text(self, x, y, label, fontsize=None):
         """
@@ -456,13 +458,15 @@ class PGM(object):
 
     @property
     def figure(self):
+        """Figure as a property."""
         return self._ctx.figure()
 
     @property
     def ax(self):
+        """Axes as a property."""
         return self._ctx.ax()
 
-    def show(self, dpi=None, *args, **kwargs):
+    def show(self, *args, dpi=None, **kwargs):
         """
         Wrapper on :class:`PGM.render()` that calls `matplotlib.show()`
         immediately after.
@@ -563,9 +567,9 @@ class Node(object):
         observed=False,
         fixed=False,
         alternate=False,
-        offset=[0.0, 0.0],
+        offset=(0.0, 0.0),
         fontsize=None,
-        plot_params={},
+        plot_params=None,
         label_params=None,
         shape="ellipse",
     ):
@@ -600,20 +604,14 @@ class Node(object):
             self.aspect = aspect
 
         # Set fontsize
-        if fontsize is not None:
-            self.fontsize = fontsize
-        else:
-            self.fontsize = mpl.rcParams["font.size"]
+        self.fontsize = fontsize if fontsize else mpl.rcParams["font.size"]
 
         # Display parameters.
-        self.plot_params = dict(plot_params)
+        self.plot_params = dict(plot_params) if plot_params else {}
 
         # Text parameters.
         self.offset = list(offset)
-        if label_params is not None:
-            self.label_params = dict(label_params)
-        else:
-            self.label_params = None
+        self.label_params = dict(label_params) if label_params else None
 
         # Shape
         if shape in ["ellipse", "rectangle"]:
@@ -856,7 +854,7 @@ class Node(object):
 
         else:
             # Should never append
-            raise (ValueError("Wrong shape in object causes an error"))
+            raise ValueError("Wrong shape in object causes an error")
 
 
 class Edge(object):
@@ -904,8 +902,8 @@ class Edge(object):
         label=None,
         xoffset=0,
         yoffset=0.1,
-        plot_params={},
-        label_params={},
+        plot_params=None,
+        label_params=None,
     ):
         self.node1 = node1
         self.node2 = node2
@@ -913,8 +911,8 @@ class Edge(object):
         self.label = label
         self.xoffset = xoffset
         self.yoffset = yoffset
-        self.plot_params = dict(plot_params)
-        self.label_params = dict(label_params)
+        self.plot_params = dict(plot_params) if plot_params else {}
+        self.label_params = dict(label_params) if label_params else {}
 
     def _get_coords(self, ctx):
         """
@@ -1050,7 +1048,7 @@ class Plate(object):
         self,
         rect,
         label=None,
-        label_offset=[5, 5],
+        label_offset=(5, 5),
         shift=0,
         position="bottom left",
         fontsize=None,
@@ -1283,7 +1281,7 @@ class _rendering_context(object):
         self.node_ec = kwargs.get("node_ec", "k")
         self.directed = kwargs.get("directed", True)
         self.aspect = kwargs.get("aspect", 1.0)
-        self.label_params = dict(kwargs.get("label_params", {}))
+        self.label_params = dict(kwargs.get("label_params", {}) or {})
 
         self.dpi = kwargs.get("dpi", None)
 
@@ -1292,12 +1290,14 @@ class _rendering_context(object):
         self._ax = None
 
     def reset_shape(self, shape, adj_origin=False):
+        """Reset the shape and figure size."""
         # shape is scaled by grid_unit
         # so divide by grid_unit for proper shape
         self.shape = shape / self.grid_unit + self.padding
         self.figsize = self.grid_unit * self.shape / self.shp_fig_scale
 
     def reset_origin(self, origin, adj_shape=False):
+        """Reset the origin."""
         # origin is scaled by grid_unit
         # so divide by grid_unit for proper shape
         self.origin = origin / self.grid_unit - self.padding
@@ -1306,15 +1306,18 @@ class _rendering_context(object):
             self.figsize = self.grid_unit * self.shape / self.shp_fig_scale
 
     def reset_figure(self):
+        """Reset the figure."""
         self.close()
 
     def close(self):
+        """Close the figure if it is set up."""
         if self._figure is not None:
             plt.close(self._figure)
             self._figure = None
             self._ax = None
 
     def figure(self):
+        """Return the current figure else create a new one."""
         if self._figure is not None:
             return self._figure
         args = {"figsize": self.figsize}
@@ -1324,6 +1327,7 @@ class _rendering_context(object):
         return self._figure
 
     def ax(self):
+        """Return the current axes else create a new one."""
         if self._ax is not None:
             return self._ax
 
@@ -1392,6 +1396,13 @@ def _pop_multiple(_dict, default, *args):
 
 
 class SameLocationError(Exception):
+    """
+    Exception to notify if two nodes are in the same position in the plot.
+
+    :param edge:
+        The Edge object whose nodes are being added.
+    """
+
     def __init__(self, edge):
         self.message = (
             "Attempted to add edge between `{}` and `{}` but they "
