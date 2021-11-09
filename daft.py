@@ -56,6 +56,12 @@ class PGM(object):
     :param node_ec: (optional)
         The default edge color for the nodes.
 
+    :param node_fc: (optional)
+        The default face color for the nodes.
+
+    :param plate_fc: (optional)
+        The default face color for plates.
+
     :param directed: (optional)
         Should the edges be directed by default?
 
@@ -80,6 +86,8 @@ class PGM(object):
         alternate_style="inner",
         line_width=1.0,
         node_ec="k",
+        node_fc="w",
+        plate_fc="w",
         directed=True,
         aspect=1.0,
         label_params=None,
@@ -108,6 +116,8 @@ class PGM(object):
             alternate_style=alternate_style,
             line_width=line_width,
             node_ec=node_ec,
+            node_fc=node_fc,
+            plate_fc=plate_fc,
             directed=directed,
             aspect=aspect,
             label_params=label_params,
@@ -643,8 +653,9 @@ class Node(object):
             plot_params, ctx.node_ec, "ec", "edgecolor"
         )
 
+        fc_is_set = "fc" in plot_params or "facecolor" in plot_params
         plot_params["fc"] = _pop_multiple(
-            plot_params, "none", "fc", "facecolor"
+            plot_params, ctx.node_fc, "fc", "facecolor"
         )
         fc = plot_params["fc"]
 
@@ -674,7 +685,7 @@ class Node(object):
             label_params.pop("verticalalignment", None)
             label_params.pop("ma", None)
 
-            if plot_params["fc"] == "none":
+            if not fc_is_set:
                 plot_params["fc"] = "k"
 
         diameter = ctx.node_unit * scale
@@ -736,7 +747,7 @@ class Node(object):
             plot_params["fc"] = fc
 
         # Draw the foreground ellipse.
-        if style == "inner" and not self.fixed and self.observed:
+        if not fc_is_set and not self.fixed and self.observed:
             plot_params["fc"] = "none"
 
         if self.shape == "ellipse":
@@ -1104,7 +1115,7 @@ class Plate(object):
 
         rect_params["ec"] = _pop_multiple(rect_params, "k", "ec", "edgecolor")
         rect_params["fc"] = _pop_multiple(
-            rect_params, "none", "fc", "facecolor"
+            rect_params, ctx.plate_fc, "fc", "facecolor"
         )
         rect_params["lw"] = _pop_multiple(
             rect_params, ctx.line_width, "lw", "linewidth"
@@ -1228,6 +1239,12 @@ class _rendering_context(object):
     :param node_ec:
         The default edge color for the nodes.
 
+    :param node_fc:
+        The default face color for the nodes.
+
+    :param plate_fc:
+        The default face color for plates.
+
     :param directed:
         Should the edges be directed by default?
 
@@ -1279,6 +1296,8 @@ class _rendering_context(object):
 
         self.node_unit = kwargs.get("node_unit", 1.0)
         self.node_ec = kwargs.get("node_ec", "k")
+        self.node_fc = kwargs.get("node_fc", "w")
+        self.plate_fc = kwargs.get("plate_fc", "w")
         self.directed = kwargs.get("directed", True)
         self.aspect = kwargs.get("aspect", 1.0)
         self.label_params = dict(kwargs.get("label_params", {}) or {})
