@@ -30,6 +30,7 @@ jobs:
         run: python -m pytest -v test
 
       - uses: actions/upload-artifact@v2
+        if: always()
         with:
           path: ./result_images
           name: images
