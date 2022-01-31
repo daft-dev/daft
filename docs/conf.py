@@ -17,8 +17,8 @@ extensions = [
 templates_path = ["_templates"]
 master_doc = "index"
 
-project = u"Daft"
-copyright = u"2012-2021, Daft Developers"
+project = "Daft"
+copyright = "2012-2021, Daft Developers"
 version = __version__
 release = __version__
 
