@@ -435,7 +435,7 @@ def test_recursive():
             pgm.add_node(
                 r1nodename,
                 r"reduce",
-                2 ** level * (r + 0.5) - 0.5,
+                2**level * (r + 0.5) - 0.5,
                 3 - 0.7 * level,
                 aspect=1.9,
             )
