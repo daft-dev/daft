@@ -1,22 +1,22 @@
 Daft
 ====
 
-.. raw:: html
+.. .. raw:: html
 
-    <div id="index-examples">
-    <div id="examples-block"></div>
-    <div id="more-examples" style="text-align: right;font-size: 0.8em;">
-        <a href="examples">More…</a>
-    </div>
-    </div>
-    <script src="_static/examples.js?v=2"></script>
-    <script>
-        show_examples("_images", "_static", "examples", 6);
-    </script>
+..     <div id="index-examples">
+..     <div id="examples-block"></div>
+..     <div id="more-examples" style="text-align: right;font-size: 0.8em;">
+..         <a href="examples">More…</a>
+..     </div>
+..     </div>
+..     <script src="_static/examples.js?v=2"></script>
+..     <script>
+..         show_examples("_images", "_static", "examples", 6);
+..     </script>
 
 
-Summary
--------
+.. Summary
+.. -------
 
 **Daft** is a Python package that uses `matplotlib <http://matplotlib.org/>`_
 to render pixel-perfect *probabilistic graphical models* for publication
@@ -26,6 +26,7 @@ acyclic graphs) and undirected (Markov random fields) models and save
 them in any formats that matplotlib supports (including PDF, PNG, EPS and
 SVG).
 
+👉 Check out the :ref:`examples` to get started.
 
 Installation
 ------------
