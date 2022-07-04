@@ -1,13 +1,15 @@
+.. _examples:
+
 Examples
 --------
 
-.. raw:: html
+.. .. raw:: html
 
-    <div id="examples-block"></div>
-    <script src="../_static/examples.js"></script>
-    <script>
-        show_examples("../_images", "../_static", "../examples");
-    </script>
+..     <div id="examples-block"></div>
+..     <script src="../_static/examples.js"></script>
+..     <script>
+..         show_examples("../_images", "../_static", "../examples");
+..     </script>
 
 .. toctree::
 
