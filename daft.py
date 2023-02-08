@@ -422,7 +422,6 @@ class PGM(object):
         # Auto-set shape
         # We pass through each object once to find the maximum coordinates
         if self.shape is None:
-
             maxsize = np.copy(self._ctx.origin)
 
             for plate in self._plates:
@@ -439,7 +438,6 @@ class PGM(object):
 
         # Pass through each object to find the minimum coordinates
         if self.origin is None:
-
             minsize = np.copy(self._ctx.shape * self._ctx.grid_unit)
 
             for plate in self._plates:
@@ -583,7 +581,6 @@ class Node(object):
         label_params=None,
         shape="ellipse",
     ):
-
         # Check Node style.
         # Iterable is consumed, so first condition checks if two or more are
         # true
@@ -837,7 +834,6 @@ class Node(object):
             return x0, y0
 
         elif self.shape == "rectangle":
-
             dx, dy = x2 - x1, y2 - y1
 
             # theta = np.angle(complex(dx, dy))
