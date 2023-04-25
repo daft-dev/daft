@@ -673,7 +673,6 @@ class Node(object):
         )
 
         # Deal with ``fixed`` nodes.
-        scale = self.scale
         if self.fixed:
             # MAGIC: These magic numbers should depend on the grid/node units.
             self.offset[1] += 6
@@ -685,7 +684,7 @@ class Node(object):
             if not fc_is_set:
                 plot_params["fc"] = "k"
 
-        diameter = ctx.node_unit * scale
+        diameter = ctx.node_unit * self.scale
         if self.aspect is not None:
             aspect = self.aspect
         else:
