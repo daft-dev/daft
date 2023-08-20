@@ -1,5 +1,46 @@
 [build-system]
-requires = ["setuptools>=30.3.0", "wheel", "setuptools_scm"]
+requires = ["setuptools>=30.3.0", "wheel", "setuptools_scm[scm]>=6.2"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "daft"
+authors = [
+    {name = "Daft Developers", email = "danfm@nyu.edu"},
+]
+description = "PGM rendering at its finest"
+readme = {file = "README.rst", content-type = "text/x-rst"}
+requires-python = ">=3.7"
+license = {text = "BSD-3-Clause"}
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "Intended Audience :: Science/Research",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+]
+dependencies = [
+    "matplotlib",
+    "numpy",
+    'importlib-metadata; python_version<"3.8"',
+]
+dynamic = ["version"]
+
+[project.optional-dependencies]
+test = ["pytest"]
+docs = ["myst_nb", "sphinx", "jupytext"]
+
+[project.urls]
+Homepage = "http://daft-pgm.org"
+Documentation = "http://docs.daft-pgm.org"
+Repository = "https://github.com/daft-dev/daft"
+
+[tool.setuptools.packages.find]
+include = ["daft*"]
+
+
+[tool.setuptools_scm]
+
 
 [tool.black]
 line-length = 79

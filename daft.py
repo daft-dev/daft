@@ -4,7 +4,7 @@
 
 __all__ = ["PGM", "Node", "Edge", "Plate"]
 
-from pkg_resources import get_distribution, DistributionNotFound
+from importlib.metadata import version as get_distribution
 
 import matplotlib as mpl
 import matplotlib.pyplot as plt
@@ -14,10 +14,7 @@ from matplotlib.patches import Rectangle
 
 import numpy as np
 
-try:
-    __version__ = get_distribution("daft").version
-except DistributionNotFound:
-    pass
+__version__ = get_distribution("daft")
 
 # pylint: disable=too-many-arguments, protected-access, unused-argument, too-many-lines
 
@@ -237,7 +234,7 @@ class PGM(object):
         label=None,
         plot_params=None,
         label_params=None,
-        **kwargs  # pylint: disable=unused-argument
+        **kwargs,  # pylint: disable=unused-argument
     ):
         """
         Construct an :class:`Edge` between two named :class:`Node` objects.
@@ -720,7 +717,7 @@ class Node(object):
                     xy=ctx.convert(self.x, self.y),
                     width=w,
                     height=h,
-                    **plot_params
+                    **plot_params,
                 )
             elif self.shape == "rectangle":
                 # Adapt to make Rectangle the same api than ellipse
@@ -752,7 +749,7 @@ class Node(object):
                 xy=ctx.convert(self.x, self.y),
                 width=diameter * aspect,
                 height=diameter,
-                **plot_params
+                **plot_params,
             )
         elif self.shape == "rectangle":
             # Adapt to make Rectangle the same api than ellipse
@@ -781,7 +778,7 @@ class Node(object):
             xytext=self.offset,
             textcoords="offset points",
             size=self.fontsize,
-            **label_params
+            **label_params,
         )
 
         return el
@@ -970,7 +967,7 @@ class Edge(object):
                 textcoords="offset points",
                 ha="center",
                 va="center",
-                **self.label_params
+                **self.label_params,
             )
 
         if self.directed:
@@ -992,7 +989,7 @@ class Edge(object):
                     *self._get_coords(ctx),
                     width=0,
                     length_includes_head=True,
-                    **plot_params
+                    **plot_params,
                 )
 
                 # Add the arrow to the axes.
