@@ -9,7 +9,7 @@ authors = [
 ]
 description = "PGM rendering at its finest"
 readme = {file = "README.rst", content-type = "text/x-rst"}
-requires-python = ">=3.7"
+requires-python = ">=3.9"
 license = {text = "BSD-3-Clause"}
 classifiers = [
     "Development Status :: 3 - Alpha",
@@ -22,7 +22,6 @@ classifiers = [
 dependencies = [
     "matplotlib",
     "numpy",
-    'importlib-metadata; python_version<"3.8"',
 ]
 dynamic = ["version"]
 
