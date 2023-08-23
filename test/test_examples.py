@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 import itertools
 
 import daft
@@ -429,7 +427,7 @@ def test_recursive():
         if level > 4:
             return nodename
         r = c // 2
-        r1nodename = "r{0:02d}{1:04d}".format(level, r)
+        r1nodename = f"r{level:02d}{r:04d}"
         if 2 * r == c:
             # print("adding {0}".format(r1nodename))
             pgm.add_node(
@@ -457,7 +455,7 @@ def test_recursive():
     pgm.add_edge("query", "input")
 
     for c in range(16):
-        nodename = "map {0:02d}".format(c)
+        nodename = f"map {c:02d}"
         pgm.add_node(nodename, str(nodename), c, 3.0, aspect=1.9)
         pgm.add_edge("input", nodename)
         level = 1
