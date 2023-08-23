@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 """Code for Daft"""
 
 __all__ = ["PGM", "Node", "Edge", "Plate"]
@@ -19,7 +17,7 @@ __version__ = get_distribution("daft")
 # pylint: disable=too-many-arguments, protected-access, unused-argument, too-many-lines
 
 
-class PGM(object):
+class PGM:
     """
     The base object for building a graphical model representation.
 
@@ -504,7 +502,7 @@ class PGM(object):
         self.figure.savefig(fname, *args, **kwargs)
 
 
-class Node(object):
+class Node:
     """
     The representation of a random variable in a :class:`PGM`.
 
@@ -861,7 +859,7 @@ class Node(object):
             raise ValueError("Wrong shape in object causes an error")
 
 
-class Edge(object):
+class Edge:
     """
     An edge between two :class:`Node` objects.
 
@@ -1010,7 +1008,7 @@ class Edge(object):
             return line
 
 
-class Plate(object):
+class Plate:
     """
     A plate to encapsulate repeated independent processes in the model.
 
@@ -1133,7 +1131,7 @@ class Plate(object):
                 ha = "center"
             else:
                 raise RuntimeError(
-                    "Unknown positioning string: {0}".format(self.position)
+                    f"Unknown positioning string: {self.position}"
                 )
 
             if "bottom" in self.position:
@@ -1147,7 +1145,7 @@ class Plate(object):
                 va = "center"
             else:
                 raise RuntimeError(
-                    "Unknown positioning string: {0}".format(self.position)
+                    f"Unknown positioning string: {self.position}"
                 )
 
             ax.annotate(
@@ -1202,7 +1200,7 @@ class Text(Plate):
         )
 
 
-class _rendering_context(object):
+class _rendering_context:
     """
     :param shape:
         The number of rows and columns in the grid.
@@ -1259,23 +1257,17 @@ class _rendering_context(object):
         # Make sure that the observed node style is one that we recognize.
         self.observed_style = kwargs.get("observed_style", "shaded").lower()
         styles = ["shaded", "inner", "outer"]
-        assert (
-            self.observed_style in styles
-        ), "Unrecognized observed node style: {0}\n".format(
-            self.observed_style
-        ) + "\tOptions are: {0}".format(
-            ", ".join(styles)
+        assert self.observed_style in styles, (
+            f"Unrecognized observed node style: {self.observed_style}\n"
+            + "\tOptions are: {}".format(", ".join(styles))
         )
 
         # Make sure that the alternate node style is one that we recognize.
         self.alternate_style = kwargs.get("alternate_style", "inner").lower()
         styles = ["shaded", "inner", "outer"]
-        assert (
-            self.alternate_style in styles
-        ), "Unrecognized alternate node style: {0}\n".format(
-            self.alternate_style
-        ) + "\tOptions are: {0}".format(
-            ", ".join(styles)
+        assert self.alternate_style in styles, (
+            f"Unrecognized alternate node style: {self.alternate_style}\n"
+            + "\tOptions are: {}".format(", ".join(styles))
         )
 
         # Set up the figure and grid dimensions.
@@ -1396,7 +1388,7 @@ def _pop_multiple(_dict, default, *args):
 
     if len(results) > 1:
         raise TypeError(
-            "The arguments ({0}) are equivalent, you can only provide one of them.".format(
+            "The arguments ({}) are equivalent, you can only provide one of them.".format(
                 ", ".join([key for key, value in results])
             )
         )
