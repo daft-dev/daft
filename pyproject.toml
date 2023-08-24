@@ -34,9 +34,6 @@ Homepage = "http://daft-pgm.org"
 Documentation = "http://docs.daft-pgm.org"
 Repository = "https://github.com/daft-dev/daft"
 
-[tool.setuptools.packages.find]
-include = ["daft*"]
-
 
 [tool.setuptools_scm]
 
