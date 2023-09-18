@@ -580,13 +580,13 @@ class Node:
         # Iterable is consumed, so first condition checks if two or more are
         # true
         node_style = iter((observed, alternate, fixed))
-        test = (any(node_style) and not any(node_style)) or not any(
-            (observed, alternate, fixed)
-        )
+        if not (
+            (any(node_style) and not any(node_style))
+            or not any((observed, alternate, fixed))
+        ):
+            msg = "A node cannot be more than one of `observed`, `fixed`, or `alternate`."
+            raise ValueError(msg)
 
-        assert (
-            test
-        ), "A node cannot be more than one of `observed`, `fixed`, or `alternate`."
         self.observed = observed
         self.fixed = fixed
         self.alternate = alternate

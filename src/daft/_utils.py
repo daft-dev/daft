@@ -62,19 +62,20 @@ class _rendering_context:
 
         # Make sure that the observed node style is one that we recognize.
         self.observed_style = kwargs.get("observed_style", "shaded").lower()
-        styles = ["shaded", "inner", "outer"]
-        assert self.observed_style in styles, (
-            f"Unrecognized observed node style: {self.observed_style}\n"
-            + "\tOptions are: {}".format(", ".join(styles))
-        )
+        styles = ("shaded", "inner", "outer")
+        if self.observed_style not in styles:
+            raise ValueError(
+                f"Unrecognized observed node style: {self.observed_style}\n"
+                f"\tOptions are: {', '.join(styles)}"
+            )
 
         # Make sure that the alternate node style is one that we recognize.
         self.alternate_style = kwargs.get("alternate_style", "inner").lower()
-        styles = ["shaded", "inner", "outer"]
-        assert self.alternate_style in styles, (
-            f"Unrecognized alternate node style: {self.alternate_style}\n"
-            + "\tOptions are: {}".format(", ".join(styles))
-        )
+        if self.alternate_style not in styles:
+            raise ValueError(
+                f"Unrecognized observed node style: {self.alternate_style}\n"
+                f"\tOptions are: {', '.join(styles)}"
+            )
 
         # Set up the figure and grid dimensions.
         self.padding = 0.1
@@ -159,7 +160,10 @@ class _rendering_context:
         Convert from model coordinates to plot coordinates.
 
         """
-        assert len(xy) == 2
+        if len(xy) != 2:
+            raise ValueError(
+                "You must provide two coordinates to `convert()`."
+            )
         return self.grid_unit * (np.atleast_1d(xy) - self.origin)
 
 
@@ -183,7 +187,8 @@ def _pop_multiple(_dict, default, *args):
         The arguments to try to retrieve.
 
     """
-    assert len(args) > 0, "You must provide at least one argument to `pop()`."
+    if len(args) == 0:
+        raise ValueError("You must provide at least one argument to `pop()`.")
 
     results = []
     for arg in args:
