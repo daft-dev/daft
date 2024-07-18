@@ -1,9 +1,15 @@
+import os
 from pkg_resources import get_distribution, DistributionNotFound
 
 try:
     __version__ = get_distribution("daft").version
 except DistributionNotFound:
     pass
+
+# Support canonical URL
+html_baseurl = os.environ.get("READTHEDOCS_CANONICAL_URL", "")
+if os.environ.get("READTHEDOCS", "") == "True":
+    html_context["READTHEDOCS"] = True
 
 extensions = [
     "sphinx.ext.autodoc",
