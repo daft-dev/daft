@@ -77,4 +77,6 @@ class CTX_Kwargs(TypedDict):
     dpi: Optional[int]
 
 
-AnyDict = Union[dict[str, Any], PlotParams, LabelParams, RectParams, CTX_Kwargs]
+AnyDict = Union[
+    dict[str, Any], PlotParams, LabelParams, RectParams, CTX_Kwargs
+]
