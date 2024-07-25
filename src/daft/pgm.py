@@ -492,7 +492,9 @@ class PGM:
         """Axes as a property."""
         return self._ctx.ax()
 
-    def show(self, *args: Any, dpi: Optional[int] = None, **kwargs: Any) -> None:
+    def show(
+        self, *args: Any, dpi: Optional[int] = None, **kwargs: Any
+    ) -> None:
         """
         Wrapper on :class:`PGM.render()` that calls `matplotlib.show()`
         immediately after.
