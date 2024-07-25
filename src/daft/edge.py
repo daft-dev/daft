@@ -8,8 +8,8 @@ from matplotlib.patches import FancyArrow
 
 from typing import Any, cast
 
-from ._utils import _pop_multiple, _RenderingContext
-from ._types import Tuple4F, PlotParams, LabelParams
+from .utils import _pop_multiple, RenderingContext
+from .types import Tuple4F, PlotParams, LabelParams
 
 
 class Edge:
@@ -69,7 +69,7 @@ class Edge:
         self.plot_params = dict(plot_params) if plot_params else {}
         self.label_params = dict(label_params) if label_params else {}
 
-    def _get_coords(self, ctx: _RenderingContext) -> Tuple4F:
+    def _get_coords(self, ctx: RenderingContext) -> Tuple4F:
         """
         Get the coordinates of the line.
 
@@ -90,7 +90,7 @@ class Edge:
 
         return x3, y3, x4 - x3, y4 - y3
 
-    def render(self, ctx: _RenderingContext) -> FancyArrow | list[Line2D]:
+    def render(self, ctx: RenderingContext) -> FancyArrow | list[Line2D]:
         """
         Render the edge in the given axes.
 

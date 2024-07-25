@@ -10,8 +10,8 @@ import numpy as np
 
 from typing import Any, Literal, TypedDict, cast
 
-from ._utils import _pop_multiple, _RenderingContext
-from ._types import Tuple2F, CTX_Kwargs, PlotParams, LabelParams, Shape
+from .utils import _pop_multiple, RenderingContext
+from .types import Tuple2F, CTX_Kwargs, PlotParams, LabelParams, Shape
 
 
 class Node:
@@ -135,7 +135,7 @@ class Node:
             print("Warning: wrong shape value, set to ellipse instead")
             self.shape = "ellipse"
 
-    def render(self, ctx: _RenderingContext) -> Ellipse | Rectangle:
+    def render(self, ctx: RenderingContext) -> Ellipse | Rectangle:
         """
         Render the node.
 
@@ -308,7 +308,7 @@ class Node:
 
         return el
 
-    def get_frontier_coord(self, target_xy: Tuple2F, ctx: _RenderingContext, edge: 'Edge') -> Tuple2F:
+    def get_frontier_coord(self, target_xy: Tuple2F, ctx: RenderingContext, edge: 'Edge') -> Tuple2F:
         """
         Get the coordinates of the point of intersection between the
         shape of the node and a line starting from the center of the node to an
@@ -387,4 +387,4 @@ class Node:
 
 
 from .edge import Edge
-from ._exceptions import SameLocationError
+from .exceptions import SameLocationError

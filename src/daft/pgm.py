@@ -13,8 +13,8 @@ from typing import Any, Literal, cast
 from .node import Node
 from .edge import Edge
 from .plate import Plate, Text
-from ._utils import _RenderingContext
-from ._types import Tuple2F, NDArrayF, Shape, Position, CTX_Kwargs, PlotParams, LabelParams, RectParams
+from .utils import RenderingContext
+from .types import Tuple2F, NDArrayF, Shape, Position, CTX_Kwargs, PlotParams, LabelParams, RectParams
 
 # pylint: disable=too-many-arguments, protected-access, unused-argument, too-many-lines
 
@@ -111,7 +111,7 @@ class PGM:
             _origin = origin
             self.origin = tuple(origin)
 
-        self._ctx = _RenderingContext(CTX_Kwargs(
+        self._ctx = RenderingContext(CTX_Kwargs(
             shape=np.asarray(_shape, dtype=np.float64),
             origin=np.asarray(_origin, dtype=np.float64),
             grid_unit=grid_unit,

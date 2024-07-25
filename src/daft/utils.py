@@ -7,10 +7,10 @@ import numpy as np
 
 from typing import Any, Literal, cast
 
-from ._types import NDArrayF, CTX_Kwargs, LabelParams, AnyDict
+from .types import NDArrayF, CTX_Kwargs, LabelParams, AnyDict
 
 
-class _RenderingContext:
+class RenderingContext:
     """
     :param shape:
         The number of rows and columns in the grid.

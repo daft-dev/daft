@@ -10,8 +10,8 @@ import numpy as np
 
 from typing import Any, cast
 
-from ._utils import _pop_multiple, _RenderingContext
-from ._types import Tuple2F, Tuple4F, Position, RectParams
+from .utils import _pop_multiple, RenderingContext
+from .types import Tuple2F, Tuple4F, Position, RectParams
 
 
 class Plate:
@@ -89,7 +89,7 @@ class Plate:
 
         self.position = position
 
-    def render(self, ctx: _RenderingContext) -> Rectangle:
+    def render(self, ctx: RenderingContext) -> Rectangle:
         """
         Render the plate in the given axes.
 
