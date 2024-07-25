@@ -8,10 +8,10 @@ from matplotlib.patches import Ellipse, Rectangle
 
 import numpy as np
 
-from typing import Any, Literal, TypedDict, cast
+from typing import Any, cast, Optional
 
 from .utils import _pop_multiple, RenderingContext
-from .types import Tuple2F, CTX_Kwargs, PlotParams, LabelParams, Shape
+from .types import Tuple2F, PlotParams, LabelParams, Shape
 
 
 class Node:
@@ -78,14 +78,14 @@ class Node:
         x: float,
         y: float,
         scale: float = 1.0,
-        aspect: float | None = None,
+        aspect: Optional[float] = None,
         observed: bool = False,
         fixed: bool = False,
         alternate: bool = False,
         offset: Tuple2F = (0.0, 0.0),
-        fontsize: float | None = None,
-        plot_params: PlotParams | None = None,
-        label_params: LabelParams | None = None,
+        fontsize: Optional[float] = None,
+        plot_params: Optional[PlotParams] = None,
+        label_params: Optional[LabelParams] = None,
         shape: Shape = "ellipse",
     ) -> None:
         # Check Node style.
@@ -114,7 +114,7 @@ class Node:
         if self.fixed:
             self.scale /= 6.0
         if aspect is not None:
-            self.aspect: float | None = float(aspect)
+            self.aspect: Optional[float] = float(aspect)
         else:
             self.aspect = aspect
 
@@ -129,7 +129,7 @@ class Node:
         # Text parameters.
         self.offset = offset
         self.label_params = cast(
-            LabelParams | None, dict(label_params) if label_params else None
+            Optional[LabelParams], dict(label_params) if label_params else None
         )
 
         # Shape

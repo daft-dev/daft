@@ -8,7 +8,7 @@ from matplotlib.patches import Rectangle
 
 import numpy as np
 
-from typing import Any, cast
+from typing import Any, cast, Optional
 
 from .utils import _pop_multiple, RenderingContext
 from .types import Tuple2F, Tuple4F, Position, RectParams
@@ -55,13 +55,13 @@ class Plate:
     def __init__(
         self,
         rect: Tuple4F,
-        label: str | None = None,
+        label: Optional[str] = None,
         label_offset: Tuple2F = (5, 5),
         shift: float = 0,
         position: Position = "bottom left",
-        fontsize: float | None = None,
-        rect_params: RectParams | None = None,
-        bbox: dict[str, Any] | None = None,
+        fontsize: Optional[float] = None,
+        rect_params: Optional[RectParams] = None,
+        bbox: dict[str, Optional[Any]] = None,
     ) -> None:
         self.rect = rect
         self.label = label
@@ -69,17 +69,17 @@ class Plate:
         self.shift = shift
 
         if fontsize is not None:
-            self.fontsize: float | None = fontsize
+            self.fontsize: Optional[float] = fontsize
         else:
             self.fontsize = mpl.rcParams["font.size"]
 
         if rect_params is not None:
-            self.rect_params: RectParams | None = rect_params
+            self.rect_params: Optional[RectParams] = rect_params
         else:
             self.rect_params = None
 
         if bbox is not None:
-            self.bbox: dict[str, Any] | None = dict(bbox)
+            self.bbox: dict[str, Optional[Any]] = dict(bbox)
 
             # Set the awful default blue color to transparent
             if "fc" not in self.bbox.keys():
@@ -199,7 +199,7 @@ class Text(Plate):
     """
 
     def __init__(
-        self, x: float, y: float, label: str, fontsize: float | None = None
+        self, x: float, y: float, label: str, fontsize: Optional[float] = None
     ) -> None:
         self.rect = (x, y, 0.0, 0.0)
         self.label = label

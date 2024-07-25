@@ -4,11 +4,11 @@ __all__ = ["PGM"]
 # TODO: should Text be added?
 
 import matplotlib.pyplot as plt
-from matplotlib.patches import Ellipse, FancyArrow, Rectangle
+from matplotlib.patches import Ellipse, Rectangle
 
 import numpy as np
 
-from typing import Any, Literal, cast
+from typing import Any, Optional
 
 from .node import Node
 from .edge import Edge
@@ -84,8 +84,8 @@ class PGM:
 
     def __init__(
         self,
-        shape: Tuple2F | None = None,
-        origin: Tuple2F | None = None,
+        shape: Optional[Tuple2F] = None,
+        origin: Optional[Tuple2F] = None,
         grid_unit: float = 2.0,
         node_unit: float = 1.0,
         observed_style: str = "shaded",
@@ -96,8 +96,8 @@ class PGM:
         plate_fc: str = "w",
         directed: bool = True,
         aspect: float = 1.0,
-        label_params: LabelParams | None = None,
-        dpi: int | None = None,
+        label_params: Optional[LabelParams] = None,
+        dpi: Optional[int] = None,
     ) -> None:
         self._nodes: dict[str, Node] = {}
         self._edges: list[Edge] = []
@@ -152,14 +152,14 @@ class PGM:
         x: float = 0,
         y: float = 0,
         scale: float = 1.0,
-        aspect: float | None = None,
+        aspect: Optional[float] = None,
         observed: bool = False,
         fixed: bool = False,
         alternate: bool = False,
         offset: Tuple2F = (0, 0),
-        fontsize: float | None = None,
-        plot_params: PlotParams | None = None,
-        label_params: LabelParams | None = None,
+        fontsize: Optional[float] = None,
+        plot_params: Optional[PlotParams] = None,
+        label_params: Optional[LabelParams] = None,
         shape: Shape = "ellipse",
     ) -> Node:
         """
@@ -246,12 +246,12 @@ class PGM:
         self,
         name1: str,
         name2: str,
-        directed: bool | None = None,
+        directed: Optional[bool] = None,
         xoffset: float = 0.0,
         yoffset: float = 0.1,
-        label: str | None = None,
-        plot_params: PlotParams | None = None,
-        label_params: LabelParams | None = None,
+        label: Optional[str] = None,
+        plot_params: Optional[PlotParams] = None,
+        label_params: Optional[LabelParams] = None,
         **kwargs: dict[str, Any],  # pylint: disable=unused-argument
     ) -> Edge:
         """
@@ -308,13 +308,13 @@ class PGM:
     def add_plate(
         self,
         plate: Plate,
-        label: str | None = None,
+        label: Optional[str] = None,
         label_offset: Tuple2F = (5, 5),
         shift: float = 0,
         position: Position = "bottom left",
-        fontsize: float | None = None,
-        rect_params: RectParams | None = None,
-        bbox: bool | None = None,
+        fontsize: Optional[float] = None,
+        rect_params: Optional[RectParams] = None,
+        bbox: Optional[bool] = None,
     ) -> None:
         """
         Add a :class:`Plate` object to the model.
@@ -363,7 +363,7 @@ class PGM:
         self._plates.append(_plate)
 
     def add_text(
-        self, x: float, y: float, label: str, fontsize: float | None = None
+        self, x: float, y: float, label: str, fontsize: Optional[float] = None
     ) -> None:
         """
         A subclass of plate to writing text using grid coordinates. Any
@@ -388,7 +388,7 @@ class PGM:
 
         return None
 
-    def render(self, dpi: int | None = None) -> plt.Axes:
+    def render(self, dpi: Optional[int] = None) -> plt.Axes:
         """
         Render the :class:`Plate`, :class:`Edge` and :class:`Node` objects in
         the model. This will create a new figure with the correct dimensions
@@ -492,7 +492,7 @@ class PGM:
         """Axes as a property."""
         return self._ctx.ax()
 
-    def show(self, *args: Any, dpi: int | None = None, **kwargs: Any) -> None:
+    def show(self, *args: Any, dpi: Optional[int] = None, **kwargs: Any) -> None:
         """
         Wrapper on :class:`PGM.render()` that calls `matplotlib.show()`
         immediately after.

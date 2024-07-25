@@ -5,7 +5,7 @@ __all__: list[str] = []
 import matplotlib.pyplot as plt
 import numpy as np
 
-from typing import Any, Literal, cast
+from typing import Any, cast, Optional
 
 from .types import NDArrayF, CTX_Kwargs, LabelParams, AnyDict
 
@@ -103,8 +103,8 @@ class RenderingContext:
         self.dpi = kwargs.get("dpi", None)
 
         # Initialize the figure to ``None`` to handle caching later.
-        self._figure: plt.Figure | None = None
-        self._ax: plt.Axis | None = None
+        self._figure: Optional[plt.Figure] = None
+        self._ax: Optional[plt.Axis] = None
 
     def reset_shape(self, shape: NDArrayF, adj_origin: bool = False) -> None:
         """Reset the shape and figure size."""

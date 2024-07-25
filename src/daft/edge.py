@@ -6,7 +6,7 @@ __all__ = ["Edge"]
 from matplotlib.lines import Line2D
 from matplotlib.patches import FancyArrow
 
-from typing import Any, cast
+from typing import Any, cast, Optional
 
 from .utils import _pop_multiple, RenderingContext
 from .types import Tuple4F, PlotParams, LabelParams
@@ -54,11 +54,11 @@ class Edge:
         node1: "Node",
         node2: "Node",
         directed: bool = True,
-        label: str | None = None,
+        label: Optional[str] = None,
         xoffset: float = 0,
         yoffset: float = 0.1,
-        plot_params: PlotParams | None = None,
-        label_params: LabelParams | None = None,
+        plot_params: Optional[PlotParams] = None,
+        label_params: Optional[LabelParams] = None,
     ) -> None:
         self.node1 = node1
         self.node2 = node2
