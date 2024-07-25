@@ -6,7 +6,7 @@ __all__ = ["Edge"]
 from matplotlib.lines import Line2D
 from matplotlib.patches import FancyArrow
 
-from typing import Any, cast, Optional
+from typing import Any, cast, Optional, Union
 
 from .utils import _pop_multiple, RenderingContext
 from .types import Tuple4F, PlotParams, LabelParams
@@ -90,7 +90,7 @@ class Edge:
 
         return x3, y3, x4 - x3, y4 - y3
 
-    def render(self, ctx: RenderingContext) -> FancyArrow | list[Line2D]:
+    def render(self, ctx: RenderingContext) -> Union[FancyArrow, list[Line2D]]:
         """
         Render the edge in the given axes.
 

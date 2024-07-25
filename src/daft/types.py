@@ -3,15 +3,14 @@
 __all__: list[str] = []
 
 import numpy as np
-from numpy.typing import NDArray, ArrayLike
-from typing import Any, Annotated, Literal, TypeVar, TypedDict, Optional, Union
+from numpy.typing import NDArray
+from typing import Any, Literal, TypeVar, TypedDict, Optional, Union
 
 T = TypeVar("T")
 
 NDArrayF = NDArray[np.float64]
 NDArrayI = NDArray[np.int64]
 
-# Tuple2 = tuple[T, T] | list[T]
 Tuple2 = tuple[T, T]
 Tuple4 = tuple[T, T, T, T]
 

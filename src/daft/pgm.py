@@ -8,7 +8,7 @@ from matplotlib.patches import Ellipse, Rectangle
 
 import numpy as np
 
-from typing import Any, Optional
+from typing import Any, Optional, Union
 
 from .node import Node
 from .edge import Edge
@@ -404,7 +404,7 @@ class PGM:
         else:
             self._ctx.dpi = dpi
 
-        def get_max(maxsize: NDArrayF, patch: Ellipse | Rectangle) -> NDArrayF:
+        def get_max(maxsize: NDArrayF, patch: Union[Ellipse, Rectangle]) -> NDArrayF:
             if isinstance(patch, Ellipse):
                 maxsize = np.maximum(
                     maxsize,
@@ -420,7 +420,7 @@ class PGM:
                 )
             return maxsize
 
-        def get_min(minsize: NDArrayF, patch: Ellipse | Rectangle) -> NDArrayF:
+        def get_min(minsize: NDArrayF, patch: Union[Ellipse, Rectangle]) -> NDArrayF:
             if isinstance(patch, Ellipse):
                 minsize = np.minimum(
                     minsize,
@@ -440,7 +440,7 @@ class PGM:
             maxsize = np.copy(self._ctx.origin)
 
             for plate in self._plates:
-                artist: Ellipse | Rectangle = plate.render(self._ctx)
+                artist: Union[Ellipse, Rectangle] = plate.render(self._ctx)
                 maxsize = get_max(maxsize, artist)
 
             for name in self._nodes:

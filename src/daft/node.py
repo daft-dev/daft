@@ -8,7 +8,7 @@ from matplotlib.patches import Ellipse, Rectangle
 
 import numpy as np
 
-from typing import Any, cast, Optional
+from typing import Any, cast, Optional, Union
 
 from .utils import _pop_multiple, RenderingContext
 from .types import Tuple2F, PlotParams, LabelParams, Shape
@@ -139,7 +139,7 @@ class Node:
             print("Warning: wrong shape value, set to ellipse instead")
             self.shape = "ellipse"
 
-    def render(self, ctx: RenderingContext) -> Ellipse | Rectangle:
+    def render(self, ctx: RenderingContext) -> Union[Ellipse, Rectangle]:
         """
         Render the node.
 
@@ -229,7 +229,7 @@ class Node:
 
             # Draw the background ellipse.
             if self.shape == "ellipse":
-                bg: Ellipse | Rectangle = Ellipse(
+                bg: Union[Ellipse, Rectangle] = Ellipse(
                     xy=ctx.convert(self.x, self.y),
                     width=w,
                     height=h,
@@ -266,7 +266,7 @@ class Node:
             plot_params["fc"] = "none"
 
         if self.shape == "ellipse":
-            el: Ellipse | Rectangle = Ellipse(
+            el: Union[Ellipse, Rectangle] = Ellipse(
                 xy=ctx.convert(self.x, self.y),
                 width=diameter * aspect,
                 height=diameter,
