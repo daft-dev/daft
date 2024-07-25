@@ -186,9 +186,6 @@ class Node:
             self.offset = (self.offset[0], self.offset[1] + 6)
 
             label_params["va"] = "baseline"
-            _label_params = cast(dict[str, Any], label_params)
-            _label_params.pop("verticalalignment", None)
-            _label_params.pop("ma", None)
 
             if not fc_is_set:
                 plot_params["fc"] = "k"
@@ -290,6 +287,11 @@ class Node:
 
         # Reset the face color.
         plot_params["fc"] = fc
+
+        # pop extra params
+        _label_params = cast(dict[str, Any], label_params)
+        _label_params.pop("verticalalignment", None)
+        _label_params.pop("ma", None)
 
         # Annotate the node.
         ax.annotate(
