@@ -100,9 +100,9 @@ class Plate:
         ax = ctx.ax()
 
         shift = np.array([0, self.shift], dtype=np.float64)
-        rect = np.atleast_1d(self.rect)
-        bottom_left = np.atleast_1d(ctx.convert(*(rect[:2] + shift)))
-        top_right = np.atleast_1d(ctx.convert(*(rect[:2] + rect[2:])))
+        rect = np.atleast_1d(np.asarray(self.rect, dtype=np.float64))
+        bottom_left = np.asarray(ctx.convert(*(rect[:2] + shift)), dtype=np.float64)
+        top_right = np.asarray(ctx.convert(*(rect[:2] + rect[2:])), dtype=np.float64)
         rect = np.concatenate([bottom_left, top_right - bottom_left])
 
         if self.rect_params is not None:
@@ -120,14 +120,10 @@ class Plate:
             rect_params, ctx.line_width, "lw", "linewidth"
         )
 
-        x: float
-        y: float
-        x, y = rect[:2]
-
         rectangle = Rectangle(
-            xy=(x, y),
-            width=x,
-            height=y,
+            xy=(rect[0], rect[1]),
+            width=rect[2],
+            height=rect[3],
             **rect_params
         )
 

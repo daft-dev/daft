@@ -14,7 +14,7 @@ from .node import Node
 from .edge import Edge
 from .plate import Plate, Text
 from ._utils import _RenderingContext
-from ._types import Tuple2F, NDArrayF, Shape, Position, CTX_Kwargs, PlotParams, LabelParams
+from ._types import Tuple2F, NDArrayF, Shape, Position, CTX_Kwargs, PlotParams, LabelParams, RectParams
 
 # pylint: disable=too-many-arguments, protected-access, unused-argument, too-many-lines
 
@@ -302,7 +302,7 @@ class PGM:
         shift: float = 0,
         position: Position = "bottom left",
         fontsize: float | None = None,
-        rect_params: dict[str, Any] | None = None,
+        rect_params: RectParams | None = None,
         bbox: bool | None = None,
     ) -> None:
         """
