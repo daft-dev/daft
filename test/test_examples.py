@@ -15,7 +15,7 @@ def test_bca() -> None:
     pgm.add_plate([0.5, 2.25, 1, 1.25], label=r"data $n$")
     pgm.add_edge("a", "b")
     pgm.add_edge("b", "c")
-    pgm.show()
+    pgm.render()
 
 
 @image_comparison(baseline_images=["classic"], extensions=["png"])
@@ -41,7 +41,7 @@ def test_classic() -> None:
     # And a plate.
     pgm.add_plate([0.5, 0.5, 2, 1], label=r"$n = 1, \cdots, N$", shift=-0.1)
 
-    pgm.show()
+    pgm.render()
 
 
 @image_comparison(baseline_images=["deconvolution"], extensions=["png"])
@@ -149,7 +149,7 @@ def test_deconvolution() -> None:
     pgm.add_text(x0, y0 + 5 * dy, "= pressure drop at sandface")
 
     # Render and save.
-    pgm.show()
+    pgm.render()
 
 
 @image_comparison(baseline_images=["exoplanets"], extensions=["png"])
@@ -188,7 +188,7 @@ def test_exoplanets() -> None:
     pgm.add_plate([2, 0.5, 1, 1], label=r"pixel $j$", shift=-0.1)
 
     # Render and save.
-    pgm.show()
+    pgm.render()
 
 
 @image_comparison(baseline_images=["fixed"], extensions=["png"])
@@ -200,7 +200,7 @@ def test_fixed() -> None:
     pgm.add_node(
         "fixed", r"Fixed!", 1, 1, fixed=True, aspect=1.0, offset=[0, 5]
     )
-    pgm.show()
+    pgm.render()
 
 
 @image_comparison(baseline_images=["gaia"], extensions=["png"])
@@ -218,7 +218,7 @@ def test_gaia() -> None:
     pgm.add_edge("alpha", "true")
     pgm.add_edge("Sigma", "sigma")
     pgm.add_edge("sigma", "obs")
-    pgm.show()
+    pgm.render()
 
 
 @image_comparison(baseline_images=["galex"], extensions=["png"])
@@ -301,7 +301,7 @@ def test_galex() -> None:
     pgm.add_edge("star pos", "star adt")
 
     # done
-    pgm.show()
+    pgm.render()
 
 
 @image_comparison(baseline_images=["huey_p_newton"], extensions=["png"])
@@ -336,7 +336,7 @@ def test_huey_p_newton() -> None:
     pgm.add_edge("sigman", "Yn")
 
     # Render and save.
-    pgm.show()
+    pgm.render()
 
 
 @image_comparison(baseline_images=["logo"], extensions=["png"])
@@ -349,7 +349,7 @@ def test_logo() -> None:
     pgm.add_edge("d", "a")
     pgm.add_edge("a", "f")
     pgm.add_edge("f", "t")
-    pgm.show()
+    pgm.render()
 
 
 @image_comparison(baseline_images=["mrf"], extensions=["png"])
@@ -379,7 +379,7 @@ def test_mrf() -> None:
     ]:
         pgm.add_edge(str(e[0]), str(e[1]))
 
-    pgm.show()
+    pgm.render()
 
 
 @image_comparison(baseline_images=["no_circles"], extensions=["png"])
@@ -393,7 +393,7 @@ def test_no_circles() -> None:
     pgm.add_edge("cloudy", "sprinkler")
     pgm.add_edge("rain", "wet")
     pgm.add_edge("sprinkler", "wet")
-    pgm.show()
+    pgm.render()
 
 
 @image_comparison(baseline_images=["no_gray"], extensions=["png"])
@@ -420,7 +420,7 @@ def test_no_gray() -> None:
     pgm.add_plate([0.5, 0.5, 2, 1], label=r"$n = 1, \ldots, N$", shift=-0.1)
 
     # Render and save.
-    pgm.show()
+    pgm.render()
 
 
 @image_comparison(baseline_images=["recursive"], extensions=["png"])
@@ -475,7 +475,7 @@ def test_recursive() -> None:
     )
     pgm.add_edge("output", "answer")
 
-    pgm.show()
+    pgm.render()
 
 
 @image_comparison(baseline_images=["thick_lines"], extensions=["png"])
@@ -502,7 +502,7 @@ def test_thick_lines() -> None:
     pgm.add_plate([0.5, 0.5, 2, 1], label=r"$n = 1, \cdots, N$", shift=-0.1)
 
     # Render and save.
-    pgm.show()
+    pgm.render()
 
 
 @image_comparison(baseline_images=["weaklensing"], extensions=["png"])
@@ -524,11 +524,11 @@ def test_weaklensing() -> None:
     pgm.add_edge("x", "obs")
     pgm.add_edge("Sigma", "sigma")
     pgm.add_edge("sigma", "obs")
-    pgm.show()
+    pgm.render()
 
 
-@image_comparison(baseline_images=["no_circles"], extensions=["png"])
-def test_no_circles() -> None:
+@image_comparison(baseline_images=["wordy"], extensions=["png"])
+def test_wordy() -> None:
     pgm = daft.PGM()
     pgm.add_node("cloudy", r"cloudy", 3, 3, aspect=1.8)
     pgm.add_node("rain", r"rain", 2, 2, aspect=1.2)
@@ -550,11 +550,11 @@ def test_no_circles() -> None:
     )
     pgm.add_edge("rain", "wet")
     pgm.add_edge("sprinkler", "wet")
-    pgm.show()
+    pgm.render()
 
 
 @image_comparison(baseline_images=["wordy"], extensions=["png"])
-def test_wordy() -> None:
+def test_wordy2() -> None:
     pgm = daft.PGM()
     pgm.add_node("obs", r"$\epsilon^{obs}_n$", 2, 3, observed=True)
     pgm.add_node("true", r"$\epsilon^{true}_n$", 1, 3)
@@ -571,4 +571,4 @@ def test_wordy() -> None:
     pgm.add_edge("sigma", "obs")
     pgm.add_plate([0.5, 2.25, 2, 1.25], label=r"galaxies $n$")
     pgm.add_plate([0.25, 1.75, 2.5, 2.75], label=r"patches $m$")
-    pgm.show()
+    pgm.render()

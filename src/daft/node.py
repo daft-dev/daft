@@ -3,6 +3,7 @@
 __all__ = ["Node"]
 
 import matplotlib as mpl
+from copy import deepcopy
 from matplotlib.patches import Ellipse, Rectangle
 
 import numpy as np
@@ -167,9 +168,9 @@ class Node:
 
         # And the label parameters.
         if self.label_params is None:
-            label_params = cast(LabelParams, ctx.label_params)
+            label_params = deepcopy(ctx.label_params)
         else:
-            label_params = cast(LabelParams, self.label_params)
+            label_params = deepcopy(self.label_params)
 
         label_params["va"] = _pop_multiple(
             label_params, "center", "va", "verticalalignment"
@@ -189,6 +190,7 @@ class Node:
 
             if not fc_is_set:
                 plot_params["fc"] = "k"
+
 
         diameter = ctx.node_unit * scale
         if self.aspect is not None:
