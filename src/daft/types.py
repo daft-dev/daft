@@ -4,7 +4,7 @@ __all__: list[str] = []
 
 import numpy as np
 from numpy.typing import NDArray, ArrayLike
-from typing import Any, Annotated, Literal, TypeVar, TypedDict
+from typing import Any, Annotated, Literal, TypeVar, TypedDict, Optional, Union
 
 T = TypeVar('T')
 
@@ -77,8 +77,8 @@ class CTX_Kwargs(TypedDict):
     plate_fc: str
     directed: bool
     aspect: float
-    label_params: LabelParams | None
-    dpi: int | None
+    label_params: Optional[LabelParams]
+    dpi: Optional[int]
 
 
-AnyDict = dict[str, Any] | PlotParams | LabelParams | RectParams | CTX_Kwargs
+AnyDict = Union[dict[str, Any], PlotParams, LabelParams, RectParams, CTX_Kwargs]
