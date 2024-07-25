@@ -96,7 +96,9 @@ class RenderingContext:
         self.plate_fc = kwargs.get("plate_fc", "w")
         self.directed = kwargs.get("directed", True)
         self.aspect = kwargs.get("aspect", 1.0)
-        self.label_params = cast(LabelParams, kwargs.get("label_params", {}) or {})
+        self.label_params = cast(
+            LabelParams, kwargs.get("label_params", {}) or {}
+        )
 
         self.dpi = kwargs.get("dpi", None)
 
@@ -164,7 +166,9 @@ class RenderingContext:
         Convert from model coordinates to plot coordinates.
 
         """
-        return self.grid_unit * (x - self.origin[0]), self.grid_unit * (y - self.origin[1])
+        return self.grid_unit * (x - self.origin[0]), self.grid_unit * (
+            y - self.origin[1]
+        )
 
 
 def _pop_multiple(_dict: AnyDict, default: Any, *args: str) -> Any:

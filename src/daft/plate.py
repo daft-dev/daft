@@ -101,8 +101,12 @@ class Plate:
 
         shift = np.array([0, self.shift], dtype=np.float64)
         rect = np.atleast_1d(np.asarray(self.rect, dtype=np.float64))
-        bottom_left = np.asarray(ctx.convert(*(rect[:2] + shift)), dtype=np.float64)
-        top_right = np.asarray(ctx.convert(*(rect[:2] + rect[2:])), dtype=np.float64)
+        bottom_left = np.asarray(
+            ctx.convert(*(rect[:2] + shift)), dtype=np.float64
+        )
+        top_right = np.asarray(
+            ctx.convert(*(rect[:2] + rect[2:])), dtype=np.float64
+        )
         rect = np.concatenate([bottom_left, top_right - bottom_left])
 
         if self.rect_params is not None:
@@ -110,9 +114,7 @@ class Plate:
         else:
             rect_params = {}
 
-        rect_params["ec"] = _pop_multiple(
-            rect_params, "k", "ec", "edgecolor"
-        )
+        rect_params["ec"] = _pop_multiple(rect_params, "k", "ec", "edgecolor")
         rect_params["fc"] = _pop_multiple(
             rect_params, ctx.plate_fc, "fc", "facecolor"
         )
@@ -121,10 +123,7 @@ class Plate:
         )
 
         rectangle = Rectangle(
-            xy=(rect[0], rect[1]),
-            width=rect[2],
-            height=rect[3],
-            **rect_params
+            xy=(rect[0], rect[1]), width=rect[2], height=rect[3], **rect_params
         )
 
         ax.add_artist(rectangle)
@@ -199,7 +198,9 @@ class Text(Plate):
 
     """
 
-    def __init__(self, x: float, y: float, label: str, fontsize: float | None = None) -> None:
+    def __init__(
+        self, x: float, y: float, label: str, fontsize: float | None = None
+    ) -> None:
         self.rect = (x, y, 0.0, 0.0)
         self.label = label
         self.fontsize = fontsize

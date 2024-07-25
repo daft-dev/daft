@@ -51,8 +51,8 @@ class Edge:
 
     def __init__(
         self,
-        node1: 'Node',
-        node2: 'Node',
+        node1: "Node",
+        node2: "Node",
         directed: bool = True,
         label: str | None = None,
         xoffset: float = 0,
@@ -118,7 +118,7 @@ class Edge:
                 textcoords="offset points",
                 ha="center",
                 va="center",
-                **cast(dict[str, Any], self.label_params)
+                **cast(dict[str, Any], self.label_params),
             )
 
         if self.directed:
@@ -140,7 +140,7 @@ class Edge:
                     *self._get_coords(ctx),
                     width=0,
                     length_includes_head=True,
-                    **cast(dict[str, Any], plot_params)
+                    **cast(dict[str, Any], plot_params),
                 )
 
                 # Add the arrow to the axes.
@@ -159,9 +159,7 @@ class Edge:
 
             # Plot the line.
             line = ax.plot(
-                (x, x + dx),
-                (y, y + dy),
-                **cast(dict[str, Any], plot_params)
+                (x, x + dx), (y, y + dy), **cast(dict[str, Any], plot_params)
             )
             return line
 
