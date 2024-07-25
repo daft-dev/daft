@@ -514,6 +514,4 @@ class PGM:
         """
         kwargs["bbox_inches"] = kwargs.get("bbox_inches", "tight")
         kwargs["dpi"] = kwargs.get("dpi", self._dpi)
-        if not self.figure:
-            self.render()
         self.figure.savefig(fname, *args, **kwargs)

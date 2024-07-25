@@ -527,8 +527,8 @@ def test_weaklensing() -> None:
     pgm.render()
 
 
-@image_comparison(baseline_images=["wordy"], extensions=["png"])
-def test_wordy() -> None:
+@image_comparison(baseline_images=["wet_grass"], extensions=["png"])
+def test_wet_grass() -> None:
     pgm = daft.PGM()
     pgm.add_node("cloudy", r"cloudy", 3, 3, aspect=1.8)
     pgm.add_node("rain", r"rain", 2, 2, aspect=1.2)
@@ -554,7 +554,7 @@ def test_wordy() -> None:
 
 
 @image_comparison(baseline_images=["wordy"], extensions=["png"])
-def test_wordy2() -> None:
+def test_wordy() -> None:
     pgm = daft.PGM()
     pgm.add_node("obs", r"$\epsilon^{obs}_n$", 2, 3, observed=True)
     pgm.add_node("true", r"$\epsilon^{true}_n$", 1, 3)
