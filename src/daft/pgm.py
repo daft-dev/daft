@@ -1,6 +1,6 @@
 """Code for Daft"""
 
-__all__ = ["PGM", ]
+__all__ = ["PGM"]
 # TODO: should Text be added?
 
 import matplotlib.pyplot as plt
@@ -8,15 +8,13 @@ from matplotlib.patches import Ellipse, FancyArrow, Rectangle
 
 import numpy as np
 
-from typing import Any
-from numpy.typing import NDArray, ArrayLike
-
+from typing import Any, Literal, cast
 
 from .node import Node
 from .edge import Edge
 from .plate import Plate, Text
-from ._utils import _rendering_context
-from ._types import NDArray2, NDArrayF, NDArrayI
+from ._utils import _RenderingContext
+from ._types import Tuple2F, NDArrayF, Shape, Position, CTX_Kwargs, PlotParams, LabelParams
 
 # pylint: disable=too-many-arguments, protected-access, unused-argument, too-many-lines
 
@@ -77,8 +75,8 @@ class PGM:
 
     def __init__(
         self,
-        shape: tuple[float, float] | list[float] | NDArrayF | None = None,
-        origin: ArrayLike | None = None,
+        shape: Tuple2F | None = None,
+        origin: Tuple2F | None = None,
         grid_unit: float = 2.0,
         node_unit: float = 1.0,
         observed_style: str = "shaded",
@@ -89,26 +87,33 @@ class PGM:
         plate_fc: str = "w",
         directed: bool = True,
         aspect: float = 1.0,
-        label_params: dict[str, Any] | None = None,
+        label_params: LabelParams | None = None,
         dpi: int | None = None,
     ) -> None:
         self._nodes: dict[str, Node] = {}
-        self._edges: dict[str, Edge] = []
-        self._plates: dict[str, Plate] = []
+        self._edges: list[Edge] = []
+        self._plates: list[Plate] = []
         self._dpi = dpi
 
         # if shape and origin are not given, pass a default
         # and we will determine at rendering time
-        self.shape = shape
-        self.origin = origin
         if shape is None:
-            shape = [1, 1]
-        if origin is None:
-            origin = [0, 0]
+            _shape: Tuple2F = (1, 1)
+            self.shape = None
+        else:
+            _shape = shape
+            self.shape = tuple(shape)
 
-        self._ctx = _rendering_context(
-            shape=shape,
-            origin=origin,
+        if origin is None:
+            _origin: Tuple2F = (0, 0)
+            self.origin = None
+        else:
+            _origin = origin
+            self.origin = tuple(origin)
+
+        self._ctx = _RenderingContext(CTX_Kwargs(
+            shape=np.asarray(_shape, dtype=np.float64),
+            origin=np.asarray(_origin, dtype=np.float64),
             grid_unit=grid_unit,
             node_unit=node_unit,
             observed_style=observed_style,
@@ -120,32 +125,32 @@ class PGM:
             directed=directed,
             aspect=aspect,
             label_params=label_params,
-            dpi=dpi,
-        )
+            dpi=dpi
+        ))
 
-    def __enter__(self):
+    def __enter__(self) -> "PGM":
         return self
 
-    def __exit__(self, *args):
+    def __exit__(self, *args: Any) -> None:
         self._ctx.close()
 
     def add_node(
         self,
-        node,
-        content="",
-        x=0,
-        y=0,
-        scale=1.0,
-        aspect=None,
-        observed=False,
-        fixed=False,
-        alternate=False,
-        offset=(0.0, 0.0),
-        fontsize=None,
-        plot_params=None,
-        label_params=None,
-        shape="ellipse",
-    ):
+        node: Node,
+        content: str = "",
+        x: float = 0,
+        y: float = 0,
+        scale: float = 1.0,
+        aspect: float | None = None,
+        observed: bool = False,
+        fixed: bool = False,
+        alternate: bool = False,
+        offset: Tuple2F = (0, 0),
+        fontsize: float | None = None,
+        plot_params: PlotParams | None = None,
+        label_params: LabelParams | None = None,
+        shape: Shape = "ellipse",
+    ) -> Node:
         """
         Add a :class:`Node` to the model.
 
@@ -205,7 +210,7 @@ class PGM:
         if isinstance(node, Node):
             _node = node
         else:
-            _node = Node(
+            _node = Node(  # type: ignore[unreachable]
                 node,
                 content,
                 x,
@@ -228,16 +233,16 @@ class PGM:
 
     def add_edge(
         self,
-        name1,
-        name2,
-        directed=None,
-        xoffset=0.0,
-        yoffset=0.1,
-        label=None,
-        plot_params=None,
-        label_params=None,
-        **kwargs,  # pylint: disable=unused-argument
-    ):
+        name1: str,
+        name2: str,
+        directed: bool | None = None,
+        xoffset: float = 0.0,
+        yoffset: float = 0.1,
+        label: str | None = None,
+        plot_params: PlotParams | None = None,
+        label_params: LabelParams | None = None,
+        **kwargs: dict[str, Any],  # pylint: disable=unused-argument
+    ) -> Edge:
         """
         Construct an :class:`Edge` between two named :class:`Node` objects.
 
@@ -291,15 +296,15 @@ class PGM:
 
     def add_plate(
         self,
-        plate,
-        label=None,
-        label_offset=(5, 5),
-        shift=0,
-        position="bottom left",
-        fontsize=None,
-        rect_params=None,
-        bbox=None,
-    ):
+        plate: Plate,
+        label: str | None = None,
+        label_offset: Tuple2F = (5, 5),
+        shift: float = 0,
+        position: Position = "bottom left",
+        fontsize: float | None = None,
+        rect_params: dict[str, Any] | None = None,
+        bbox: bool | None = None,
+    ) -> None:
         """
         Add a :class:`Plate` object to the model.
 
@@ -333,7 +338,7 @@ class PGM:
         if isinstance(plate, Plate):
             _plate = plate
         else:
-            _plate = Plate(
+            _plate = Plate(  # type: ignore[unreachable]
                 plate,
                 label,
                 label_offset,
@@ -346,7 +351,7 @@ class PGM:
 
         self._plates.append(_plate)
 
-    def add_text(self, x, y, label, fontsize=None):
+    def add_text(self, x: float, y: float, label: str, fontsize: float | None = None) -> None:
         """
         A subclass of plate to writing text using grid coordinates. Any
         ``**kwargs`` are passed through to :class:`PGM.Plate`.
@@ -365,7 +370,12 @@ class PGM:
 
         """
 
-        text = Text(x=x, y=y, label=label, fontsize=fontsize)
+        text = Text(
+            x=x,
+            y=y,
+            label=label,
+            fontsize=fontsize
+        )
         self._plates.append(text)
 
         return None
@@ -386,35 +396,35 @@ class PGM:
         else:
             self._ctx.dpi = dpi
 
-        def get_max(maxsize, artist):
-            if isinstance(artist, Ellipse):
+        def get_max(maxsize: NDArrayF, patch: Ellipse | Rectangle) -> NDArrayF:
+            if isinstance(patch, Ellipse):
                 maxsize = np.maximum(
                     maxsize,
-                    artist.center
-                    + np.array([artist.width, artist.height]) / 2,
+                    patch.center
+                    + np.array([patch.width, patch.height]) / 2,
                     dtype=np.float64,
                 )
-            elif isinstance(artist, Rectangle):
+            elif isinstance(patch, Rectangle):
                 maxsize = np.maximum(
                     maxsize,
-                    np.array([artist._x0, artist._y0], dtype=np.float64)
-                    + np.array([artist._width, artist._height]),
+                    np.array([patch._x0, patch._y0], dtype=np.float64)  # type: ignore[attr-defined]
+                    + np.array([patch._width, patch._height]),  # type: ignore[attr-defined]
                     dtype=np.float64,
                 )
             return maxsize
 
-        def get_min(minsize, artist):
-            if isinstance(artist, Ellipse):
+        def get_min(minsize: NDArrayF, patch: Ellipse | Rectangle) -> NDArrayF:
+            if isinstance(patch, Ellipse):
                 minsize = np.minimum(
                     minsize,
-                    artist.center
-                    - np.array([artist.width, artist.height]) / 2,
+                    patch.center
+                    - np.array([patch.width, patch.height]) / 2,
                     dtype=np.float64,
                 )
-            elif isinstance(artist, Rectangle):
+            elif isinstance(patch, Rectangle):
                 minsize = np.minimum(
                     minsize,
-                    np.array([artist._x0, artist._y0], dtype=np.float64),
+                    np.array([patch._x0, patch._y0], dtype=np.float64),  # type: ignore[attr-defined]
                 )
             return minsize
 
@@ -424,12 +434,15 @@ class PGM:
             maxsize = np.copy(self._ctx.origin)
 
             for plate in self._plates:
-                artist = plate.render(self._ctx)
+                artist: Ellipse | Rectangle = plate.render(self._ctx)
                 maxsize = get_max(maxsize, artist)
 
             for name in self._nodes:
                 if self._nodes[name].fixed:
-                    self._nodes[name].offset[1] -= 12.5
+                    offx, offy = self._nodes[name].offset
+                    offy -= 12.5
+                    self._nodes[name].offset = (offx, offy)
+
                 artist = self._nodes[name].render(self._ctx)
                 maxsize = get_max(maxsize, artist)
 
@@ -464,16 +477,16 @@ class PGM:
         return self.ax
 
     @property
-    def figure(self):
+    def figure(self) -> plt.Figure:
         """Figure as a property."""
         return self._ctx.figure()
 
     @property
-    def ax(self):
+    def ax(self) -> plt.Axes:
         """Axes as a property."""
         return self._ctx.ax()
 
-    def show(self, *args, dpi=None, **kwargs):
+    def show(self, *args: Any, dpi: int | None = None, **kwargs: Any) -> None:
         """
         Wrapper on :class:`PGM.render()` that calls `matplotlib.show()`
         immediately after.
@@ -486,7 +499,7 @@ class PGM:
         self.render(dpi=dpi)
         plt.show(*args, **kwargs)
 
-    def savefig(self, fname, *args, **kwargs):
+    def savefig(self, fname: str, *args: Any, **kwargs: Any) -> None:
         """
         Wrapper on ``matplotlib.Figure.savefig()`` that sets default image
         padding using ``bbox_inchaes = tight``.

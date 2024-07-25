@@ -19,4 +19,4 @@ class SameLocationError(Exception):
         super().__init__(self.message)
 
 
-from ._core import Edge
+from .edge import Edge

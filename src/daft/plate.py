@@ -1,13 +1,17 @@
+"""Daft errors"""
+
+__all__: list[str] = []
+
+
 import matplotlib as mpl
 from matplotlib.patches import Rectangle
 
 import numpy as np
 
-from ._utils import _pop_multiple
+from typing import Any, cast
 
-# Move exception import to end of file to resolve circular dependency
-from ._exceptions import SameLocationError
-
+from ._utils import _pop_multiple, _RenderingContext
+from ._types import Tuple2F, Tuple4F, Position, RectParams
 
 
 class Plate:
@@ -50,32 +54,32 @@ class Plate:
 
     def __init__(
         self,
-        rect,
-        label=None,
-        label_offset=(5, 5),
-        shift=0,
-        position="bottom left",
-        fontsize=None,
-        rect_params=None,
-        bbox=None,
-    ):
+        rect: Tuple4F,
+        label: str | None = None,
+        label_offset: Tuple2F = (5, 5),
+        shift: float = 0,
+        position: Position = "bottom left",
+        fontsize: float | None = None,
+        rect_params: RectParams | None = None,
+        bbox: dict[str, Any] | None = None,
+    ) -> None:
         self.rect = rect
         self.label = label
         self.label_offset = label_offset
         self.shift = shift
 
         if fontsize is not None:
-            self.fontsize = fontsize
+            self.fontsize: float | None = fontsize
         else:
             self.fontsize = mpl.rcParams["font.size"]
 
         if rect_params is not None:
-            self.rect_params = dict(rect_params)
+            self.rect_params: RectParams | None = rect_params
         else:
             self.rect_params = None
 
         if bbox is not None:
-            self.bbox = dict(bbox)
+            self.bbox: dict[str, Any] | None = dict(bbox)
 
             # Set the awful default blue color to transparent
             if "fc" not in self.bbox.keys():
@@ -85,7 +89,7 @@ class Plate:
 
         self.position = position
 
-    def render(self, ctx):
+    def render(self, ctx: _RenderingContext) -> Rectangle:
         """
         Render the plate in the given axes.
 
@@ -97,8 +101,8 @@ class Plate:
 
         shift = np.array([0, self.shift], dtype=np.float64)
         rect = np.atleast_1d(self.rect)
-        bottom_left = ctx.convert(*(rect[:2] + shift))
-        top_right = ctx.convert(*(rect[:2] + rect[2:]))
+        bottom_left = np.atleast_1d(ctx.convert(*(rect[:2] + shift)))
+        top_right = np.atleast_1d(ctx.convert(*(rect[:2] + rect[2:])))
         rect = np.concatenate([bottom_left, top_right - bottom_left])
 
         if self.rect_params is not None:
@@ -106,14 +110,26 @@ class Plate:
         else:
             rect_params = {}
 
-        rect_params["ec"] = _pop_multiple(rect_params, "k", "ec", "edgecolor")
+        rect_params["ec"] = _pop_multiple(
+            rect_params, "k", "ec", "edgecolor"
+        )
         rect_params["fc"] = _pop_multiple(
             rect_params, ctx.plate_fc, "fc", "facecolor"
         )
         rect_params["lw"] = _pop_multiple(
             rect_params, ctx.line_width, "lw", "linewidth"
         )
-        rectangle = Rectangle(rect[:2], *rect[2:], **rect_params)
+
+        x: float
+        y: float
+        x, y = rect[:2]
+
+        rectangle = Rectangle(
+            xy=(x, y),
+            width=x,
+            height=y,
+            **rect_params
+        )
 
         ax.add_artist(rectangle)
 
@@ -150,11 +166,14 @@ class Plate:
                     f"Unknown positioning string: {self.position}"
                 )
 
+            posx, posy = position
+            offx, offy = offset
+
             ax.annotate(
                 self.label,
-                xy=position,
+                xy=(posx, posy),
                 xycoords="data",
-                xytext=offset,
+                xytext=(offx, offy),
                 textcoords="offset points",
                 size=self.fontsize,
                 bbox=self.bbox,
@@ -184,13 +203,13 @@ class Text(Plate):
 
     """
 
-    def __init__(self, x, y, label, fontsize=None):
-        self.rect = [x, y, 0.0, 0.0]
+    def __init__(self, x: float, y: float, label: str, fontsize: float | None = None) -> None:
+        self.rect = (x, y, 0.0, 0.0)
         self.label = label
         self.fontsize = fontsize
-        self.label_offset = [0.0, 0.0]
+        self.label_offset = (0.0, 0.0)
+        self.rect_params = cast(RectParams, {"ec": "none"})
         self.bbox = {"fc": "none", "ec": "none"}
-        self.rect_params = {"ec": "none"}
 
         super().__init__(
             rect=self.rect,

@@ -7,8 +7,10 @@ from matplotlib.patches import Ellipse, Rectangle
 
 import numpy as np
 
-from ._utils import _rendering_context, _pop_multiple
-from ._exceptions import SameLocationError
+from typing import Any, Literal, TypedDict, cast
+
+from ._utils import _pop_multiple, _RenderingContext
+from ._types import Tuple2F, CTX_Kwargs, PlotParams, LabelParams, Shape
 
 
 class Node:
@@ -70,21 +72,21 @@ class Node:
 
     def __init__(
         self,
-        name,
-        content,
-        x,
-        y,
-        scale=1.0,
-        aspect=None,
-        observed=False,
-        fixed=False,
-        alternate=False,
-        offset=(0.0, 0.0),
-        fontsize=None,
-        plot_params=None,
-        label_params=None,
-        shape="ellipse",
-    ):
+        name: str,
+        content: str,
+        x: float,
+        y: float,
+        scale: float = 1.0,
+        aspect: float | None = None,
+        observed: bool = False,
+        fixed: bool = False,
+        alternate: bool = False,
+        offset: Tuple2F = (0.0, 0.0),
+        fontsize: float | None = None,
+        plot_params: PlotParams | None = None,
+        label_params: LabelParams | None = None,
+        shape: Shape = "ellipse",
+    ) -> None:
         # Check Node style.
         # Iterable is consumed, so first condition checks if two or more are
         # true
@@ -105,12 +107,13 @@ class Node:
         self.content = content
 
         # Coordinates and dimensions.
-        self.x, self.y = float(x), float(y)
+        self.x = float(x)
+        self.y = float(y)
         self.scale = float(scale)
         if self.fixed:
             self.scale /= 6.0
         if aspect is not None:
-            self.aspect = float(aspect)
+            self.aspect: float | None = float(aspect)
         else:
             self.aspect = aspect
 
@@ -118,11 +121,11 @@ class Node:
         self.fontsize = fontsize if fontsize else mpl.rcParams["font.size"]
 
         # Display parameters.
-        self.plot_params = dict(plot_params) if plot_params else {}
+        self.plot_params = cast(PlotParams, dict(plot_params) if plot_params else {})
 
         # Text parameters.
-        self.offset = list(offset)
-        self.label_params = dict(label_params) if label_params else None
+        self.offset = offset
+        self.label_params = cast(LabelParams | None, dict(label_params) if label_params else None)
 
         # Shape
         if shape in ["ellipse", "rectangle"]:
@@ -131,7 +134,7 @@ class Node:
             print("Warning: wrong shape value, set to ellipse instead")
             self.shape = "ellipse"
 
-    def render(self, ctx) -> Ellipse | Rectangle:
+    def render(self, ctx: _RenderingContext) -> Ellipse | Rectangle:
         """
         Render the node.
 
@@ -144,19 +147,19 @@ class Node:
         ax = ctx.ax()
 
         # Resolve the plotting parameters.
-        plot_params = dict(self.plot_params)
+        plot_params = cast(PlotParams, dict(self.plot_params))
 
         plot_params["lw"] = _pop_multiple(
-            plot_params, ctx.line_width, "lw", "linewidth"
+            cast(dict[str, Any], plot_params), ctx.line_width, "lw", "linewidth"
         )
 
         plot_params["ec"] = plot_params["edgecolor"] = _pop_multiple(
-            plot_params, ctx.node_ec, "ec", "edgecolor"
+            cast(dict[str, Any], plot_params), ctx.node_ec, "ec", "edgecolor"
         )
 
-        fc_is_set = "fc" in plot_params or "facecolor" in plot_params
+        fc_is_set = "fc" in plot_params or "facecolor" in plot_params  # type: ignore[unreachable]
         plot_params["fc"] = _pop_multiple(
-            plot_params, ctx.node_fc, "fc", "facecolor"
+            cast(dict[str, Any], plot_params), ctx.node_fc, "fc", "facecolor"
         )
         fc = plot_params["fc"]
 
@@ -164,9 +167,9 @@ class Node:
 
         # And the label parameters.
         if self.label_params is None:
-            label_params = dict(ctx.label_params)
+            label_params = cast(LabelParams, ctx.label_params)
         else:
-            label_params = dict(self.label_params)
+            label_params = cast(LabelParams, self.label_params)
 
         label_params["va"] = _pop_multiple(
             label_params, "center", "va", "verticalalignment"
@@ -180,11 +183,12 @@ class Node:
         scale = self.scale
         if self.fixed:
             # MAGIC: These magic numbers should depend on the grid/node units.
-            self.offset[1] += 6
+            self.offset = (self.offset[0], self.offset[1] + 6)
 
             label_params["va"] = "baseline"
-            label_params.pop("verticalalignment", None)
-            label_params.pop("ma", None)
+            _label_params = cast(dict[str, Any], label_params)
+            _label_params.pop("verticalalignment", None)
+            _label_params.pop("ma", None)
 
             if not fc_is_set:
                 plot_params["fc"] = "k"
@@ -201,9 +205,9 @@ class Node:
         elif self.alternate and not self.fixed:
             style = ctx.alternate_style
         else:
-            style = False
+            style = "none"
 
-        if style:
+        if style != "none":
             # Update the plotting parameters depending on the style of
             # observed node.
             h = float(diameter)
@@ -220,7 +224,7 @@ class Node:
 
             # Draw the background ellipse.
             if self.shape == "ellipse":
-                bg = Ellipse(
+                bg: Ellipse | Rectangle = Ellipse(
                     xy=ctx.convert(self.x, self.y),
                     width=w,
                     height=h,
@@ -229,11 +233,16 @@ class Node:
             elif self.shape == "rectangle":
                 # Adapt to make Rectangle the same api than ellipse
                 wi = w
-                xy = ctx.convert(self.x, self.y)
-                xy[0] = xy[0] - wi / 2.0
-                xy[1] = xy[1] - h / 2.0
+                x, y = ctx.convert(self.x, self.y)
+                x -= wi / 2.0
+                y -= h / 2.0
 
-                bg = Rectangle(xy=xy, width=wi, height=h, **plot_params)
+                bg = Rectangle(
+                    xy=(x, y),
+                    width=wi,
+                    height=h,
+                    **plot_params,
+                )
             else:
                 # Should never append
                 raise (
@@ -252,7 +261,7 @@ class Node:
             plot_params["fc"] = "none"
 
         if self.shape == "ellipse":
-            el = Ellipse(
+            el: Ellipse | Rectangle = Ellipse(
                 xy=ctx.convert(self.x, self.y),
                 width=diameter * aspect,
                 height=diameter,
@@ -261,11 +270,16 @@ class Node:
         elif self.shape == "rectangle":
             # Adapt to make Rectangle the same api than ellipse
             wi = diameter * aspect
-            xy = ctx.convert(self.x, self.y)
-            xy[0] = xy[0] - wi / 2.0
-            xy[1] = xy[1] - diameter / 2.0
+            x, y = ctx.convert(self.x, self.y)
+            x -= wi / 2.0
+            y -= diameter / 2.0
 
-            el = Rectangle(xy=xy, width=wi, height=diameter, **plot_params)
+            el = Rectangle(
+                xy=(x, y),
+                width=wi,
+                height=diameter,
+                **plot_params,
+            )
         else:
             # Should never append
             raise (
@@ -285,12 +299,12 @@ class Node:
             xytext=self.offset,
             textcoords="offset points",
             size=self.fontsize,
-            **label_params,
+            **_label_params,
         )
 
         return el
 
-    def get_frontier_coord(self, target_xy, ctx, edge):
+    def get_frontier_coord(self, target_xy: Tuple2F, ctx: _RenderingContext, edge: 'Edge') -> Tuple2F:
         """
         Get the coordinates of the point of intersection between the
         shape of the node and a line starting from the center of the node to an
@@ -366,3 +380,7 @@ class Node:
         else:
             # Should never append
             raise ValueError("Wrong shape in object causes an error")
+
+
+from .edge import Edge
+from ._exceptions import SameLocationError

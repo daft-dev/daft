@@ -2,7 +2,14 @@
 
 __all__ = ["Edge"]
 
-from ._utils import _pop_multiple
+
+from matplotlib.lines import Line2D
+from matplotlib.patches import FancyArrow
+
+from typing import Any, cast
+
+from ._utils import _pop_multiple, _RenderingContext
+from ._types import Tuple4F, PlotParams, LabelParams
 
 
 class Edge:
@@ -44,15 +51,15 @@ class Edge:
 
     def __init__(
         self,
-        node1,
-        node2,
-        directed=True,
-        label=None,
-        xoffset=0,
-        yoffset=0.1,
-        plot_params=None,
-        label_params=None,
-    ):
+        node1: 'Node',
+        node2: 'Node',
+        directed: bool = True,
+        label: str | None = None,
+        xoffset: float = 0,
+        yoffset: float = 0.1,
+        plot_params: PlotParams | None = None,
+        label_params: LabelParams | None = None,
+    ) -> None:
         self.node1 = node1
         self.node2 = node2
         self.directed = directed
@@ -62,7 +69,7 @@ class Edge:
         self.plot_params = dict(plot_params) if plot_params else {}
         self.label_params = dict(label_params) if label_params else {}
 
-    def _get_coords(self, ctx):
+    def _get_coords(self, ctx: _RenderingContext) -> Tuple4F:
         """
         Get the coordinates of the line.
 
@@ -83,7 +90,7 @@ class Edge:
 
         return x3, y3, x4 - x3, y4 - y3
 
-    def render(self, ctx):
+    def render(self, ctx: _RenderingContext) -> FancyArrow | list[Line2D]:
         """
         Render the edge in the given axes.
 
@@ -105,13 +112,13 @@ class Edge:
             x, y, dx, dy = self._get_coords(ctx)
             ax.annotate(
                 self.label,
-                [x + 0.5 * dx + self.xoffset, y + 0.5 * dy + self.yoffset],
+                xy=(x + 0.5 * dx + self.xoffset, y + 0.5 * dy + self.yoffset),
                 xycoords="data",
-                xytext=[0, 3],
+                xytext=(0, 3),
                 textcoords="offset points",
                 ha="center",
                 va="center",
-                **self.label_params,
+                **cast(dict[str, Any], self.label_params)
             )
 
         if self.directed:
@@ -133,7 +140,7 @@ class Edge:
                     *self._get_coords(ctx),
                     width=0,
                     length_includes_head=True,
-                    **plot_params,
+                    **cast(dict[str, Any], plot_params)
                 )
 
                 # Add the arrow to the axes.
@@ -142,6 +149,7 @@ class Edge:
 
             else:
                 print(args[2], args[3])
+                return []
 
         else:
             plot_params["color"] = plot_params.get("color", "k")
@@ -150,5 +158,12 @@ class Edge:
             x, y, dx, dy = self._get_coords(ctx)
 
             # Plot the line.
-            line = ax.plot([x, x + dx], [y, y + dy], **plot_params)
+            line = ax.plot(
+                (x, x + dx),
+                (y, y + dy),
+                **cast(dict[str, Any], plot_params)
+            )
             return line
+
+
+from .node import Node
