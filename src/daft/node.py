@@ -122,11 +122,15 @@ class Node:
         self.fontsize = fontsize if fontsize else mpl.rcParams["font.size"]
 
         # Display parameters.
-        self.plot_params = cast(PlotParams, dict(plot_params) if plot_params else {})
+        self.plot_params = cast(
+            PlotParams, dict(plot_params) if plot_params else {}
+        )
 
         # Text parameters.
         self.offset = offset
-        self.label_params = cast(LabelParams | None, dict(label_params) if label_params else None)
+        self.label_params = cast(
+            LabelParams | None, dict(label_params) if label_params else None
+        )
 
         # Shape
         if shape in ["ellipse", "rectangle"]:
@@ -151,7 +155,10 @@ class Node:
         plot_params = cast(PlotParams, dict(self.plot_params))
 
         plot_params["lw"] = _pop_multiple(
-            cast(dict[str, Any], plot_params), ctx.line_width, "lw", "linewidth"
+            cast(dict[str, Any], plot_params),
+            ctx.line_width,
+            "lw",
+            "linewidth",
         )
 
         plot_params["ec"] = plot_params["edgecolor"] = _pop_multiple(
@@ -190,7 +197,6 @@ class Node:
 
             if not fc_is_set:
                 plot_params["fc"] = "k"
-
 
         diameter = ctx.node_unit * scale
         if self.aspect is not None:
@@ -308,7 +314,9 @@ class Node:
 
         return el
 
-    def get_frontier_coord(self, target_xy: Tuple2F, ctx: RenderingContext, edge: 'Edge') -> Tuple2F:
+    def get_frontier_coord(
+        self, target_xy: Tuple2F, ctx: RenderingContext, edge: "Edge"
+    ) -> Tuple2F:
         """
         Get the coordinates of the point of intersection between the
         shape of the node and a line starting from the center of the node to an

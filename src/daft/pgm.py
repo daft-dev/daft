@@ -14,7 +14,16 @@ from .node import Node
 from .edge import Edge
 from .plate import Plate, Text
 from .utils import RenderingContext
-from .types import Tuple2F, NDArrayF, Shape, Position, CTX_Kwargs, PlotParams, LabelParams, RectParams
+from .types import (
+    Tuple2F,
+    NDArrayF,
+    Shape,
+    Position,
+    CTX_Kwargs,
+    PlotParams,
+    LabelParams,
+    RectParams,
+)
 
 # pylint: disable=too-many-arguments, protected-access, unused-argument, too-many-lines
 
@@ -111,22 +120,24 @@ class PGM:
             _origin = origin
             self.origin = tuple(origin)
 
-        self._ctx = RenderingContext(CTX_Kwargs(
-            shape=np.asarray(_shape, dtype=np.float64),
-            origin=np.asarray(_origin, dtype=np.float64),
-            grid_unit=grid_unit,
-            node_unit=node_unit,
-            observed_style=observed_style,
-            alternate_style=alternate_style,
-            line_width=line_width,
-            node_ec=node_ec,
-            node_fc=node_fc,
-            plate_fc=plate_fc,
-            directed=directed,
-            aspect=aspect,
-            label_params=label_params,
-            dpi=dpi
-        ))
+        self._ctx = RenderingContext(
+            CTX_Kwargs(
+                shape=np.asarray(_shape, dtype=np.float64),
+                origin=np.asarray(_origin, dtype=np.float64),
+                grid_unit=grid_unit,
+                node_unit=node_unit,
+                observed_style=observed_style,
+                alternate_style=alternate_style,
+                line_width=line_width,
+                node_ec=node_ec,
+                node_fc=node_fc,
+                plate_fc=plate_fc,
+                directed=directed,
+                aspect=aspect,
+                label_params=label_params,
+                dpi=dpi,
+            )
+        )
 
     def __enter__(self) -> "PGM":
         return self
@@ -351,7 +362,9 @@ class PGM:
 
         self._plates.append(_plate)
 
-    def add_text(self, x: float, y: float, label: str, fontsize: float | None = None) -> None:
+    def add_text(
+        self, x: float, y: float, label: str, fontsize: float | None = None
+    ) -> None:
         """
         A subclass of plate to writing text using grid coordinates. Any
         ``**kwargs`` are passed through to :class:`PGM.Plate`.
@@ -370,12 +383,7 @@ class PGM:
 
         """
 
-        text = Text(
-            x=x,
-            y=y,
-            label=label,
-            fontsize=fontsize
-        )
+        text = Text(x=x, y=y, label=label, fontsize=fontsize)
         self._plates.append(text)
 
         return None
@@ -400,8 +408,7 @@ class PGM:
             if isinstance(patch, Ellipse):
                 maxsize = np.maximum(
                     maxsize,
-                    patch.center
-                    + np.array([patch.width, patch.height]) / 2,
+                    patch.center + np.array([patch.width, patch.height]) / 2,
                     dtype=np.float64,
                 )
             elif isinstance(patch, Rectangle):
@@ -417,8 +424,7 @@ class PGM:
             if isinstance(patch, Ellipse):
                 minsize = np.minimum(
                     minsize,
-                    patch.center
-                    - np.array([patch.width, patch.height]) / 2,
+                    patch.center - np.array([patch.width, patch.height]) / 2,
                     dtype=np.float64,
                 )
             elif isinstance(patch, Rectangle):

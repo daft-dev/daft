@@ -6,7 +6,7 @@ import numpy as np
 from numpy.typing import NDArray, ArrayLike
 from typing import Any, Annotated, Literal, TypeVar, TypedDict, Optional, Union
 
-T = TypeVar('T')
+T = TypeVar("T")
 
 NDArrayF = NDArray[np.float64]
 NDArrayI = NDArray[np.int64]
@@ -29,7 +29,7 @@ Position = Literal[
     "middle right",
     "top left",
     "top center",
-    "top right"
+    "top right",
 ]
 
 
@@ -51,17 +51,13 @@ class LabelParams(TypedDict):
     ma: str
 
 
-RectParams = TypedDict(
-    "RectParams", {
-        "ec": str,
-        "edgecolor": str,
-        "fc": str,
-        "facecolor": str,
-        "lw": str,
-        "linewidth": str,
-    },
-    total=False
-)
+class RectParams(TypedDict, total=False):
+    ec: str
+    edgecolor: str
+    fc: str
+    facecolor: str
+    lw: str
+    linewidth: str
 
 
 class CTX_Kwargs(TypedDict):

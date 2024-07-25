@@ -11,7 +11,7 @@ class SameLocationError(Exception):
         The Edge object whose nodes are being added.
     """
 
-    def __init__(self, edge: 'Edge') -> None:
+    def __init__(self, edge: "Edge") -> None:
         self.message = (
             "Attempted to add edge between `{}` and `{}` but they "
             + "share the same location."
