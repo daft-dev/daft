@@ -404,7 +404,9 @@ class PGM:
         else:
             self._ctx.dpi = dpi
 
-        def get_max(maxsize: NDArrayF, patch: Union[Ellipse, Rectangle]) -> NDArrayF:
+        def get_max(
+            maxsize: NDArrayF, patch: Union[Ellipse, Rectangle]
+        ) -> NDArrayF:
             if isinstance(patch, Ellipse):
                 maxsize = np.maximum(
                     maxsize,
@@ -420,7 +422,9 @@ class PGM:
                 )
             return maxsize
 
-        def get_min(minsize: NDArrayF, patch: Union[Ellipse, Rectangle]) -> NDArrayF:
+        def get_min(
+            minsize: NDArrayF, patch: Union[Ellipse, Rectangle]
+        ) -> NDArrayF:
             if isinstance(patch, Ellipse):
                 minsize = np.minimum(
                     minsize,
