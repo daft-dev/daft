@@ -33,7 +33,7 @@ jobs:
         if: always()
         with:
           path: ./result_images
-          name: images
+          name: images-${{ matrix.python-version }}
 
   dist:
     runs-on: ubuntu-latest
