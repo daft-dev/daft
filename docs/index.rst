@@ -36,7 +36,7 @@ if you use `pip <http://www.pip-installer.org>`_:
 
 .. code-block:: bash
 
-    python -m pip install daft
+    python -m pip install 'daft-pgm'
 
 Otherwise, you can download the source and run:
 

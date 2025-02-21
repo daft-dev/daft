@@ -3,7 +3,7 @@ requires = ["setuptools>=30.3.0", "wheel", "setuptools_scm[toml]>=6.2"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "daft"
+name = "daft-pgm"
 authors = [
     {name = "Daft Developers", email = "danfm@nyu.edu"},
 ]
