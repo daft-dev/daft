@@ -17,3 +17,5 @@ python:
 
 sphinx:
   builder: dirhtml
+  configuration: docs/conf.py
+
