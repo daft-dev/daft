@@ -63,7 +63,7 @@ def test_add_text():
         pgm.add_text(x=0, y=0, label="text1")
 
         plate = pgm._plates[0]
-        assert plate.rect == [0, 0, 0, 0]
+        assert plate.rect == (0, 0, 0, 0)
         assert plate.label == "text1"
 
 
