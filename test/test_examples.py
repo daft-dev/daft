@@ -3,9 +3,11 @@ import itertools
 import daft
 from matplotlib.testing.decorators import image_comparison
 
+from typing import Any
+
 
 @image_comparison(baseline_images=["bca"], extensions=["png"])
-def test_bca():
+def test_bca() -> None:
     pgm = daft.PGM()
     pgm.add_node("a", r"$a$", 1, 5)
     pgm.add_node("b", r"$b$", 1, 4)
@@ -17,7 +19,7 @@ def test_bca():
 
 
 @image_comparison(baseline_images=["classic"], extensions=["png"])
-def test_classic():
+def test_classic() -> None:
     pgm = daft.PGM()
 
     # Hierarchical parameters.
@@ -43,7 +45,7 @@ def test_classic():
 
 
 @image_comparison(baseline_images=["deconvolution"], extensions=["png"])
-def test_deconvolution():
+def test_deconvolution() -> None:
     scale = 1.6
     pgm = daft.PGM()
 
@@ -151,7 +153,7 @@ def test_deconvolution():
 
 
 @image_comparison(baseline_images=["exoplanets"], extensions=["png"])
-def test_exoplanets():
+def test_exoplanets() -> None:
     # Colors.
     p_color = {"ec": "#46a546"}
     s_color = {"ec": "#f89406"}
@@ -190,7 +192,7 @@ def test_exoplanets():
 
 
 @image_comparison(baseline_images=["fixed"], extensions=["png"])
-def test_fixed():
+def test_fixed() -> None:
     pgm = daft.PGM(aspect=1.5, node_unit=1.75)
     pgm.add_node("unobs", r"Unobserved!", 1, 4)
     pgm.add_node("obs", r"Observed!", 1, 3, observed=True)
@@ -202,7 +204,7 @@ def test_fixed():
 
 
 @image_comparison(baseline_images=["gaia"], extensions=["png"])
-def test_gaia():
+def test_gaia() -> None:
     pgm = daft.PGM()
     pgm.add_node("omega", r"$\omega$", 2, 5)
     pgm.add_node("true", r"$\tilde{X}_n$", 2, 4)
@@ -220,7 +222,7 @@ def test_gaia():
 
 
 @image_comparison(baseline_images=["galex"], extensions=["png"])
-def test_galex():
+def test_galex() -> None:
     pgm = daft.PGM()
     wide = 1.5
     verywide = 1.5 * wide
@@ -303,7 +305,7 @@ def test_galex():
 
 
 @image_comparison(baseline_images=["huey_p_newton"], extensions=["png"])
-def test_huey_p_newton():
+def test_huey_p_newton() -> None:
     pgm = daft.PGM()
 
     kx, ky = 1.5, 1.0
@@ -338,7 +340,7 @@ def test_huey_p_newton():
 
 
 @image_comparison(baseline_images=["logo"], extensions=["png"])
-def test_logo():
+def test_logo() -> None:
     pgm = daft.PGM()
     pgm.add_node("d", r"$D$", 0.5, 0.5)
     pgm.add_node("a", r"$a$", 1.5, 0.5, observed=True)
@@ -351,7 +353,7 @@ def test_logo():
 
 
 @image_comparison(baseline_images=["mrf"], extensions=["png"])
-def test_mrf():
+def test_mrf() -> None:
     pgm = daft.PGM(node_unit=0.4, grid_unit=1, directed=False)
 
     for i, (xi, yi) in enumerate(itertools.product(range(1, 5), range(1, 5))):
@@ -381,7 +383,7 @@ def test_mrf():
 
 
 @image_comparison(baseline_images=["no_circles"], extensions=["png"])
-def test_no_circles():
+def test_no_circles() -> None:
     pgm = daft.PGM(node_ec="none")
     pgm.add_node("cloudy", r"cloudy", 3, 3)
     pgm.add_node("rain", r"rain", 2, 2)
@@ -395,7 +397,7 @@ def test_no_circles():
 
 
 @image_comparison(baseline_images=["no_gray"], extensions=["png"])
-def test_no_gray():
+def test_no_gray() -> None:
     pgm = daft.PGM(observed_style="inner")
 
     # Hierarchical parameters.
@@ -422,8 +424,8 @@ def test_no_gray():
 
 
 @image_comparison(baseline_images=["recursive"], extensions=["png"])
-def test_recursive():
-    def recurse(pgm, nodename, level, c):
+def test_recursive() -> None:
+    def recurse(pgm: Any, nodename: Any, level: Any, c: Any) -> Any:
         if level > 4:
             return nodename
         r = c // 2
@@ -477,7 +479,7 @@ def test_recursive():
 
 
 @image_comparison(baseline_images=["thick_lines"], extensions=["png"])
-def test_thick_lines():
+def test_thick_lines() -> None:
     pgm = daft.PGM(line_width=2.5)
 
     # Hierarchical parameters.
@@ -504,7 +506,7 @@ def test_thick_lines():
 
 
 @image_comparison(baseline_images=["weaklensing"], extensions=["png"])
-def test_weaklensing():
+def test_weaklensing() -> None:
     pgm = daft.PGM()
     pgm.add_node("Omega", r"$\Omega$", -1, 4)
     pgm.add_node("gamma", r"$\gamma$", 0, 4)
@@ -525,8 +527,8 @@ def test_weaklensing():
     pgm.render()
 
 
-@image_comparison(baseline_images=["wordy"], extensions=["png"])
-def test_wordy():
+@image_comparison(baseline_images=["wet_grass"], extensions=["png"])
+def test_wet_grass() -> None:
     pgm = daft.PGM()
     pgm.add_node("cloudy", r"cloudy", 3, 3, aspect=1.8)
     pgm.add_node("rain", r"rain", 2, 2, aspect=1.2)
@@ -552,7 +554,7 @@ def test_wordy():
 
 
 @image_comparison(baseline_images=["wordy"], extensions=["png"])
-def test_wordy():
+def test_wordy() -> None:
     pgm = daft.PGM()
     pgm.add_node("obs", r"$\epsilon^{obs}_n$", 2, 3, observed=True)
     pgm.add_node("true", r"$\epsilon^{true}_n$", 1, 3)
