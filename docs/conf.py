@@ -1,10 +1,10 @@
 import os
-from pkg_resources import get_distribution, DistributionNotFound
+from importlib.metadata import version as get_version, PackageNotFoundError
 
 try:
-    __version__ = get_distribution("daft-pgm").version
-except DistributionNotFound:
-    pass
+    __version__ = get_version("daft-pgm")
+except PackageNotFoundError:
+    __version__ = "unknown"
 
 # Support canonical URL
 html_baseurl = os.environ.get("READTHEDOCS_CANONICAL_URL", "")
