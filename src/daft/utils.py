@@ -5,8 +5,12 @@ __all__: list[str] = []
 import matplotlib.pyplot as plt
 import numpy as np
 
+from typing import Any, cast, Optional
 
-class _rendering_context:
+from .types import NDArrayF, CTX_Kwargs, LabelParams, AnyDict
+
+
+class RenderingContext:
     """
     :param shape:
         The number of rows and columns in the grid.
@@ -56,7 +60,7 @@ class _rendering_context:
 
     """
 
-    def __init__(self, **kwargs):
+    def __init__(self, kwargs: CTX_Kwargs) -> None:
         # Save the style defaults.
         self.line_width = kwargs.get("line_width", 1.0)
 
@@ -81,8 +85,8 @@ class _rendering_context:
         self.padding = 0.1
         self.shp_fig_scale = 2.54
 
-        self.shape = np.array(kwargs.get("shape", [1, 1]), dtype=np.float64)
-        self.origin = np.array(kwargs.get("origin", [0, 0]), dtype=np.float64)
+        self.shape = kwargs.get("shape", np.atleast_1d((1, 1)))
+        self.origin = kwargs.get("origin", (0, 0))
         self.grid_unit = kwargs.get("grid_unit", 2.0)
         self.figsize = self.grid_unit * self.shape / self.shp_fig_scale
 
@@ -92,22 +96,24 @@ class _rendering_context:
         self.plate_fc = kwargs.get("plate_fc", "w")
         self.directed = kwargs.get("directed", True)
         self.aspect = kwargs.get("aspect", 1.0)
-        self.label_params = dict(kwargs.get("label_params", {}) or {})
+        self.label_params = cast(
+            LabelParams, kwargs.get("label_params", {}) or {}
+        )
 
         self.dpi = kwargs.get("dpi", None)
 
         # Initialize the figure to ``None`` to handle caching later.
-        self._figure = None
-        self._ax = None
+        self._figure: Optional[plt.Figure] = None
+        self._ax: Optional[plt.Axis] = None
 
-    def reset_shape(self, shape, adj_origin=False):
+    def reset_shape(self, shape: NDArrayF, adj_origin: bool = False) -> None:
         """Reset the shape and figure size."""
         # shape is scaled by grid_unit
         # so divide by grid_unit for proper shape
         self.shape = shape / self.grid_unit + self.padding
         self.figsize = self.grid_unit * self.shape / self.shp_fig_scale
 
-    def reset_origin(self, origin, adj_shape=False):
+    def reset_origin(self, origin: NDArrayF, adj_shape: bool = False) -> None:
         """Reset the origin."""
         # origin is scaled by grid_unit
         # so divide by grid_unit for proper shape
@@ -116,28 +122,28 @@ class _rendering_context:
             self.shape -= self.origin
             self.figsize = self.grid_unit * self.shape / self.shp_fig_scale
 
-    def reset_figure(self):
+    def reset_figure(self) -> None:
         """Reset the figure."""
         self.close()
 
-    def close(self):
+    def close(self) -> None:
         """Close the figure if it is set up."""
         if self._figure is not None:
             plt.close(self._figure)
             self._figure = None
             self._ax = None
 
-    def figure(self):
+    def figure(self) -> plt.Figure:
         """Return the current figure else create a new one."""
         if self._figure is not None:
             return self._figure
-        args = {"figsize": self.figsize}
+        args: dict[str, Any] = {"figsize": self.figsize}
         if self.dpi is not None:
             args["dpi"] = self.dpi
         self._figure = plt.figure(**args)
         return self._figure
 
-    def ax(self):
+    def ax(self) -> plt.Axes:
         """Return the current axes else create a new one."""
         if self._ax is not None:
             return self._ax
@@ -155,19 +161,17 @@ class _rendering_context:
 
         return self._ax
 
-    def convert(self, *xy):
+    def convert(self, x: float, y: float) -> tuple[float, float]:
         """
         Convert from model coordinates to plot coordinates.
 
         """
-        if len(xy) != 2:
-            raise ValueError(
-                "You must provide two coordinates to `convert()`."
-            )
-        return self.grid_unit * (np.atleast_1d(xy) - self.origin)
+        return self.grid_unit * (x - self.origin[0]), self.grid_unit * (
+            y - self.origin[1]
+        )
 
 
-def _pop_multiple(_dict, default, *args):
+def _pop_multiple(_dict: AnyDict, default: Any, *args: str) -> Any:
     """
     A helper function for dealing with the way that matplotlib annoyingly
     allows multiple keyword arguments. For example, ``edgecolor`` and ``ec``
@@ -190,10 +194,10 @@ def _pop_multiple(_dict, default, *args):
     if len(args) == 0:
         raise ValueError("You must provide at least one argument to `pop()`.")
 
-    results = []
+    results: list[Any] = []
     for arg in args:
         try:
-            results.append((arg, _dict.pop(arg)))
+            results.append((arg, _dict.pop(arg)))  # type: ignore[misc]
         except KeyError:
             pass
 
